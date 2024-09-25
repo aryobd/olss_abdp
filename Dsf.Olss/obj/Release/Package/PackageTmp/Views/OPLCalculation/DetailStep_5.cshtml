@@ -1,0 +1,830 @@
+﻿@model Dsf.Olss.Models.OPLCSubmitViewModel
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    ViewBag.Title = "Calculation of Operating Lease - Step 5";
+}
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 5, remark, x => @Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(o => o.ConnId)
+<!-- Input Basic Information -->
+<div id="SubmitForm">
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information (Lease Fee)</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Start Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.StartPeriodPlan)</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>End Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.EndPeriodPlan)</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Lease Period Plan (Months)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.LeasePeriodPlan)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Rate Insurance Income</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.RateInsuranceIncome)</p>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Admin Fee Amout</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AdministrationFeeAmount)</p>
+
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Interest Income</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.InterestIncome)</p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>BAST Handover Schedule (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.BASTHAndoverSchedule)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>First Lease Payment (Days)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.FirstLeasePayment)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Security Deposit Payment</label>
+                        <p class="form-control-static">@((bool)Model.SecurityDepositPayment ? "Yes" : "No")</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Total Unit Quantity Lease</label>
+                        @*<p class="form-control-static">@Html.DisplayFor(o => o.TotalUnitQuantityLease)</p>*@
+                        @Html.TextBoxFor(o => o.TotalUnitQuantityLease, null, new { @class = "form-control lbl text-right", @placeholder = "0" })
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Security Deposit Amount</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.SecurityDepositAmount)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special Case (Remarks)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.SpecialCaseRemarks)</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- Setting Monthly Installment -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Setting Monthly Installment</header>
+        <div class="panel-body">
+
+
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <label>Ratio</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Ratio)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <label>Borrowing Rate (%)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.BorrowingEffectivePercent)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <label>Spread of Interest Rate (%)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.SpreadEffectivePercent)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <label>Internal Interest Rate (%)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PrimeEffectivePercent)</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            Confirmation of Lease Cost
+        </header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Product Price
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.ProductPrice, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Product Price", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalProductPrice" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Residual Value (-)
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.ResidualValue, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Residual Value (-)", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalResidualValueAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Registration Value Amount
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.STNKKEURRenewalCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Registration Value Amount", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalStnkRenewalFee" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Maintenance Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.MaintenanceCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Maintenance Cos", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalMaintenanceCost" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Replacement Unit Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.ReplacementUnitCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Replacement Cost Expense", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalReplacementCarAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Insurance Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.InsuranceCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Insurance Fee", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalGrossPremiumAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Mediator Fee Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.MediatorFeeCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Mediator Fee", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalMediatorFeeAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Mobilization Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.MobilizationCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Mobilization Fee", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalMobilizationFeeAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Demobilization Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.DemobilizationCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Demobilization Fee", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalDemobilizationFeeAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Interest Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.InterestCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Interest Expense", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalInterestExpense" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Interest Cost for Term of Payment
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.InterestCostTOP, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalInterestCostTop" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Interest Cost Payment Before BAST
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.InterestCostBAST, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Interest Cost Before BAST", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalinterestExpenseBAST" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Total Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Total Cost", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalTotalCost" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line pull-in"></div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Profit Result</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Monthly Installment Amount
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.MonthlyInstallmentAmount, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Monthly Installment Operating Lease", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalMonthlyInstallmentAmount" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Total Installment
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalInstallment, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Total Profit", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalTotalInstallment" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Insurance Income
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.InsuranceDiscount, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Total Profit", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalInsuranceIncome" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Total Income
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalIncome, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Total Profit", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalTotalIncome" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 font-bold">
+                    Total Profit After Lease Cost
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalIncomeAfterCost, "{0:N0}", new { @class = "form-control lbl currenciesOnly", @placeholder = "Total Profit", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+
+                        <input class="form-control Qty lbl text-right" placeholder="Quantity" readonly="readonly" type="text">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon lbl">Rp</span>
+                            <input class="form-control lbl currenciesOnly" placeholder="Total" type="text" name="totalTotalIncomeAfterCost" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="panel-footer bg-light lter">
+    @*@using (Html.BeginForm())
+        {
+            @Html.HiddenFor(o => o.IdOPLCalculation)
+            <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+            if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+            {
+                if (Model.IsDraft)
+                {
+                    <input type="submit" class="btn btn-info" value="Submit" name="Action" />
+                }
+                else if (Model.IsSubmitted)
+                {
+                    <input type="submit" class="btn btn-default" value="Set To Draft" name="Action" />
+                    <input type="submit" class="btn btn-default" value="Set To Draft" name="Action" />
+                    // <input type="submit" class="btn btn-info" value="Validate" name="Action" />
+                }
+                else if (Model.IsValid)
+                {
+
+                    //  <input type="submit" class="btn btn-info" value="InValidate" name="Action" />
+                }
+
+            }
+            if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+            {
+                if (Model.IsDraft)
+                {
+                    <input type="submit" class="btn btn-info" value="Submit" name="Action" />
+                }
+            }
+        }*@
+    <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+    @if (System.Convert.ToInt32(Model.OPLRemarks) > 5)
+    {
+        <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "6", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+    }
+    else
+    {
+        <a class="btn btn-primary" onclick="NoNext();">Next Step <i class="fa fa-chevron-right"></i></a>
+    }
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var OPLCalculationHub = $.connection.OPLCalculation;
+        var confirm = false;
+        OPLCalculationHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Data has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        OPLCalculationHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+
+        var $form = $('#SubmitForm'),
+            $qtys = $form.find('.Qty');
+
+        $(document).ready(function () {
+            if (!isNaN($('#TotalUnitQuantityLease').val())) {
+                var qty = $("#TotalUnitQuantityLease").val();
+                $qtys.each(function () {
+                    if (!isNaN(qty)) $(this).val(qty);
+                });
+
+                var productPrice = Number($('#ProductPrice').val().replace(/,/g, ''));
+                var residualValue = Number($('#ResidualValue').val().replace(/,/g, ''));
+                var stnkRenewalFee = Number($('#STNKKEURRenewalCost').val().replace(/,/g, ''));
+                var maintenanceCost = Number($('#MaintenanceCost').val().replace(/,/g, ''));
+                var replacementUnitCost = Number($('#ReplacementUnitCost').val().replace(/,/g, ''));
+                var insuranceCost = Number($('#InsuranceCost').val().replace(/,/g, ''));
+                var insuranceIncome = Number($('#InsuranceDiscount').val().replace(/,/g, ''));
+                var mediatorFeeCost = Number($('#MediatorFeeCost').val().replace(/,/g, ''));
+                var mobilizationCost = Number($('#MobilizationCost').val().replace(/,/g, ''));
+                var demobilizationCost = Number($('#DemobilizationCost').val().replace(/,/g, ''));
+                var interestCost = Number($('#InterestCost').val().replace(/,/g, ''));
+                var interestCostBAST = Number($('#InterestCostBAST').val().replace(/,/g, ''));
+                var interestCostTOP = Number($('#InterestCostTOP').val().replace(/,/g, ''));
+
+                var totalCost = Number($('#TotalCost').val().replace(/,/g, ''));
+                var monthlyInstallmentAmount = Number($('#MonthlyInstallmentAmount').val().replace(/,/g, ''));
+                //var CommisionAmount = Number($('#CommisionAmount').val().replace(/,/g, ''));
+                var totalInstallment = Number($('#TotalInstallment').val().replace(/,/g, ''));
+                var totalIncome = Number($('#TotalIncome').val().replace(/,/g, ''));
+                //var CommisionAmount = Number($('#CommisionAmount').val().replace(/,/g, ''));
+                var totalIncomeAfterCost = Number($('#TotalIncomeAfterCost').val().replace(/,/g, ''));
+
+                if (!isNaN(productPrice)) $("[name='totalProductPrice']").val(productPrice * qty).formatCurrency();
+                if (!isNaN(residualValue)) $("[name='totalResidualValueAmount']").val(residualValue * qty).formatCurrency();
+                if (!isNaN(stnkRenewalFee)) $("[name='totalStnkRenewalFee']").val(stnkRenewalFee * qty).formatCurrency();
+                if (!isNaN(maintenanceCost)) $("[name='totalMaintenanceCost']").val(maintenanceCost * qty).formatCurrency();
+                if (!isNaN(replacementUnitCost)) $("[name='totalReplacementCarAmount']").val(replacementUnitCost * qty).formatCurrency();
+                if (!isNaN(insuranceCost)) $("[name='totalGrossPremiumAmount']").val(insuranceCost * qty).formatCurrency();
+                //if (!isNaN(insuranceDiscount)) $("[name='totalInsuranceDiscountAmount']").val(insuranceDiscount * qty).formatCurrency();
+                if (!isNaN(mediatorFeeCost)) $("[name='totalMediatorFeeAmount']").val(mediatorFeeCost * qty).formatCurrency();
+                if (!isNaN(mobilizationCost)) $("[name='totalMobilizationFeeAmount']").val(mobilizationCost * qty).formatCurrency();
+                if (!isNaN(demobilizationCost)) $("[name='totalDemobilizationFeeAmount']").val(demobilizationCost * qty).formatCurrency();
+                if (!isNaN(interestCost)) $("[name='totalInterestExpense']").val(interestCost * qty).formatCurrency();
+                if (!isNaN(interestCostBAST)) $("[name='totalinterestExpenseBAST']").val(interestCostBAST * qty).formatCurrency();
+                if (!isNaN(interestCostTOP)) $("[name='totalInterestCostTop']").val(interestCostTOP * qty).formatCurrency();
+                if (!isNaN(totalCost)) $("[name='totalTotalCost']").val(totalCost * qty).formatCurrency();
+                if (!isNaN(monthlyInstallmentAmount)) $("[name='totalMonthlyInstallmentAmount']").val(monthlyInstallmentAmount * qty).formatCurrency();
+                //    if (!isNaN(insuranceCommisionAmount)) $("[name='totalInsuranceCommisionAmount']").val(insuranceCommisionAmount * qty).formatCurrency();
+                if (!isNaN(totalInstallment)) $("[name='totalTotalInstallment']").val(totalInstallment * qty).formatCurrency();
+                if (!isNaN(totalIncome)) $("[name='totalTotalIncome']").val(totalIncome * qty).formatCurrency();
+                if (!isNaN(insuranceIncome)) $("[name='totalInsuranceIncome']").val(insuranceIncome * qty).formatCurrency();
+
+                if (!isNaN(totalIncomeAfterCost)) $("[name='totalTotalIncomeAfterCost']").val(totalIncomeAfterCost * qty).formatCurrency();
+
+            };
+
+        });
+        function NoNext() {
+            bootbox.alert("there's no recorded data for next step..");
+        }
+    </script>
+
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+}

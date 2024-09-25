@@ -1,0 +1,447 @@
+﻿@using System.Text
+@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@using Dsf.Olss.Models
+@model Dsf.Olss.Models.PurchaseOrderViewModel
+
+@{
+    ViewBag.Title = "View Purchase Order";
+    var jsID = Guid.NewGuid().ToString();
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+}
+
+<a href="@Url.Action("Index","PurchaseOrder")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<hr>
+
+@using (Html.BeginForm("ViewPurchaseOrder", "PurchaseOrder", FormMethod.Post))
+{
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Purchase Order Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Agreement Number</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.AgreementNumber, null, new { @class = "form-control mandatory", @readonly = "true" })
+                                @Html.HiddenFor(o => o.IdOPLAgreement, new { @id = "IdOPLAgreement" })
+                                @Html.HiddenFor(o => o.IdCustomer)
+                                <span class="input-group-btn">
+                                    <button class="btn btn-white" data-toggle="modal" data-target="#agreementModal" type="button" disabled="disabled">...</button>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.AgreementNumber)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>PO Number</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.IdTb_PRO_PO)
+                            @Html.TextBoxFor(o => o.PONumber, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>PO Date (mm/dd/yyyy)</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.PODate, "{0:MM/dd/yyyy}", new { @class = "form-control", @readonly = "true" })
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Valid Until (mm/dd/yyyy)</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.ValidUntil, "{0:MM/dd/yyyy}", new { @class = "form-control", @readonly = "true" })
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Supplier Name</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.SupplierName, null, new { @class = "form-control mandatory", id = "supplierName", @readonly = "true" })
+                                @Html.HiddenFor(o => o.IdSupplier, new { @id = "IdSupplier" })
+                                <span class="input-group-btn">
+                                    <button id="supplier" class="btn btn-white" data-toggle="modal" data-target="#supplierModal" type="button" disabled="disabled">...</button>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.SupplierName)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Valid days</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ValidDays, null, new { @class = "form-control mandatory numeric", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.ValidDays)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">                
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Expected Delivery Period (days)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DeliveryPeriod, null, new { @class = "form-control mandatory numeric", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.DeliveryPeriod)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Delivery Place</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>UP Supplier</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.UP, null, new { @class = "form-control mandatory", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.UP)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Address</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DeliveryPlace, null, new { @class = "form-control mandatory", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.DeliveryPlace)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Zip Code</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DeliveryZipCode, null, new { @class = "form-control mandatory", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.DeliveryZipCode)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>City</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DeliveryCity, null, new { @class = "form-control mandatory", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.DeliveryCity)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Country</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DeliveryCountry, null, new { @class = "form-control mandatory", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.DeliveryCountry)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Purchase Order Item</header>
+        <div class="table-responsive">
+            <table class="table table-striped table-input m-b-none text-sm" id="poItemTable">
+                <thead>
+                    <tr>
+                        <th width="5%">Number</th>
+                        <th width="35%">Item Description</th>
+                        <th width="10%">Qty</th>
+                        <th width="20%">Price</th>
+                        <th width="20%">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.POItemList.Count != 0)
+                    {
+                        for (var i = 0; i < Model.POItemList.Count; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                            var number = string.Format("{0:0}", (i + 1));
+                                    }
+                                    <input class="form-control" type="text" value=@number disabled="disabled" />
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => o.POItemList[i].Name, null, new { @class = "form-control", @readonly = "true" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => o.POItemList[i].Qty, null, new { @class = "form-control", @readonly = "true" })
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.POItemList[i].OTRPrice, String.Format("{0:N}", Model.POItemList[i].OTRPrice), new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.POItemList[i].TotalPrice, String.Format("{0:N}", Model.POItemList[i].TotalPrice), new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td colspan=3 class="text-center font-bold">
+                            Total Net PO
+                        </td>
+                        <td colspan=1>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalPrice, String.Format("{0:N}", Model.TotalPrice), new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalNetPO, String.Format("{0:N}", Model.TotalNetPO), new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Terms and Conditions</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            @if (Model.TermConditions.Count != 0)
+                            {
+                                var num = 1;
+                                <textarea class="form-control" rows="6" readonly="readonly">   
+                                @for (int i = 0; i < Model.TermConditions.Count; i++)
+                                {
+                                    var counts = Model.TermConditions.Count;
+                                    if (i == (counts - 1))
+                                    {
+                                        @(num + ". " + Model.TermConditions[i].TermAndCondition)
+                                    }
+                                    else
+                                    {
+                                        @(num + ". " + Model.TermConditions[i].TermAndCondition + Environment.NewLine)
+                                    }
+                                    num++;
+                                }
+                                </textarea>
+                            }
+                            else
+                            {
+                                <textarea class="form-control" rows="6" readonly="readonly"></textarea>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Remarks (Revise / Reject)</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            @if (ViewBag.ApprovalLevelCode == StatusCode.Approve || ViewBag.ApprovalLevelCode == StatusCode.Check)
+                            {
+                                @Html.TextAreaFor(o => o.Remarks, new {@class = "form-control mandatory", @rows = "3", @id = "rmark"})
+                                @Html.ValidationMessageFor(o => o.Remarks)
+                            }
+                            else
+                            {
+                                @Html.TextAreaFor(o => o.Remarks, new { @class = "form-control mandatory", @rows = "3", @id = "rmark" , @readonly = "true"})
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Revision History</header>
+        <div class="panel-body">
+            <table class="table table-striped table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.PoHistories != null)
+                    {
+                        for (var i = 0; i < Model.PoHistories.Count; i++)
+                        {
+                            <tr>
+                                <td width="20">
+                                    @Html.HiddenFor(o => o.PoHistories[i].CreatedBy)
+                                    <label class="form-control">@Model.PoHistories[i].CreatedBy</label>
+                                </td>
+                                <td width="20">
+                                    @Html.HiddenFor(o => o.PoHistories[i].CreatedDate)
+                                    <label class="form-control">@Model.PoHistories[i].CreatedDate</label>
+                                </td>
+                                <td width="20">
+                                    @Html.HiddenFor(o => o.PoHistories[i].Action)
+                                    <label class="form-control">@Model.PoHistories[i].Action</label>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    if (ViewBag.IsPassed == true)
+    {
+        <section class="panel">
+            <footer class="panel-footer bg-light lter">
+                <div class="row">
+                    <div class="col-lg-6">
+                        @if (ViewBag.ApprovalLevelCode == StatusCode.Approve)
+                        {
+                            <input type="hidden" id="submitButtonText"/>
+                            @StateButton.PurchaseOrderStateButton("approve")
+                        }
+                        else if (ViewBag.ApprovalLevelCode == StatusCode.Check)
+                        {
+                            if ((ViewBag.JobTitles == JobTitles.MO || ViewBag.JobTitles == JobTitles.MOOPL) && string.Equals(ViewBag.CreatorSkd, Dsf.Olss.Common.SimpleSessionPersister.Username, StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                <input type="hidden" id="submitButtonText" />
+                                @StateButton.PurchaseOrderStateButton("check")
+                            }
+                            else if (ViewBag.JobTitles != JobTitles.MO && ViewBag.JobTitles != JobTitles.MOOPL)
+                            {
+                                <input type="hidden" id="submitButtonText" />
+                                @StateButton.PurchaseOrderStateButton("check")
+                            }
+                        }
+                    </div>
+                </div>
+            </footer>
+        </section>
+    }
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/PurchaseOrder.js?" + jsID)"></script>
+
+    <script type="text/javascript">
+        var serverRoot = '@Url.Content("~")';
+
+        $(document).ready(function() {
+
+            $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#confirmationModal');
+
+        });
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function(name, value) {
+            return this.each(function() {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function(e) {
+            var submitvalue = $(this).val();
+            var msg = '';
+            
+            //validation
+            //if (submitvalue === 'Revise' || submitvalue === 'Reject') {
+            //    if ($('#rmark').val() === "") {
+            //        $('span[data-valmsg-for="Remarks"]').removeClass("field-validation-valid").addClass("field-validation-error");
+            //        $('span[data-valmsg-for="Remarks"]').text("Please input some Remark for this action !");
+            //        return false;
+            //    } else {
+            //        $('span[data-valmsg-for="Remarks"]').removeClass("field-validation-error").addClass("field-validation-valid");
+            //        $('span[data-valmsg-for="Remarks"]').text("");
+            //    }
+            //}
+
+            if (submitvalue === 'Check') {
+                msg = 'Check';
+            } else if (submitvalue === 'Revise') {
+                msg = 'Revise';
+            } else if (submitvalue === 'Approve') {
+                msg = 'Approve';
+            } else if (submitvalue === 'Reject') {
+                msg = 'Reject';
+            }
+
+            $('#msgModal').text(msg);
+            $('#submitButtonText').val(submitvalue);
+
+        });
+
+        $('#confirmModal').click(function(e) {
+            var submitvalue = $('#submitButtonText').val();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            $(this).prop('disabled', true);
+        });
+ 
+    </script>
+}

@@ -1,0 +1,136 @@
+﻿@using Dsf.Olss.Utility
+@model Dsf.Olss.Models.ComplementDocumentViewModel
+@{
+    ViewBag.Title = "View Complement Document List";
+    var fakeDate = DateTime.Now;
+    ViewBag.Success = TempData["Success"];
+    ViewBag.Error = TempData["Error"];
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/fuelux/fuelux.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/select2/select2.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/select2-bootstrap.css") rel="stylesheet" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("Update", "ComplementDocument", FormMethod.Post))
+{
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Agreement No</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.HiddenFor(o => o.IdTb_MKT_DocComplementMaster)
+                                @Html.HiddenFor(o => o.RowVersion)
+                                @Html.HiddenFor(o => o.IdOPLAgreement)
+                                @Html.HiddenFor(o => o.IdTb_MKT_SKD)
+                                @Html.TextBoxFor(o => o.AgreementNumber, null, new
+                                {
+                                    @class = "form-control mandatory"
+                                })
+                                <span class="input-group-btn">
+                                    <button class="btn btn-white" type="button" data-toggle="modal" data-target="#agreementModal" onclick="LoadAgreement()">...</button>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.IdOPLAgreement)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>SKD No</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.SKDNo, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Customer Name</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.CustomerName, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>OPL Type</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.LeaseCategory)
+                            @Html.TextBoxFor(o => o.OPLType, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="scrollable wrapper">
+            <input type="button" class="btn btn-info" value="Add Complement Document List" data-toggle="modal" data-target="#addComplement" id="buttonAdd" style="display:none;">
+        </section>
+
+        <section class="scrollable wrapper">
+            <div class="tab-pane" id="complement-datatable">
+                @* Complement document list view will be created by call LoadComplementDocumentTable(data) and AddComplementDocumentList() javascript function *@
+            </div>
+        </section>
+    </section>
+
+    <section class="panel" id="historyView" style="display:none;">
+        <header class="panel-heading font-bold">Revision History</header>
+        <div class="panel-body" id="historyTable">
+            <table class="table table-striped table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel" id="submit-section" style="display:none;">
+        <footer class="panel-footer bg-light lter">
+            <div class="row">
+                <input id="btnUpdate" name="statusButton" class="btn btn-primary" type="button" value="Update" data-toggle="modal" data-target="#confirmationModal">
+            </div>
+        </footer>
+    </section>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts {
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery-multiple.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/ComplementDocument.js")"></script>
+    <script>
+        $(document).ready(function () {
+            var IdOPLAgreement = '@Model.IdOPLAgreement';
+            if (IdOPLAgreement != 0) {
+                GetDocComplementListUsingAjax(IdOPLAgreement);
+            }
+
+            //Close success notification after 5 seconds
+            //setTimeout(function () {
+            //    $('.alert-success').remove();
+            //}, 5000);
+        });
+
+        var fakeDateValue = '@fakeDate';
+        var serverRoot = '@Url.Content("~")';
+    </script>
+}

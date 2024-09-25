@@ -1,0 +1,154 @@
+﻿@{
+    ViewBag.Title = "Customer Information";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@*<a href="@Url.Action("Add", "Customer")" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>*@
+@*<input id="btnSycAcaCustomer" class="btn btn-primary" type="submit" name="SyncAcaCustomer" value="Sync With ACA Master" />*@
+@*<br><br>*@
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            Customer List
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="customer-list" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th width="10%">Customer Code</th>
+                        <th width="25%">Customer Name</th>
+                        <th width="25%">Phone Number</th>
+                        <th width="10%">Internal Rating</th>
+                        <th width="15%">Business Economy Sector</th>
+                        <th width="15%">Address</th>
+                        <th>Status</th>
+                        <th width="25%">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var customerHub = $.connection.Customer;
+        var confirm = false;
+        customerHub.client.OnSaveLock = function (id) {
+            if (!confirm) {
+                confirm = true;
+                location.reload();
+            }
+        };
+
+        customerHub.client.OnStatusLock = function (id) {
+            if (!confirm) {
+                confirm = true;
+                location.reload();
+            }
+        };
+
+        //add by rudolf
+        $('#btnSycAcaCustomer').click(function (e) {
+
+            // prevent the default event behaviour
+            e.preventDefault();
+            $.ajax({
+                url: "@Url.Action("SyncACAMaster", "Customer")",
+                type: "POST",
+                dataType: "json",
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    // perform your save call here
+
+                    if (data.status == "Success") {
+                        alert("Done");
+                    } else {
+                        alert("Error occurs on the Database level!");
+                    }
+                },
+                error: function () {
+                    alert("An error has occured!!!");
+                }
+            });
+        });
+        //end add
+
+
+
+        $.connection.hub.start();
+        $(document).ready(function () {
+
+            // datatable
+            $('#customer-list').each(function () {
+                var oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "Customer")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "CustomerCode" },
+                        { "mData": "CustomerName" },
+                        { "mData": "Telephone" },
+                        { "mData": "InternalRating" },
+                        { "mData": "BusinessEconomySector" },
+                        { "mData": "Address" },
+                        {
+                            "mData": "IsActive",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var IsActive = oObj.aData["IsActive"];
+                                var IsDraft = oObj.aData["IsDraft"];
+                                var IsSubmit = oObj.aData["IsSubmit"];
+
+                                if (IsDraft) {
+                                    return "<span class='label label-default'>draft</span>"
+
+                                }
+                                else if (IsSubmit) {
+
+                                    return "<span class='label label-info'>submitted</span>"
+                                }
+                                else if (IsActive) {
+                                    return "<span class='label label-success'>active</span>"
+                                }
+                                else {
+                                    return "<span class='label label-default bg-light'>inactive</span>"
+                                }
+                            }
+                        },
+                        {
+                            "mData": "IdCustomer",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var Id = oObj.aData["IdCustomer"];
+                                return "<a title='Detail' href='@Url.Action("Detail", "Customer")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;"
+                                    //<a title='Edit' href='@Url.Action("Edit", "Customer")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;"
+                            }
+                        },
+                    ]
+                });
+            });
+        });
+</script>
+}
+
+

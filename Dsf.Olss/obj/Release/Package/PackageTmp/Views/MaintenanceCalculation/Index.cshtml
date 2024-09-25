@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "Maintenance Calculation";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Add", "MaintenanceCalculation")" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            List of Maintenance Calculation
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="maincal-list" class="table table-striped m-b-none table-calc">
+                <thead>
+                <tr>
+                    <th width="140px">Maintenance Calculation No.</th>
+                    <th width="100px">Product Code</th>
+                    <th width="100px">Model Name</th>
+                    <th width="70px">Monthly Mileage</th>
+                    <th width="60px">Usage</th>
+                    <th width="100px">Created By</th>
+                    <th width="80px">Created Date</th>
+                    <th width="80px">Status</th>
+                    <th width="100px">Action</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+
+    //var MaintenanceCalculationHub = $.connection.MaintenanceCalculation;
+    //MaintenanceCalculationHub.client.OnSaveLock = function (id) {
+    //    location.reload();
+    //};
+
+    //MaintenanceCalculationHub.client.OnStatusLock = function (id) {
+    //    location.reload();
+    //};
+
+    //$.connection.hub.start();
+
+    // datatable
+    function LoadTable() {
+        $('#maincal-list').each(function () {
+            var oTable = $(this).dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "aaSorting": [[0, "desc"]],
+                "sAjaxSource": "@Url.Action("AjaxHandler", "MaintenanceCalculation")",
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    { "mData": "MaintenanceCalculationNo" },
+                    { "mData": "ProductCode" },
+                    { "mData": "ModelName" },
+                    { "mData": "MonthlyMileage" },
+                    { "mData": "Usage" },
+                    { "mData": "CreatedBy" },
+                    {
+                        "mData": "CreatedDate",
+                        "fnRender": function (aObj) {
+                            var date = new Date(parseInt(aObj.aData["CreatedDate"].substr(6)));
+                            var modeldate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                            return modeldate;
+                        }
+                    },
+                    {
+                        "mData": "LastModifiedBy",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function (oObj) {
+                            var isValid = oObj.aData["IsValid"];
+                            var isDraft = oObj.aData["IsDraft"];
+                            var isSubmit = oObj.aData["IsSubmitted"];
+                            var isExpired = oObj.aData["IsExpired"];
+                            if (isExpired) {
+                                return "<span class='label label-warning'>expired</span>";
+                            } else {
+                                if (isValid === true && isDraft === false && isSubmit === false) {
+                                    return "<span class='label label-success'>valid</span>";
+                                }
+                                else if (isValid === false && isDraft === false && isSubmit === false) {
+                                    return "<span class='label label-default'>invalid</span>";
+                                }
+                                else if ((isValid === false && isDraft === true && isSubmit === false) || (isValid === true && isDraft === true && isSubmit === false)) {
+                                    return "<span class='label label-primary'>draft</span>";
+                                }
+                                else if ((isValid === false && isDraft === false && isSubmit === true) || (isValid === true && isDraft === false && isSubmit === true)) {
+                                    return "<span class='label label-info'>submitted</span>";
+                                }
+                                else {
+                                    return "no status";
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "mData": "IdMaintenanceCalculation",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function (oObj) {
+                            var id = oObj.aData["IdMaintenanceCalculation"];
+                            var isValid1 = oObj.aData["IsValid"];
+                            var isDraft1 = oObj.aData["IsDraft"];
+                            var isSubmit1 = oObj.aData["IsSubmitted"];
+                            var isExpired1 = oObj.aData["IsExpired"];
+                            if (isExpired1) {
+                                return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceCalculation")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Copy' href='@Url.Action("Copy", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-files-o'></i></a>";
+                            } else {
+                                if (isValid1 === true && isDraft1 === false && isSubmit1 === false) {
+                                    return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceCalculation")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Copy' href='@Url.Action("Copy", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-files-o'></i></a>";
+                                }
+                                else if (isValid1 === false && isDraft1 === false && isSubmit1 === false) {
+                                    return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceCalculation")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Copy' href='@Url.Action("Copy", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-files-o'></i></a>";
+                                }
+                                else if ((isValid1 === false && isDraft1 === true && isSubmit1 === false)) {
+                                    return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceCalculation")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;<a title='Copy' href='@Url.Action("Copy", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-files-o'></i></a>";
+                                }
+                                else if ((isValid1 === false && isDraft1 === false && isSubmit1 === true)) {
+                                    return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceCalculation")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;&nbsp;<a title='Copy' href='@Url.Action("Copy", "MaintenanceCalculation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-files-o'></i></a>";
+                                }
+                                else {
+                                    return "no status";
+                                }
+                            }
+
+                        }
+                    }
+                ]
+            });
+        });
+    };
+
+    $(document).ready(function () {
+        LoadTable();
+    });
+</script>
+}

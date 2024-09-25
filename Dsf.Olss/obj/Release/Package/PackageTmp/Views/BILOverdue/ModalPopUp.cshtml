@@ -1,0 +1,165 @@
+﻿<!-- Create Reminder Pop Up -->
+<div class="modal fade" id="ReminderMemo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Reminder Memo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Agreement No</label>
+                            <input class="form-control" type="text" readonly="readonly" id="t_AgreementNumber" />
+                        </div>
+                        <input type="hidden" id="IdTb_BIL_PayScheduleDtl" />
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Customer Name</label>
+                            <input class="form-control" type="text" disabled="disabled" id="t_CustomerName" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Reminder Date</label>
+                            <div class="input-group date">
+                                <input class="form-control datepicker-input" type="text" id="t_ReminderDate" />
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>                                
+                            </div>
+                            <span id='er_ReminderDate' class='field-validation-error' style='display: none;'>Date reminder is required</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Reminder Type</label>
+                            <select class="form-control" id="t_ReminderType">
+                                @foreach (var item in ViewBag.ReminderType)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                            <span id='er_ReminderType' class='field-validation-error' style='display: none;'>Date reminder Type is required</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Response</label>
+                            <textarea class="form-control" id="t_Response" maxlength="500"></textarea>
+                            <span id='er_ReminderResponse' class='field-validation-error' style='display: none;'>Customer Response Is Required</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" onclick="validateMemo()">Save</button> <button type="button" class="btn btn-default" data-target="#ReminderMemoDismisConfirm" data-toggle="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reminderMemoHistoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Reminder Memo History</h4>
+            </div>
+            <div class="modal-body">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <input type="hidden" disabled="disabled" class="form-control" id="valIdTb_BIL_PayScheduleDtl">
+                                    <div class="col-lg-4"><label>Agreement Number</label> </div>
+                                    <div class="col-lg-8"><input type="text" disabled="disabled" class="form-control" id="valAgreementNumber"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <div class="col-lg-4"><label>Customer Name</label></div>
+                                    <div class="col-lg-8"><input type="text" disabled="disabled" class="form-control" id="valCustomerName"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <div class="tab-pane" id="datatable">
+                    <section class="panel">
+                        <div class="table-responsive">
+                            <table id="reminderMemoHistory-list" class="table table-striped m-b-none tablewrap">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Reminder Date</th>
+                                        <th>Reminder Type</th>
+                                        <th>Reminded By</th>
+                                        <th>Response</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="printReminderHistoryMemo();" id="btnPrintReminderHistoryMemo">Print</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ReminderMemoSaveConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p style="font-size:medium;"><span class="msgModal"></span>Reminder Memo</p>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="panel-footer bg-light lter modal-body">
+                <p>Are you sure you want to input Reminder Memo for Agreement Number: <label id="lbagreement"></label>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal" onclick="saveMemo();">Yes</button> <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ReminderMemoDismisConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p style="font-size:medium;"><span class="msgModal"></span>Reminder Memo</p>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="panel-footer bg-light lter modal-body">
+                <p>Are you sure you want to quit without saving data?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal" onclick="ClearReminderMemo(); $('#ReminderMemo').modal('hide')">Yes</button> <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

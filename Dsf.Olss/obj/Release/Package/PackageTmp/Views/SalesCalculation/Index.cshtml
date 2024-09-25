@@ -1,0 +1,160 @@
+﻿
+@{
+    ViewBag.Title = "Calculation of Refinance";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Create", "SalesCalculation")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            List of Refinance Calculation
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="osales-list" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th width="5%">Refinance Calc. Number</th>
+                        <th width="15%">Customer Name</th>
+                        <th width="10%">Agreement Number reff.</th>
+                        <th width="10%">Product Name</th>
+                        <th width="10%">Quantity</th>
+                        <th width="10%">Sales Price</th>
+                        <th width="10%">Created By</th>
+                        <th width="10%">Created Date</th>
+                        <th width="10%">Status</th>
+                        <th width="25%">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        var SalesQuotationHub = $.connection.SalesQuotation;
+        var SalesCalculationHub = $.connection.SalesCalculation;
+
+    SalesQuotationHub.client.OnStatusValidateCalcLock = function (id) {
+        //alert('Locked!!!');
+        $('#Status' + id).attr('class', 'label label-success');
+        $('#Status' + id).html('valid');
+    };
+
+    SalesQuotationHub.client.OnStatusInvalidateCalcLock = function (id) {
+        //alert('Locked!!!');
+        $('#Valid' + id).attr('class', 'label label-default bg-light');
+        $('#Valid' + id).html('invalid');
+    };
+
+    SalesCalculationHub.client.OnSaveLock = function (id) {
+        location.reload();
+    };
+
+    SalesCalculationHub.client.OnStatusLock = function (id) {
+        location.reload();
+    };
+
+    $.connection.hub.start();
+
+    // object lease list
+    $('#osales-list').each(function () {
+        var oTable = $(this).dataTable({
+            "bProcessing": true,
+            "bServerSide": true,
+            "aaSorting": [[0, "desc"]],
+            "sAjaxSource": "@Url.Action("AjaxHandler", "SalesCalculation")",
+            "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            "sPaginationType": "full_numbers",
+            "aoColumns": [
+                { "mData": "COSNumber" },
+                { "mData": "CustomerName" },
+                { "mData": "ContractNumberReff" },
+                { "mData": "ModelName" },
+                {
+                    "mData": "UnitQuantity",
+                    "fnRender": function (aObj) {
+                        if (aObj.aData["UnitQuantity"] != null) {
+                            return "<div class='text-right'>" + aObj.aData["UnitQuantity"] + "</div>";
+                        }
+                        return null;
+                    }
+                },
+                {
+                    "mData": "ActualResidualValue",
+                    "fnRender": function (aObj) {
+                        if (aObj.aData["ActualResidualValue"] != null) {
+                            var num = aObj.aData["ActualResidualValue"];
+                            var n = num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+                            return "<div class='text-right'>" + n + "</div>";
+                        }
+                        return null;
+                    }
+                },
+                { "mData": "CreateBy" },
+                {
+                    "mData": "CreateDate"},
+                {
+                    "mData": "LastModified",
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "fnRender": function (oObj) {
+                        var IsValid = oObj.aData["IsValid"];
+                        var IsDraft = oObj.aData["IsDraft"];
+                        var IsSubmit = oObj.aData["IsSubmitted"];
+                        var Id = oObj.aData["IdCalculationOfSales"];
+                        if (IsValid == true && IsDraft == false && IsSubmit == false) {
+                            return "<span id='Valid" + Id + "' class='label label-success'>valid</span>"
+                        }
+                        else if (IsValid == false && IsDraft == false && IsSubmit == false) {
+                            return "<span id='Invalid" + Id + "' class='label label-default bg-light'>invalid</span>"
+                        }
+                        else if ((IsValid == false && IsDraft == true && IsSubmit == false) || (IsValid == true && IsDraft == true && IsSubmit == false)) {
+                            return "<span id='Status" + Id + "' class='label label-default'>draft</span>"
+                        }
+                        else if ((IsValid == false && IsDraft == false && IsSubmit == true) || (IsValid == true && IsDraft == false && IsSubmit == true)) {
+                            return "<span id='Status" + Id + "' class='label label-info'>submitted</span>"
+                        }
+                        else {
+                            return "no status";
+                        }
+                    }
+                },
+                {
+                    "mData": "IdCalculationOfSales",
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "fnRender": function (oObj) {
+                        var Id = oObj.aData["IdCalculationOfSales"];
+                        var IsValid = oObj.aData["IsValid"];
+                        var IsDraft = oObj.aData["IsDraft"];
+                        var IsSubmit = oObj.aData["IsSubmitted"];
+
+                        if (IsValid == true || (IsValid == false && IsSubmit == false && IsDraft == false)) {
+                            return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "SalesCalculation")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' disabled='disabled' href='@Url.Action("Edit", "SalesCalculation")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>"
+                        }
+                        else {
+                            return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "SalesCalculation")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "SalesCalculation")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>"
+                        }
+                    }
+                }
+            ]
+        });
+    });
+</script>
+
+}

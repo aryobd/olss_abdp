@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "ConvertExcelToPdf";
+}
+
+<h2>Export To PDF</h2>
+
+@using (Html.BeginForm("ConvertExcelToPdf", "Home", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <input type="submit" name="statusButton" value="Export To PDF" class="btn btn-info" />
+    @Html.ActionLink("View Pdf", "ConvertExcelToPdf", null, null, "Home")
+}
+@Html.Partial("PdfReport")
+
+<script type="text/javascript">
+    function exportToPdf() {
+        $('#btnExp').submit();
+    }
+</script>
+

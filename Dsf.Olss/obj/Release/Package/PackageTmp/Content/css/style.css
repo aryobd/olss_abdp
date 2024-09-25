@@ -1,0 +1,430 @@
+﻿.mandatory {
+    background-color: #FDEEF4;
+}
+
+.field-validation-error {
+    color: red;
+    font-size: 11px;
+}
+
+.input-validation-error {
+    background: #fff;
+}
+
+.allownumericonly,
+.allownumericwithdecimal,
+.currenciesOnly,
+.decimalsOnly,
+.numbersOnly,
+.percentOnly
+{
+    text-align: right;
+}
+
+.parsley-error-list {
+    color: red;
+}
+
+ul.steps li.islink:hover {
+    color: #fb6b5b;
+    text-decoration: underline;
+}
+
+.datepicker-input {
+    cursor: pointer !important;
+}
+
+body.modal-open .datepicker.datepicker-dropdown.dropdown-menu {
+    z-index: 1200 !important;
+}
+
+.modal-dialog .panel .table-striped > tbody > tr:nth-child(odd):hover > td,
+.modal-dialog .panel .table-striped > tbody > tr:nth-child(even):hover > td {
+    background: #fb6b5b;
+    color: #fff;
+    cursor: pointer;
+}
+
+.modal-dialog .panel .table-striped2 > tbody > tr:hover > td
+{
+    background: #fb6b5b;
+    color: #fff;
+    cursor: pointer;
+}
+
+ /*tr.selectedrow td {
+            background-color: lightcyan;
+}*/
+
+.modal-dialog .modal-header {
+    border-bottom: none;
+}
+
+.modal-dialog .modal-footer {
+    border-top: none;
+    margin-top: 0px;
+}
+
+.label-panel {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.form-control.lbl {
+    background: none;
+    border: none;
+}
+
+.input-group-addon.lbl {
+    background: none;
+    border: none;
+}
+
+.table-input .input-group-addon {
+    border: none;
+    border-radius: 0px;
+    margin: 0px;
+    padding: 10px 10px;
+}
+
+/* Modified By Asep Edi Kurniawan */
+
+p.legend {
+    margin: 10px;
+}
+
+.form-control, .input-group-btn .btn {
+    font-size: 12px;
+    height: 30px;
+}
+
+    .form-control option {
+        font-size: 12px;
+    }
+
+.form-group {
+    margin: 5px 0;
+}
+
+    .form-group label {
+        font-size: 11px;
+    }
+
+.panel {
+    margin-bottom: 7px;
+}
+
+.table-calc {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.table-input .form-control {
+    border-radius: 0;
+    margin: 0;
+    border: none;
+    height: 35px;
+}
+
+    .table-input .form-control:focus {
+        border-right: none;
+    }
+
+.table-input td:last-child {
+    border-right: none;
+}
+
+.table-input td {
+    padding: 0 !important;
+    border-right: 1px solid #e1e1e1;
+}
+
+.table-input .form-control-static {
+    padding: 6px 15px;
+}
+
+.table-input .input-title {
+    border-right: 1px solid #e1e1e1;
+}
+
+.table-input td.font-bold {
+    padding: 7px 12px !important;
+}
+
+.no-hover-bg:hover {
+    background: none !important;
+    color: #777 !important;
+}
+
+header p.navbar-left {
+    font-weight: bold;
+}
+
+.header p.navbar-left {
+    font-size: 17px;
+}
+
+.header p.navbar-left {
+    margin: 11px 0px;
+    color: #777;
+}
+
+
+.label-panel {
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+
+.datatables_action {
+    white-space: nowrap;
+}
+
+.WrapTdValue {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+input.datepicker-input[readonly] {
+    background-color: #fff !important;
+    /* any other styles */
+}
+
+@media print {
+
+    .income-projection td.font-bold {
+        padding-right: 100px !important;
+    }
+
+    .each {
+        margin-left: 20px;
+    }
+
+    .multipage table {
+        margin: 2px !important;
+    }
+
+    .width610 {
+        width: 400px !important;
+    }
+
+    .check-box {
+        width: 8px;
+        margin: 0 !important;
+    }
+
+    body {
+        font-size: 7px !important;
+    }
+
+    img {
+        width: 150px !important;
+    }
+
+    .form-control {
+        border: none;
+        border-radius: 0px;
+        border-bottom: 1px solid #eee;
+        font-size: 9px;
+        padding-left: 0px;
+    }
+
+    .table,
+    .table td,
+    .table tr,
+    .table th {
+        border: none !important;
+    }
+
+        .table td {
+            padding: 2px !important;
+        }
+
+    .multipage .table td {
+        padding: 0px !important;
+    }
+}
+
+.modalloading {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba( 255, 255, 255, .8 ) url("../img/loading.gif") 50% 50% no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;
+}
+
+    /* Anytime the body has the loading class, our
+   modal element will be visible */
+    body.loading .modalloading {
+        display: block;
+    }
+
+.radioPositionCenter {
+    display: block;
+    margin-left: 60px;
+    margin-top: 6px;
+}
+
+/*datatable header grid*/
+.header-grid-very-short {
+    width: 50px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-short {
+    width: 100px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-medium {
+    width: 150px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-long {
+    width: 270px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-very-long {
+    width: 300px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-date {
+    width: 90px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-name {
+    width: 200px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-action {
+    width: 100px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-status {
+    width: 80px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.header-grid-identity {
+    width: 150px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+/*End datatable header grid*/
+
+/*Start customize table container*/
+#table-list_wrapper, #outstanding45-list_wrapper, #outstanding20-list_wrapper, #outstanding3-list_wrapper, #actual-list_wrapper,
+#tab7days-list_wrapper, #tab5days-list_wrapper, #tab1days-list_wrapper, #tabduedate-list_wrapper, #taball-list_wrapper, #tabendcontract-list_wrapper,
+#billingOverdue30days_wrapper, #billingOverdue60days_wrapper, #billingOverdue90days_wrapper, #billingOverdue91days_wrapper
+{
+    overflow: auto;
+    height: 375px;
+}
+
+
+#MaintenanceAgreement-list_wrapper {
+    overflow: auto;
+    height: 375px;
+}
+
+#MaintenanceAgreement14Days-list_wrapper {
+    overflow: auto;
+    height: 375px;
+}
+
+#MaintenanceAgreement1Days-list_wrapper {
+    overflow: auto;
+    height: 375px;
+}
+
+#MaintenanceAgreementOnDueDate-list_wrapper {
+    overflow: auto;
+    height: 375px;
+}
+
+#monitorUnderMaintanance-list_wrapper {
+    overflow: auto;
+    height: 375px;
+}
+
+#MaintenanceAgreement-list_wrapper,
+#MaintenanceAgreement14Days-list_wrapper,
+#MaintenanceAgreement1Days-list_wrapper,
+#MaintenanceAgreementOnDueDate-list_wrapper,
+#monitorUnderMaintanance-list_wrapper
+{
+    overflow: auto;
+    height: 375px;
+}
+
+/*new label for revise*/
+.label-revise {
+    background-color: #E6AAE1;
+}
+
+.tablewrap {
+    width: 100%;
+    table-layout: fixed;
+}
+
+    .tablewrap td {
+        word-wrap: break-word;
+    }
+
+.dataTables_wrapper .dataTables_scrollBody .sorting:after,
+.dataTables_wrapper .dataTables_scrollBody .sorting_asc:after,
+.dataTables_wrapper .dataTables_scrollBody .sorting_desc:after {
+    content: "" !important;
+}
+
+/*new label for disposal*/
+.label-direct-selling {
+    background-color: #f6d226;
+}
+.label-cop {
+    background-color: #8bf637;
+}
+.label-auction {
+    background-color: #3fefca;
+}
+.label-writeoff {
+    background-color: #0ab6b6;
+}
+
+table .collapse.in {
+	display:table-row;
+}
+@media (min-width: 992px) {
+  .container-scroll {
+    overflow-x: auto;
+  }
+  .container-scroll > .row {
+    width: 200%;
+  }
+}

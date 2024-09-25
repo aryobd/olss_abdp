@@ -1,0 +1,715 @@
+﻿@model Dsf.Olss.Models.MGTBASTReplacementViewModel
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "Edit BAST Replacement";
+	var bastType = Model.BASTType;
+    ViewBag.BASTTypeTitle = bastType == 1 ? "Replacement Unit" : bastType == 2 ? "Operating Lease Unit" : string.Empty;
+    ViewBag.PeriodTitle = bastType == 1 ? "Usage Period" : bastType == 2 ? "Repairment Period" : string.Empty;
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+}
+
+<section class="scrollable wrapper">
+    <a title="" class="btn btn-white" href="@Url.Action("Index", "MGTOplUnitReplace" )" data-original-title=""><i class="fa fa-chevron-left"></i> Back</a>
+    <br><br>
+    @Message.Display(ViewBag.Success, ViewBag.Error)
+    <hr>
+
+    <div class="panel label-panel">
+        <div class="panel label-panel">
+            <div class="row" style="padding-bottom:10px;">
+                <div class="col-xs-6 col-sm-3">
+                    <div class="font-bold" style="padding-left:15px; float:left;">
+                        <i class="fa fa-user text-danger"></i> Created by
+                    </div>
+                    <div style="float:left; padding-left:15px;">
+                        <span id="DisplayCreatedBy">@Html.DisplayFor(o => o.CreatedBy)</span>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                    <div class="font-bold" style="padding-left: 15px; float: left;">
+                        <i class="fa fa-calendar text-danger"></i> Created Date
+                    </div>
+                    <div style="float: left; padding-left: 15px;">
+                        <span id="DisplayCreatedDate">
+                            @{
+                                if (!string.IsNullOrEmpty(Model.CreatedBy))
+                                {
+                                    @(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))
+                                }
+                            }
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                    <div class="font-bold" style="padding-left: 15px; float: left;">
+                        <i class="fa fa-user text-danger"></i> Last Modified By
+                    </div>
+                    <div style="float: left; padding-left: 15px;">
+                        <span id="DisplayLastModifiedBy">@Html.DisplayFor(o => o.LastModifiedBy)</span>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-3">
+                    <div class="font-bold" style="padding-left: 15px; float: left;">
+                        <i class="fa fa-calendar text-danger"></i> Last Modified Date
+                    </div>
+                    <div style="float: left; padding-left: 15px;">
+                        <span id="DisplayLastModifiedDate">@(String.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate))</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Edit", "MGTOplUnitReplace", FormMethod.Post))
+    {
+        <section class="panel">
+            <section class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>BAST No</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.HiddenFor(o => o.IdTb_MGT_RegRPC)
+                                @Html.HiddenFor(o => o.BASTType)
+                                @Html.HiddenFor(o => o.BASTInStatus)
+                                @Html.HiddenFor(o => o.BASTOutStatus)
+                                @Html.HiddenFor(o => o.RowVersion)
+                                @Html.HiddenFor(o => o.CreatedBy)
+                                @Html.HiddenFor(o => o.CreatedDate)
+                                @Html.HiddenFor(o => o.LastModifiedBy)
+                                @Html.HiddenFor(o => o.LastModifiedDate)
+                                @Html.TextBoxFor(o => o.BASTNumber, null, new { @class = "form-control mandatory", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Replacement Type</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.DropDownListFor(o => o.ReplacementType, ViewBag.DropdownRpcType as List<SelectListItem>, new { @class = "form-control mandatory", @id = "dropdownReplacementType" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @{
+                    if (Model.BASTType == (int)BASTType.ReplacementUnit)
+                    {
+                        <div id="SpecialCase">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-lg-3">
+                                        <div class="col-lg-12">
+                                            <label for="comment">Note:</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        @Html.TextAreaFor(o => o.Note, new { @class = "form-control mandatory", @rows = "5", @maxlength = "500" })
+                                        @Html.ValidationMessageFor(b => b.Note)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </section>
+        </section>
+
+        <section class="panel">
+            <section class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label class="font-bold">Base Information</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Agreement No</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.AgreementNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Company Name</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.CompanyName, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Address</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.Address, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Telp Number</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.TelpNumber, null, new { @class = "form-control mandatory", @maxlength = "50" })
+                                @Html.ValidationMessageFor(b => b.TelpNumber)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>PIC Customer</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.PIC, null, new { @class = "form-control mandatory", @maxlength = "50" })
+                                @Html.ValidationMessageFor(b => b.PIC)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="panel">
+            <section class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label class="font-bold">@ViewBag.BASTTypeTitle</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Police Number</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.PoliceNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Chassis No</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.ChassisNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Merk/ Vehicle Type</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.VehicleType, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Machine No</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.EngineNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Years</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.YearView, null, new { @class = "form-control", @readonly = "readonly" })
+                                @Html.HiddenFor(o => o.Year)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>STNK Date</label>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group date">
+                                    @Html.TextBoxFor(o => o.StartSTNK, String.Format("{{0:MM/dd/yyyy}}", Model.StartSTNK), new { @class = "form-control datepicker-input mandatory", @disabled = "disabled" })
+                                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>Colour</label>
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.Colour, null, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6">
+                                <label>KEUR Date</label>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group date">
+                                    @Html.TextBoxFor(o => o.StartKEUR, String.Format("{{0:MM/dd/yyyy}}", Model.StartKEUR), new { @class = "form-control datepicker-input mandatory", @disabled = "disabled" })
+                                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <section class="panel form-group">
+                    <section class="panel-heading">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <label class="font-bold">@ViewBag.PeriodTitle</label>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="col-lg-6">
+                                    <label>Start Date</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="input-group date">
+                                        @Html.TextBoxFor(o => o.StartDate, String.Format("{{0:MM/dd/yyyy}}", Model.StartDate), new { @class = "form-control mandatory datepicker-input" })
+                                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(b => b.StartDate)
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="col-lg-6">
+                                    <label>End Date Estimation</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="input-group date">
+                                        @Html.TextBoxFor(o => o.EndDateEstimation, String.Format("{{0:MM/dd/yyyy}}", Model.EndDateEstimation), new { @class = "form-control mandatory datepicker-input" })
+                                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(b => b.EndDateEstimation)
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+            </section>
+        </section>
+
+        <section class="panel">
+            <section class="panel-body">
+                <ul class="nav nav-tabs pull-left bg-light">
+                    <li><a data-toggle="" href="#BAST_OUT">BAST OUT</a></li>
+                    <li><a data-toggle="" href="#BAST_IN">BAST IN</a></li>
+                </ul><br><br><br>
+                <div class="tab-content">
+                    <div id="bast-tab" class="tab-pane fade in active">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>Date</label></div>
+                                    <div class="col-lg-6">
+                                        <div class="input-group date">
+                                            @Html.TextBoxFor(o => o.BASTDate, String.Format("{{0:MM/dd/yyyy}}", Model.BASTDate), new { @class = "form-control mandatory datepicker-input" })
+                                            <span class="input-group-addon">
+                                                <span class="fa fa-calendar"></span>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(b => b.BASTDate)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>KM</label></div>
+                                    <div class="col-lg-6">
+                                        @Html.TextBoxFor(b => b.KM, null, new { @class = "form-control mandatory thousandSeparator" })
+                                        @Html.ValidationMessageFor(b => b.KM)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>FUEL</label></div>
+                                    <div class="col-lg-6">
+                                        @(Model.BASTOutStatus.HasValue && (Model.BASTOutStatus == (int)OlssOplStatus.Submitted || Model.BASTOutStatus == (int)OlssOplStatus.Approved || Model.BASTOutStatus == (int)OlssOplStatus.Checked) ? Html.TextBoxFor(b => b.Fuel, null, new { @class = "form-control mandatory", @id = "dropdownSelected", @disabled = "disabled" }) : Html.DropDownListFor(o => o.Fuel, ViewBag.DropdownFuel as List<SelectListItem>, new { @class = "form-control mandatory", @id = "dropdownSelected" }))
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>Driver Name</label></div>
+                                    <div class="col-lg-6">
+                                        @Html.TextBoxFor(b => b.Driver, null, new { @class = "form-control mandatory", @maxlength = "15" })
+                                        @Html.ValidationMessageFor(b => b.Driver)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>Observer Name</label></div>
+                                    <div class="col-lg-6">
+                                        @Html.TextBoxFor(b => b.Observer, null, new { @class = "form-control mandatory", @maxlength = "15" })
+                                        @Html.ValidationMessageFor(b => b.Observer)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>Branch / Poll</label></div>
+                                    <div class="col-lg-6">
+                                        @Html.TextBoxFor(b => b.Branch, null, new { @class = "form-control mandatory", @maxlength = "10" })
+                                        @Html.ValidationMessageFor(b => b.Branch)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6">
+                                        <label>@{ var label = Model.BASTOutStatus.HasValue && Model.BASTOutStatus == (int)OlssOplStatus.Firmed ? "Return Location" : bastType.Equals((int)BASTType.ReplacementUnit) ? "Usage Location" : "Damage Location";} @label</label>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        @(Model.BASTOutStatus.HasValue && Model.BASTOutStatus == (int)OlssOplStatus.Firmed ? @Html.TextBoxFor(b => b.ReturnLoc, null, new { @class = "form-control mandatory", @maxlength = "30" }) : bastType.Equals((int)BASTType.ReplacementUnit) ? @Html.TextBoxFor(b => b.UsageLoc, null, new { @class = "form-control mandatory", @maxlength = "30" }) : @Html.TextBoxFor(b => b.DamageLoc, null, new { @class = "form-control mandatory", @maxlength = "30" }))
+                                        @(Model.BASTOutStatus.HasValue && Model.BASTOutStatus == (int)OlssOplStatus.Firmed ? @Html.ValidationMessageFor(b => b.ReturnLoc) : bastType.Equals((int)BASTType.ReplacementUnit) ? @Html.ValidationMessageFor(b => b.UsageLoc) : @Html.ValidationMessageFor(b => b.DamageLoc))
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <div class="col-lg-6"><label>Remark</label></div>
+                                    <div class="col-lg-6">
+                                        @Html.TextBoxFor(b => b.Remark, null, new { @class = "form-control mandatory", @maxlength = "100" })
+                                        @Html.ValidationMessageFor(b => b.Remark)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <section class="panel">
+                            <header class="panel-heading font-bold">
+                                Unit Component
+                                <i class="fa text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+                            </header>
+                            <table class="table table-striped m-b-none" id="TableTermsAndConditions">
+                                <thead>
+                                    <tr>
+                                        <th width="1%" rowspan="2">No</th>
+                                        <th width="50%" rowspan="2">Component</th>
+                                        <th width="50%" colspan="4" style="text-align:center">Condition</th>
+                                        @if (Model.BASTOutStatus == (int)OlssOplStatus.Draft || Model.BASTOutStatus == (int)OlssOplStatus.Revised)
+                                        {
+                                            <th width="1%" rowspan="2">Action</th>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <th style="text-align:center">Good</th>
+                                        <th style="text-align:center">Damage</th>
+                                        <th style="text-align:center">Missing</th>
+                                        <th style="text-align:center">Not Exist</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bast-tab-container">
+
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+
+                </div>
+            </section>
+
+            @if (Model.BASTOutStatus == (int)OlssOplStatus.Draft || Model.BASTOutStatus == (int)OlssOplStatus.Revised)
+            {
+                <div class="panel-footer bg-light lter">
+                    <button class="btn btn-primary" id="add_item_btn" type="button" onclick="AddRow()"><i class="fa fa-plus"></i> Add Item</button>
+                </div>
+            }
+        </section>
+
+        <section class="panel">
+            <header class="panel-heading font-bold">Remark ( Note : Body / paint of car )</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <div class="col-lg-12">@Html.TextAreaFor(o => o.Remark2, new { @class = "form-control", @rows = "3", @maxlength = "100" })</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        if(Model.BASTOutStatus == (int)OlssOplStatus.Revised)
+        {
+            <section class="panel">
+                <header class="panel-heading font-bold">Note</header>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-12">
+                                    @Html.TextAreaFor(o => o.RemarkMemoApproval, new
+                                    {
+                                        @class = "form-control mandatory",
+                                        @readonly = "readonly",
+                                        @rows = "3"
+                                    })
+                                    @Html.ValidationMessageFor(o => o.RemarkMemoApproval)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+
+        <section class="panel">
+            <div class="panel-footer bg-light lter">
+                <input type="button" class="btn btn-info" name="statusButton" value="Save Changes" />
+                <input name="statusButton" class="btn btn-info" type="button" value="Print Memo">
+                <input name="statusButton" class="btn btn-primary" type="button" value="Submit">
+                <input type="button" class="btn btn-primary" name="statusButton" value="Save As Final" />
+                <input type="hidden" id="submitButtonText" />
+            </div>
+        </section>
+    }
+</section>
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/js/BASTReplacement.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+
+    <script type="text/javascript">
+        var replacementUnitType = '@((int)BASTType.ReplacementUnit)';
+
+        //BAST Status that exist on edit bast replacement
+        var draft = '@((int)OlssOplStatus.Draft)';
+        var submitted = '@((int)OlssOplStatus.Submitted)';
+        var approved = '@((int)OlssOplStatus.Approved)';
+        var revised = '@((int)OlssOplStatus.Revised)';
+        var checked = '@((int)OlssOplStatus.Checked)';
+        var firmed = '@((int)OlssOplStatus.Firmed)';
+
+        $(document).ready(function () {
+            var bastType = '@Model.BASTType';
+            var bastInStatus = '@Model.BASTInStatus';
+            var bastOutStatus = '@Model.BASTOutStatus';
+            var replacementType = '@Model.ReplacementType';
+            var unitComponentList = @Html.Raw(Json.Encode(Model.MGTBASTReplacementDetailList));
+            
+            $('.datepicker-input').datepicker({
+                format: 'mm/dd/yyyy'
+            });
+
+            //Set active tab
+            if(bastOutStatus === draft || bastOutStatus === submitted || bastOutStatus === approved || bastOutStatus === revised || bastOutStatus === checked) {
+                $('.panel-body ul li:eq(0)').attr('class', 'active');
+                $('.panel-body ul li:eq(0) a').attr('data-toggle', 'tab');
+                $('.panel-body ul li:eq(1) a').css('pointer-events', 'none');
+            }
+            else if (bastOutStatus === firmed) {
+                $('.panel-body ul li:eq(1)').attr('class', 'active');
+                $('.panel-body ul li:eq(1) a').attr('data-toggle', 'tab');
+                $('.panel-body ul li:eq(0) a').css('pointer-events', 'none');
+            }
+
+            //Set Disabled/Enabled Save Changes button, Print Memo button, Submit button, and Print Memo button
+            if (bastType === replacementUnitType) {
+                if (replacementType !== 'Special Case') {
+                    $('input[value="Print Memo"], input[value="Submit"]').prop('disabled', 'disabled');
+                    $("#SpecialCase").hide();
+
+                    if (bastOutStatus === draft) {
+                        $('input[value="Print Memo"], input[value="Submit"]').prop('disabled', 'disabled');
+                    }
+                }
+                else {
+                    switch(bastOutStatus) {
+                        case submitted:
+                        case checked:
+                            $('input[value="Save Changes"], input[value="Submit"], input[value="Save As Final"]').prop('disabled', 'disabled');
+                            break;
+
+                        case approved:
+                            $('input[value="Save Changes"], input[value="Print Memo"], input[value="Submit"]').prop('disabled', 'disabled');
+                            break;
+
+                        case draft:
+                        case revised:
+                            $('input[value="Save As Final"]').prop('disabled', 'disabled');
+                            break;
+
+                        case firmed:
+                            $('input[value="Print Memo"], input[value="Submit"]').prop('disabled', 'disabled');
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+                
+                if(bastOutStatus === draft || bastOutStatus === revised) {
+                    $("#dropdownReplacementType").attr("onchange", "showDiv('" + bastType + "','Edit')");
+                }
+            }
+            else {
+                $('input[value="Print Memo"], input[value="Submit"]').prop('disabled', 'disabled');
+            }
+
+            //set attribute data-toggle and data-target
+            $('input[name="statusButton"]').attr('data-toggle', 'modal').attr('data-target', '#myModal');
+
+            $('#StartKEUR, #StartSTNK').removeAttr('readonly');
+
+            RenderUnitComponentList(bastOutStatus, unitComponentList);
+
+            if(bastOutStatus !== draft && bastOutStatus !== revised) {
+                SetReadonlyFields(bastOutStatus);
+            }
+
+            // This must be applied to a form (or an object inside a form).
+            jQuery.fn.addHidden = function (name, value) {
+                return this.each(function () {
+                    var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                    $(this).append($(input));
+                });
+            };
+
+            if(bastOutStatus === submitted || bastOutStatus === checked) {
+                $('input[value="Print Memo"]').attr('onclick', 'location.href= "/MGTOplUnitReplace/Memo/' + @Model.IdTb_MGT_BASTRPC + '"');
+                $('input[value="Print Memo"]').removeAttr('name data-target data-toggle');
+            }
+
+            //Confirmation Modal
+            $('input[name="statusButton"]').on('click', function (e) {
+                var submitvalue = $(this).val();
+                var msg = '';
+                $('.additionalMsgModal').text("");
+
+                if(bastOutStatus === draft || bastOutStatus === revised) {
+                    switch(submitvalue) {
+                        case 'Save Changes':
+                            msg = 'Save Changes BAST Replacement Out';
+                            break;
+
+                        case 'Print Memo':
+                            msg = 'Print Memo';
+                            $('.additionalMsgModal').text(' Once you print memo your BAST Replacement Out will be save.');
+                            break;
+
+                        case 'Submit':
+                            msg = 'Submit BAST Replacement Out';
+                            break;
+
+                        case 'Save As Final':
+                            if(bastOutStatus !== revised) {
+                                msg = 'Save as Final BAST Replacement Out';
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                } else if(bastOutStatus === approved && submitvalue == 'Save As Final') {
+                    msg = 'Save as Final BAST Replacement Out';
+                } else if(bastOutStatus === firmed) {
+                    switch(submitvalue) {
+                        case 'Save Changes':
+                            msg = 'Save Changes BAST Replacement In';
+                            break;
+
+                        case 'Save As Final':
+                            msg = 'Save as Final BAST Replacement In';
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+                $('.msgModal').text(msg);
+                $('#submitButtonText').val(submitvalue);
+
+                if (checkDate()) {
+                    e.preventDefault();
+                    goToTop();
+                    return false;
+                }
+
+                return true;
+            });
+
+            $('#confirmModalBast').click(function (e) {
+                $(this).prop('disabled', true);
+
+                UpdateIndexRow(bastOutStatus);
+
+                var submitvalue = $('#submitButtonText').val();
+                $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            });
+        });
+    </script>
+}

@@ -1,0 +1,1228 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+
+<div class="modal fade" id="agreementModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Agreement List</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="agreement-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th>DSF Office</th>
+                                    <th>Agreement No.</th>
+                                    <th>Customer Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="buyerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>SKD Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Asset</label>
+
+                                </div>
+                                <div class="form-group">
+                                    <label>Buyer Name</label>
+                                    <input class="form-control" placeholder="Buyer Name" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Buyer Address</label>
+                                    <input class="form-control" placeholder="Buyer Address" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Offer Price Amount</label>
+                                    <input class="form-control" placeholder="0.00" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Offer Price Date</label>
+                                    <input class="form-control datepicker-input" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Amount to be Paid</label>
+                                    <input class="form-control" readonly="readonly" value="101,200,000.00" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                @StateButton.DisposalStateButton("addModal")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="buyerModalAuction" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>SKD Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Asset</label>
+                                    <select id="ddlSearchCriteria" class="form-control">
+                                        <option value="1">MTS9292</option>
+                                        <option value="2">DTS8829</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Buyer Name</label>
+                                    <input class="form-control" placeholder="Buyer Name" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Buyer Address</label>
+                                    <input class="form-control" placeholder="Buyer Address" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Amount Paid</label>
+                                    <input class="form-control" placeholder="0.00" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="buyerEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>SKD Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Buyer Name</label>
+                                    <input class="form-control" placeholder="Buyer Name" value="Mr. Amiruddin" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Buyer Address</label>
+                                    <input class="form-control" placeholder="Buyer Address" value="JL. JENDRAL AHMAD YANI PULOMAS, KELURAHAN KAYU PUTIH, KECAMATAN PULOGADUNG, JAKARTA TIMUR" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Offer Price Amount</label>
+                                    <input class="form-control" placeholder="0.00" value="178,000,000.00" />
+                                </div>
+                                <div class="form-group">
+                                    <label>offer Price Date</label>
+                                    <input class="form-control datepicker-input" value="19/12/2017" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Total Amount to be Paid</label>
+                                    <input class="form-control" readonly="readonly" value="101,200,000.00" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="assetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Asset List</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Filter by Agreement Number</label>
+                            <select id="ddlSearchCriteria" class="form-control">
+                                <option value="1">All</option>
+                                <option value="1">0000161/4/08/11/2017</option>
+                                <option value="2">0000206/4/01/09/2017</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="skd-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MTS2912</td>
+                                    <td>MITSUBISHI/ALL NEW PAJERO SPORT DAKAR 4X4 A/T</td>
+                                </tr>
+                                <tr>
+                                    <td>DHS2222</td>
+                                    <td>DAIHATSU/GRAN MAX 1.3 PICK UP 3WAY</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="winnerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>List of Asset</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>You are selecting this buyer as winner:</label>
+                            <table id="skd-list" class="table table-striped m-b-none">
+                                <tbody>
+                                    <tr>
+                                        <th>Buyer Name</th>
+                                        <td>Mr. Amiruddin</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Buyer Address</th>
+                                        <td>JL. JENDRAL AHMAD YANI PULOMAS, KELURAHAN KAYU PUTIH, KECAMATAN PULOGADUNG, JAKARTA TIMUR</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Offer Price Amount</th>
+                                        <td>Rp. 178,000,000.00</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Offered Price Date</th>
+                                        <td>19/12/2017</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Amount to be Paid</th>
+                                        <td>195,800,000.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="flowModalnouse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="panel-body">
+        <div class="row form-group">
+            <div class="col-xs-12">
+                <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                    <li class="active">
+                        <a>
+                            <h5 class="list-group-item-heading">Created</h5>
+                            <p class="list-group-item-text">Boby Auliaputra</p>
+                            <p class="list-group-item-text">29 Dec 2017</p>
+                            <p class="list-group-item-text">14:33:12</p>
+                        </a>
+                    </li>
+                    @*<li class="disabled">
+                            <a>
+                                <h5 class="list-group-item-heading">Get Data</h5>
+                                <p class="list-group-item-text">From MFAPPL</p>
+                                <p class="list-group-item-text">-</p>
+                                <p class="list-group-item-text">-</p>
+                            </a>
+                        </li>*@
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Approved</h5>
+                            <p class="list-group-item-text">Wendy M.A</p>
+                            <p class="list-group-item-text">M. Kishimoto</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Approved</h5>
+                            <p class="list-group-item-text">Y. Sanada</p>
+                            <p class="list-group-item-text">Y. Odake</p>
+                            <p class="list-group-item-text">R. Tokimasa</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Approved</h5>
+                            <p class="list-group-item-text">Y. Fujita</p>
+                            <p class="list-group-item-text">Sudarman</p>
+                            <p class="list-group-item-text">Andi Suhono</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Get Payment</h5>
+                            <p class="list-group-item-text">From MFAPPL</p>
+                            <p class="list-group-item-text">-</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Signed</h5>
+                            <p class="list-group-item-text">Wendy M.A</p>
+                            <p class="list-group-item-text">M. Kishimoto</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Signed</h5>
+                            <p class="list-group-item-text">Y. Sanada</p>
+                            <p class="list-group-item-text">Y. Odake</p>
+                            <p class="list-group-item-text">R. Tokimasa</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Signed</h5>
+                            <p class="list-group-item-text">Y. Fujita</p>
+                            <p class="list-group-item-text">Sudarman</p>
+                            <p class="list-group-item-text">Andi Suhono</p>
+                        </a>
+                    </li>
+                    @*<li class="disabled">
+                            <a>
+                                <h5 class="list-group-item-heading">Send Status</h5>
+                                <p class="list-group-item-text">To MFAPPL</p>
+                                <p class="list-group-item-text">-</p>
+                                <p class="list-group-item-text">-</p>
+                            </a>
+                        </li>*@
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Closed</h5>
+                            <p class="list-group-item-text">Boby Auliaputra</p>
+                            <p class="list-group-item-text">-</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="flowModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="panel-body">
+        <div class="row form-group">
+            <div class="col-xs-12">
+                <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                    <li class="active">
+                        <a>
+                            <h5 class="list-group-item-heading">Created</h5>
+                            <p class="list-group-item-text">Boby Auliaputra</p>
+                            <p class="list-group-item-text">29 Dec 2017</p>
+                            <p class="list-group-item-text">14:33:12</p>
+                        </a>
+                    </li>
+                    @*<li class="disabled">
+                            <a>
+                                <h5 class="list-group-item-heading">Get Data</h5>
+                                <p class="list-group-item-text">From MFAPPL</p>
+                                <p class="list-group-item-text">-</p>
+                                <p class="list-group-item-text">-</p>
+                            </a>
+                        </li>*@
+                    <li class="active">
+                        <a>
+                            <h5 class="list-group-item-heading">Approved</h5>
+                            <p class="list-group-item-text">Wendy M.A</p>
+                            <p class="list-group-item-text">01 Jan 2018</p>
+                            <p class="list-group-item-text">09:01:10</p>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a>
+                            <h5 class="list-group-item-heading">Approved</h5>
+                            <p class="list-group-item-text">Y. Sanada</p>
+                            <p class="list-group-item-text">2 Jan 2018</p>
+                            <p class="list-group-item-text">10:00:34</p>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a>
+                            <h5 class="list-group-item-heading">Approved</h5>
+                            <p class="list-group-item-text">Y. Fujita</p>
+                            <p class="list-group-item-text">2 Jan 2018</p>
+                            <p class="list-group-item-text">15:37:22</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Get Payment</h5>
+                            <p class="list-group-item-text">From MFAPPL</p>
+                            <p class="list-group-item-text">-</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Signed</h5>
+                            <p class="list-group-item-text">Wendy M.A</p>
+                            <p class="list-group-item-text">M. Kishimoto</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Signed</h5>
+                            <p class="list-group-item-text">Y. Sanada</p>
+                            <p class="list-group-item-text">Y. Odake</p>
+                            <p class="list-group-item-text">R. Tokimasa</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Signed</h5>
+                            <p class="list-group-item-text">Y. Fujita</p>
+                            <p class="list-group-item-text">Sudarman</p>
+                            <p class="list-group-item-text">Andi Suhono</p>
+                        </a>
+                    </li>
+                    @*<li class="disabled">
+                            <a>
+                                <h5 class="list-group-item-heading">Send Status</h5>
+                                <p class="list-group-item-text">To MFAPPL</p>
+                                <p class="list-group-item-text">-</p>
+                                <p class="list-group-item-text">-</p>
+                            </a>
+                        </li>*@
+                    <li class="disabled">
+                        <a>
+                            <h5 class="list-group-item-heading">Closed</h5>
+                            <p class="list-group-item-text">Boby Auliaputra</p>
+                            <p class="list-group-item-text">-</p>
+                            <p class="list-group-item-text">-</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="manualProfitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Profit Analysis</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table id="table-list" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="25%"></th>
+                                        <th width="30%" style="text-align:center" colspan="2">SKD Budget</th>
+                                        <th width="30%" style="text-align:center" colspan="2">Actual</th>
+                                        <th width="15%" style="text-align:left">Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>A. PERIOD</td>
+                                        <td colspan="2" class="money"><input class="form-control numberOnly" style="text-align:center" placeholder="0" /></td>
+                                        <td colspan="2"><input class="form-control numberOnly" style="text-align:center" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>B. NET INVESTMENT</td>
+                                        <td colspan="2"><input class="form-control" style="text-align:center" placeholder="0" /></td>
+                                        <td colspan="2"><input class="form-control" style="text-align:center" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>C. RESIDUAL VALUE</td>
+                                        <td colspan="2"><input class="form-control" style="text-align:center" placeholder="0" /></td>
+                                        <td colspan="2"><input class="form-control" style="text-align:center" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>D. USL/MONTH</td>
+                                        <td colspan="2"><input class="form-control" style="text-align:center" placeholder="0" /></td>
+                                        <td colspan="2"><input class="form-control" style="text-align:center" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td style="text-align:center; color:red;">Expense</td>
+                                        <td style="text-align:center;">Income</td>
+                                        <td style="text-align:center; color:red;">Expense</td>
+                                        <td style="text-align:center;">Income</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">1. INCOME REPORT</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> a. USL Payment</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> b. Total Income</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">2. EXPENSE REPORT</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> a. Interest</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> b. Depreciation</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> c. Registration</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> d. Insurance</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> e. Polis Insurance</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> f. Mediator Fee</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> g. Maintenance</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> h. Replacement</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> i. (De) Mobilization</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> j. Gain (Loss) Asset</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px; color:red"> k. Total Expense</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">3. PROFIT</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">4. ADDITIONAL EXPENSE</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> a. Repossession Exp (Parkir, Fuel)</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> b. Penalty Late Payment</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> c. VAT Receivable 10 %</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> d. Total Add. Exp.</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">5. ADDITIONAL INCOME</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> a. Pending USL</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> b. Penalty Late Payment </td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> c. Pretermination Clause</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> d. Other Income</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> e. Total Add.Income</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">6. LOSS / PROFIT ACTUAL</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">7. POTENTIAL INCOME / EXPENSE</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> a. USL Due</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> b. Penalty Late Payment </td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> c. Pretermination Clause</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> d. Gain (Loss) After Sales</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-indent:10px"> e. Total Add. Exp.</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold">8. NET POTENTIAL (LOSS) / PROFIT</td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                                        <td><input class="form-control" style="text-align:left" placeholder="Remarks" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save & New</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save & Copy</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Save & Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="disposalModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title"><strong>Disposal List</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="disposal-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th>Disposal No</th>
+                                    <th>Agreement No.</th>
+                                    <th>Engine No.</th>
+                                    <th>Depreciation</th>
+                                    <th>Book Value</th>
+                                    <th>Remarks</th>
+                                    <th>Created By</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <span id="msgModal"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="flowModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="panel-body">
+        <div class="row form-group">
+            <div class="col-xs-12">
+                <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                    <li class="active">
+                        @*@if (Model.ApprovalPopUps != null)*@
+                        @*{
+                            <a>
+                                @Html.HiddenFor(x => Model.ApprovalPopUps[0].ApprovalLevelCode)
+                                <h5 class="list-group-item-heading">Created</h5>
+                                <p class="list-group-item-text">Boby Auliaputra</p>
+                                <p class="list-group-item-text">29 Dec 2017</p>
+                                <p class="list-group-item-text">14:33:12</p>
+                            </a>
+                            }*@
+
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="auctionHistory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="panel-body">
+        <div class="form-group">
+            <div class="col-xs-3">
+            </div>
+            <div class="col-xs-6">
+                <div class="panel-body" style="background-color:white">
+                    <h5>Asset Code : @Html.DisplayTextFor(o => Model.AssetHistories[0].AssetCode)</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="33%">Date</th>
+                                <th width="33%">Offer Price</th>
+                                <th width="33%">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr></tr>
+                            @if (Model != null)
+                            {
+                                if (Model.AssetHistories != null)
+                                {
+                                    for (int i = 0; i < Model.AssetHistories.Count - 1; i++)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayTextFor(o => Model.AssetHistories[i].OfferPriceDate)</td>
+                                            <td>@Html.DisplayTextFor(o => Model.AssetHistories[i].OfferPriceAmount)</td>
+                                            <td>@Html.DisplayTextFor(o => Model.AssetHistories[i].Status)</td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-xs-3">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Term and Condition Popup-->
+<div class="modal fade" id="termConditionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Term and Condition Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="termCondition-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Term and Condition</th>
+                                    <th width="20%">Param</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" name="addNewTerm" class="btn btn-primary" id="addNewTerm">Add new term</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <span id="msgModal"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!---Add new term popup-->
+<div class="modal fade" id="addNewTermCondModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Add New Term and Condition</strong></h5>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <div class="col-lg-4"><label>First Term Condition </label> </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" name="TermDescFirst">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <div class="col-lg-4"><label>Parameter</label></div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" name="DefaultValue">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <div class="col-lg-4"><label>Second Term Condition</label></div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" name="TermDescSecond">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <div class="col-lg-4"><label>Preview</label> </div>
+                            <div class="col-lg-8"> <textarea rows="4" cols="50" class="form-control" name="Preview" readonly> </textarea></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" name="submitTermCondition" value="Add new term" class="btn btn-primary" onclick="AddNewTermCondition()" />
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add by fadilah 26/11/2019-->
+@if (Model.RepNamePositionModels != null)
+{
+    <div class="modal fade" id="updateJualBeli" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="form-group">
+            <div class="col-xs-3">
+            </div>
+            <div class="col-xs-6">
+                <div class="panel-body" style="background-color:white">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Update Perjanjian Jual Beli</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label>Report Type</label>
+                                    <div>
+                                        @Html.TextBoxFor(o => Model.RepNamePositionModels[0].IdPJB, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "IdPJB", @value = "" })
+                                        @Html.TextBoxFor(o => Model.RepNamePositionModels[0].sbtMonth, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "sbtMonth", @value = "" })
+                                        @Html.TextBoxFor(o => Model.RepNamePositionModels[0].sbtYear, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "sbtYear", @value = "" })
+                                        @Html.TextBoxFor(o => Model.RepNamePositionModels[0].CreatedBy, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "CreatedBy", @value = "" })
+                                        @Html.TextBoxFor(o => Model.RepNamePositionModels[0].CreatedDate, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "CreatedDate", @value = "" })
+                                    </div>
+                                    @{
+    var selReportType = new List<SelectListItem>
+                                            {
+                                                  new SelectListItem { Text = "Pribadi", Value = "0" },
+                                                  new SelectListItem { Text = "Badan Hukum", Value = "1" },
+                                            };
+                                    }
+                                    @Html.DropDownListFor(o => o.RepNamePositionModels[0].ReportType, new SelectList(selReportType, "value", "Text", Model.RepNamePositionModels[0].ReportType), new { @class = "form-control", @type = "text", @onchange = "toggleDIvDisplay(this.value)", @id = "ReportType" })
+                                </div>
+                            </div>
+                            @if (Model.RepNamePositionModels[0].ReportType == "1")
+                            {
+                                <script>
+                                    $('#Name').show();
+                                    $('#Position').show();
+                                </script>
+                            }
+                            else
+                            {
+                                <script>
+                                    $('#Name').hide();
+                                    $('#Position').hide();
+                                </script>
+                            }
+                            <div id="Name" class="row">
+                                <div class="form-group">
+                                    <label>Representative's Name</label>
+                                    @Html.TextBoxFor(o => Model.RepNamePositionModels[0].RepName, new { @class = "form-control mandatory tempData Name", @type = "text", @Id = "RepName", @value = "" })
+                                </div>
+                            </div>
+                            <div id="Position" class="row">
+                                <div class="form-group">
+                                    <label>Representative's Position</label>
+                                    @Html.TextBoxFor(o => Model.RepNamePositionModels[0].RepPosition, new { @class = "form-control mandatory tempData Name", @type = "text", @Id = "RepPosition", @value = "" })
+                                </div>
+                            </div>
+                            @if (Model.UpdateJualBeliModels != null)
+                            {
+                                <div class="row configuration-table">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th hidden="hidden" width="10%">IdTb_OPL_Unit</th>
+                                                <th hidden="hidden" width="10%">CreatedBy</th>
+                                                <th hidden="hidden" width="10%">CreatedDate</th>
+                                                <th hidden="hidden" width="10%">IdPJB_BPKB</th>
+                                                <th width="10%">Chassis</th>
+                                                <th width="80%">BPKB Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dg_AssetBPKBName">
+                                            @if (Model != null)
+                                            {
+                                                if (Model.UpdateJualBeliModels != null)
+                                                {
+                                                    for (int i = 0; i < Model.UpdateJualBeliModels.Count; i++)
+                                                    {
+                                                        <tr>
+                                                            <td hidden="hidden">@Html.TextBoxFor(o => Model.UpdateJualBeliModels[i].IdTb_OPL_Unit, new { @class = "form-control mandatory tempData Name hidden", @type = "text", @Id = "IdTb_OPL_Unit_" + i, @value = "" })</td>
+                                                            <td>@Html.DisplayTextFor(o => Model.UpdateJualBeliModels[i].Chassis)</td>
+                                                            <td>@Html.TextBoxFor(o => Model.UpdateJualBeliModels[i].BPKBName, new { @class = "form-control mandatory tempData Name", @Id = "BPKB_" + i, @value = "" })</td>
+                                                            <td hidden="hidden">@Html.TextBoxFor(o => Model.UpdateJualBeliModels[i].CreatedBy, new { @class = "form-control mandatory tempData Name hidden", @type = "text", @Id = "CreatedBy" + i, @value = "" })</td>
+                                                            <td hidden="hidden">@Html.TextBoxFor(o => Model.UpdateJualBeliModels[i].CreatedDate, new { @class = "form-control mandatory tempData Name hidden", @type = "text", @Id = "CreatedDate" + i, @value = "" })</td>
+                                                            <td hidden="hidden">@Html.TextBoxFor(o => Model.UpdateJualBeliModels[i].IdPJB_BPKB, new { @class = "form-control mandatory tempData Name hidden", @type = "text", @Id = "IdPJB_BPKB" + i, @value = "" })</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+
+
+                    <div class="modal-footer">
+                        <input type="button" name="btnUpdateJualBeli" value="Save" class="btn btn-info" onclick="UpdateJualBeli()" />
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    function toggleDIvDisplay(e) {
+        if (e == "1") {
+            $('#Name').show();
+            $('#Position').show();
+        }
+        else {
+            $('#Name').hide();
+            $('#Position').hide();
+        }
+    }
+</script>
+
+<!-- End by fadilah 26/11/2019-->
+
+<!-- Add by fadilah S0200996 29/04/2020-->
+@if (Model.DispApprovalEmpModels != null)
+{ 
+    <div class="modal fade" id="updateDispEmp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="form-group">
+            <div class="col-xs-3">
+            </div>
+            <div class="col-xs-6">
+                <div class="panel-body" style="background-color:white">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Update Report Disposal</h4>
+                    </div>
+                    <div>
+                        @Html.TextBoxFor(o => Model.DispApprovalEmpModels[0].CreatedBy, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "CreatedBy", @value = "" })
+                        @Html.TextBoxFor(o => Model.DispApprovalEmpModels[0].CreatedDate, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "CreatedDate", @value = "" })
+                        @Html.TextBoxFor(o => Model.DispApprovalEmpModels[0].IdTb_DIS_AssetSellingDetail, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "IdTb_DIS_AssetSellingDetail", @value = "" })
+                        @Html.TextBoxFor(o => Model.DispApprovalEmpModels[0].IdDispApprovalEmp, new { @class = "form-control tempData Name hidden", @type = "text", @Id = "IdDispApprovalEmp", @value = "" })
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel-body">
+                            <label>Disetujui Oleh :</label>
+                            <div id="Name" class="row">
+                                <div class="form-group">
+                                    <label>Head of Branch</label>
+                                    @Html.TextBoxFor(o => Model.DispApprovalEmpModels[0].HeadOfBranch, new { @class = "form-control mandatory tempData Name", @type = "text", @Id = "HeadOfBranch", @value = "" })
+                                </div>
+                            </div>
+                            <div id="Position" class="row">
+                                <div class="form-group">
+                                    <label>Regional Manager</label>
+                                    @Html.TextBoxFor(o => Model.DispApprovalEmpModels[0].RegionalManager, new { @class = "form-control mandatory tempData Name", @type = "text", @Id = "RegionalManager", @value = "" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" name="btnUpdateJualBeli" value="Save" class="btn btn-info" onclick="UpdateDispEmp()" />
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-3">
+
+            </div>
+        </div>
+    </div>
+}
+<!-- End by fadilah 29/04/2020-->

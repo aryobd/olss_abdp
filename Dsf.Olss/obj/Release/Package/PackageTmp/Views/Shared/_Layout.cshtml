@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+
+@using System.Web.Configuration;
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/bundles/bootstyle")     <!-- include bootstrap.css file with bootstyle bundles -->
+    @Styles.Render("~/bundles/animate")       <!-- animate.css -->
+    @Styles.Render("~/bundles/font")          <!-- font.css -->
+    @Styles.Render("~/bundles/plugins")       <!-- plugin.css -->
+    @Styles.Render("~/bundles/apps")          <!-- app.css -->
+	@Scripts.Render("~/bundles/jquery",
+					"~/bundles/bootstrap",
+					"~/bundles/app",
+					"~/bundles/app.plugin",
+					"~/bundles/fuelux",
+					"~/bundles/bootstrap-datepicker")
+    <link href="@Url.Content("~/Content/ui-framework/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/css/style.css")" rel="stylesheet" type="text/css" />
+
+    @RenderSection("Styles", false)
+
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Content/ui-framework/js/ie/respond.min.js")" cache="false"></script>
+      <script src="@Url.Content("~/Content/ui-framework/js/ie/html5.js")" cache="false"></script>
+      <script src="@Url.Content("~/Content/ui-framework/js/ie/fix.js")" cache="false"></script>
+    <![endif]-->
+    @{
+        var enviType = WebConfigurationManager.AppSettings["enviType"];
+    }
+    @if (enviType.Equals("olss_dev"))
+    {
+        <style>
+            .bg-danger.dker,
+            .bg-danger .dker {
+                background-color: #ffc000;
+            }
+
+            .text-danger {
+                color: #ffc000;
+            }
+
+            .bg-danger .nav li > a:hover {
+                background-color: #ffc000;
+            }
+        </style>
+    }
+    else if (enviType.Equals("olss_bsiqa"))
+    {
+        <style>
+            .bg-danger.dker,
+            .bg-danger .dker {
+                background-color: #93cddd;
+            }
+
+            .text-danger {
+                color: #93cddd;
+            }
+
+            .bg-danger .nav li > a:hover {
+                background-color: #93cddd;
+            }
+        </style>
+    }
+    else if (enviType.Equals("olss_qa"))
+    {
+        <style>
+            .bg-danger.dker,
+            .bg-danger .dker {
+                background-color: #c2d69a;
+            }
+
+            .text-danger {
+                color: #c2d69a;
+            }
+
+            .bg-danger .nav li > a:hover {
+                background-color: #c2d69a;
+            }
+        </style>
+    }
+    else if (enviType.Equals("olss"))
+    {
+        <style>
+            .bg-danger.dker,
+            .bg-danger .dker {
+                background-color: #fa4c38;
+            }
+
+            .text-danger {
+                color: #fb6b5b;
+            }
+
+            .bg-danger .nav li > a:hover {
+                background-color: #fa5542;
+            }
+        </style>
+    }
+</head>
+<body>
+    <section class="hbox stretch">
+        @Html.Partial("_sidebar")
+
+        <!-- .vbox -->
+        <section id="content">
+            <section class="vbox">
+                @Html.Partial("_navbar")
+                <section class="scrollable wrapper">
+                    @RenderBody()
+                </section>
+            </section>
+        </section>
+        <!-- /.vbox -->
+
+    </section>
+
+    <script>
+        $body = $("body");
+        $(document).on({
+            ajaxStart: function () { $body.addClass("loading"); },
+            ajaxStop: function () { $body.removeClass("loading"); }
+        });
+        $('.datepicker-input').datepicker({
+            format: 'mm/dd/yyyy',
+            minViewMode: 0,
+            startView: 0,
+            endDate: '12/31/9999',
+            startDate: '01/01/1753'
+        });
+    </script>
+    <div class="modalloading">
+    </div>
+    @RenderSection("Scripts", false)
+
+
+</body>
+</html>

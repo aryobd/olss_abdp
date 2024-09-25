@@ -1,0 +1,117 @@
+﻿@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "System Numbering Format";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+
+<a href="@Url.Action("Create", "SysNumberingFormat")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>DSF Office</label>
+                    <div class="form-group">
+                        @Html.DropDownList("IdTb_OPL_Branch", ViewBag.Branches as List<SelectListItem>, new {@class = "form-control"})
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Module</label>
+                    <div class="form-group">
+                        @Html.DropDownList("IdTb_OPL_Module", ViewBag.Modules as List<SelectListItem>, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSearch" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            List of Numbering Format
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="DocumentList">
+            <div class="table-responsive">
+                <table id="numberingformat-list" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+                            <th><div class="header-grid-medium">DSF Office</div></th>
+                            <th><div class="header-grid-identity">Module Name</div></th>
+                            <th><div class="header-grid-name">Document Name</div></th>
+                            <th><div class="header-grid-short">Last Number</div></th>
+                            <th><div class="header-grid-short">MaxDigit</div></th>
+                            <th><div class="header-grid-short">Other Code</div></th>
+                            <th><div class="header-grid-short">Year</div></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+    $(document).ready(function () {
+
+        var oTable;
+        // datatable
+        $('#numberingformat-list').each(function () {
+            oTable = $(this).dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "aaSorting": [[0, "desc"]],
+                "sScrollXInner": "200%",
+                "sAjaxSource": "@Url.Action("AjaxHandler", "SysNumberingFormat")",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "branchId", "value": $("#IdTb_OPL_Branch").val() },
+                        { "name": "moduleId", "value": $("#IdTb_OPL_Module").val() }
+                        );
+                },
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "bAutoWidth": false,
+                "aoColumns": [
+                    { "mData": "BranchName" },
+                    { "mData": "ModuleName" },
+                    { "mData": "DocumentName" },
+                    { "mData": "LastNumber" },
+                    { "mData": "MaxDigit" },
+                    { "mData": "OtherCode" },
+                    { "mData": "Year" }
+                ]
+            });
+        });
+    });
+
+    // Searching
+    $('#btnSearch').on('click', function (e) {
+        e.preventDefault();
+        $('#numberingformat-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+    });
+
+    </script>
+}
+
+

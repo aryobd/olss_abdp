@@ -1,0 +1,1245 @@
+﻿@model Dsf.Olss.Models.CustomerVisitSurveyViewModel
+@using Dsf.Lib.Constant
+@using Dsf.Olss.Utility
+@using System.Web.Script.Serialization
+@using System.Web.UI.WebControls;
+@{
+    ViewBag.Title = "Edit Visit Customer Survey";
+
+    var choice = new List<ListItem>
+        {
+                new ListItem { Text = "Yes", Value = "true" },
+                new ListItem { Text = "No", Value = "false" }
+        };
+
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/select2/select2.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/select2-bootstrap.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+}
+
+<a href="@Url.Action("Index", "CustomerVisitSurvey")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<br><br>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("Edit", "CustomerVisitSurvey", FormMethod.Post))
+{
+    <!-- Customer Visit Number -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Visit Customer Survey Data</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Survey Number</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.SurveyNo, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                        @Html.ValidationMessageFor(o => o.SurveyNo)
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Time</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Time, null, new { @class = "form-control placeholder mandatory", @placeholder = "hh:mm" })
+                            @Html.ValidationMessageFor(o => o.Time)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Marketing Officer</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MarketingOfficer, null, new { @class = "form-control placeholder", @name = "MarketingOfficer", @readonly = "true", @Value = ViewBag.MarketingOfficerName as string })
+                            @Html.ValidationMessageFor(o => o.MarketingOfficer)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Recomendation</label></div>
+                        <div class="col-lg-6">
+                            @Html.ListBoxFor(o => o.Recommendation, ViewBag.RecommendationList as List<SelectListItem>, new { @class = "js-example-basic-multiple form-control mandatory select2-choices", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(o => o.Recommendation)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Visit Date</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.VisitDate, String.Format("{{0:" + localeDateFormat + "}}", Model.VisitDate), new { @class = "form-control datepicker mandatory" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.VisitDate)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Recomendation Name</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.RecomName, null, new { @class = "form-control mandatory", @name = "OtherRecomendation", @maxlength = "50" })
+                            @Html.ValidationMessageFor(o => o.RecomName)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Visit Location</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.VisitLocation, null, new { @class = "form-control placeholder mandatory", @name = "VisitLocation", @maxlength = "50" })
+                            @Html.ValidationMessageFor(o => o.VisitLocation)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Recomendation (Other)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.RecommendationOthers, null, new { @class = "form-control placeholder mandatory", @readonly = "true", @maxlength = "20" })
+                            @Html.ValidationMessageFor(o => o.RecommendationOthers)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Mediator Name</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MediatorName, null, new { @class = "form-control placeholder mandatory", @maxlength = "50" })
+                            @Html.ValidationMessageFor(o => o.MediatorName)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CustomerData -->
+    <section class="panel">
+        <header class="panel-heading  font-bold">Customer Data</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Category</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(o => o.Category, (List<SelectListItem>)ViewBag.CustomerCategory, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.Category)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Number of Branch</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.BranchNumber, null, new { @class = "form-control placeholder", @name = "BranchNumber", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Customer Name</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">                                
+                                @Html.TextBoxFor(o => o.CustomerName, null, new { @class = "form-control mandatory" })
+                                @Html.HiddenFor(o => o.IdCustomer)
+                                <span class="input-group-btn">
+                                    <button class="btn btn-white" data-toggle="modal" data-target="#customerModal" type="button" onclick="LoadCustomer()">...</button>
+                                </span>
+                            </div><!-- /input-group -->
+                            @Html.ValidationMessageFor(o => o.CustomerName)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Contact Person</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ContactPerson, null, new { @class = "form-control placeholder mandatory", @maxlength = "50" })
+                            @Html.ValidationMessageFor(o => o.ContactPerson)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Website</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Website, null, new { @class = "form-control placeholder", @name = "Website", @maxlength = "30" })
+                            @Html.ValidationMessageFor(o => o.Website)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Position</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Position, null, new { @class = "form-control placeholder mandatory", @maxlength = "20" })
+                            @Html.ValidationMessageFor(o => o.Position)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Address</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Address, null, new { @class = "form-control", @name = "Address", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Telephone Number</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.TelephoneNumber, null, new { @class = "form-control placeholder mandatory", @maxlength = "20" })
+                            @Html.ValidationMessageFor(o => o.TelephoneNumber)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Business Economy Sector</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.BusinessEconomySector, null, new
+                            {
+                                @name = "BusinessEconomySector",
+                                @class = "form-control placeholder",
+                                @readonly = "true"
+                            })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Email</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Email, null, new { @class = "form-control mandatory", @maxlength = "50" })
+                            @Html.ValidationMessageFor(o => o.Email)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OperatingLeaseRequestQuotationData -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Operating Lease Request Quotation Data</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Registration Code</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">                                
+                                @Html.TextBoxFor(o => o.ProductCode, null, new
+                                {
+                                    @class = "form-control mandatory"
+                                })
+                                @Html.HiddenFor(o => o.IdProduct)
+                                <span class="input-group-btn">
+                                    <button class="btn btn-white" data-toggle="modal" data-target="#productModal" type="button" onclick="LoadProduct()" tabindex="1">...</button>
+                                </span>
+                            </div><!-- /input-group -->
+                            @Html.ValidationMessageFor(o => o.IdProduct)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Usage Location</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(o => o.UsageLocation, ViewBag.UsageLocationList as List<SelectListItem>, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.UsageLocation)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Brand Code</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.BrandCode, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Usage Location (Others)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.UsageLocationOthers, null, new { @class = "form-control placeholder mandatory", @maxlength = "100" })
+                            @Html.ValidationMessageFor(o => o.UsageLocationOthers)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Brand Name</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.BrandName, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Minimum Mileage (Km/Month)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MinMileage, String.Format("{0:N}", Model.MinMileage), new { @class = "form-control numeric mandatory" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Model Code</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ModelCode, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Maximum Mileage (Km/Month)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MaxMileage, String.Format("{0:N}", Model.MaxMileage), new { @class = "form-control numeric mandatory" })
+                            @Html.ValidationMessageFor(o => o.MaxMileage)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Model Name</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ModelName, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Average Mileage (Km/Month)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.AverageMileage, String.Format("{0:N}", Model.AverageMileage), new { @class = "form-control numeric mandatory" })
+                            @Html.ValidationMessageFor(o => o.AverageMileage)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Model Type</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ModelType, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Fuel Type</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.FuelType, null, new { @class = "form-control", @readonly = "true" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Model Year (yyyy/mm)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ModelYear, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Transmission</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Transmission, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Type</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.IdProductType)
+                            @Html.TextBoxFor(o => o.ProductType1, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Maintenance Type</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.MaintenanceType[0])
+                            @Html.DropDownListFor(o => o.MaintenanceTypeUpd, ViewBag.MaintenanceTypeList as List<SelectListItem>, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.MaintenanceTypeUpd)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Category</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.IdProductCategory)
+                            @Html.TextBoxFor(o => o.ProductCategory1, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Displacement (CC)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DisPlacement, null, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Lease Period</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.LeasePeriod, null, new { @class = "form-control mandatory numeric", @type = "text" })
+                            @Html.ValidationMessageFor(o => o.LeasePeriod)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Quantity Request</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.QuantityRequest, null, new { @class = "form-control mandatory numeric", @type = "text" })
+                            @Html.ValidationMessageFor(o => o.QuantityRequest)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>OPL Reason</label></div>
+                        <div class="col-lg-6">
+                            @Html.ListBoxFor(o => o.OplReason, ViewBag.OplReasonList as List<SelectListItem>, new { @class = "js-example-basic-multiple form-control mandatory select2-choices", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(o => o.OplReason)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Usage Purpose</label></div>
+                        <div class="col-lg-6">
+                            @Html.ListBoxFor(o => o.UsagePurpose, ViewBag.UsagePurposeList as List<SelectListItem>, new { @class = "js-example-basic-multiple form-control mandatory select2-choices", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(o => o.UsagePurpose)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>At the end of period</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(o => o.AfterEndOfPeriod, ViewBag.AtTheEndOfPeriod as List<SelectListItem>, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.AfterEndOfPeriod)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Usage Purpose (others)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.UsagePurposeOthers, null, new { @class = "form-control mandatory", @readonly = "true", @maxlength = "50" })
+                            @Html.ValidationMessageFor(o => o.UsagePurposeOthers)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Residual Values (%)</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ResidualValue, "{0:n6}", new { @class = "form-control mandatory percentage", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.ResidualValue)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Replacement Car</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(o => o.ReplacementCar, new SelectList(choice, "Value", "Text"), new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.ReplacementCar)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>For (Month(s))</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ExtendedMonths, null, new {@class = "form-control mandatory numeric", @readonly = "true"})
+                            @Html.ValidationMessageFor(o => o.ExtendedMonths)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Maximum Breakdown (hours)</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MaximumBreakdown, null, new { @class = "form-control mandatory numeric", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.MaximumBreakdown)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CustomerCurrentCondition -->
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            Customer Current Condition
+            <br>
+            <br>
+            <ul class="nav nav-tabs pull-left bg-light">
+                <li class="active font-bold"><a href="#profile-1" data-toggle="tab">Credit Information</a></li>
+                <li class="font-bold"><a href="#profile-2" data-toggle="tab">Owned Vehicle Information</a></li>
+                <li class="font-bold"><a href="#profile-3" data-toggle="tab">Detail of DSF Contract Unit</a></li>
+            </ul>
+            <span class="hidden-sm" style="visibility:hidden">Left tab</span>
+        </header>
+        <div class="panel-body" style="padding:0px !important;">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" style="padding:16px" id="profile-1">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-6"><label>Maximum Credit Line</label></div>
+                                <div class="col-lg-6">
+                                    @Html.HiddenFor(o => o.MaxCreditLine)
+                                    @HtmlUtility.P(Model, o => o.MaxCreditLine, Model.MaxCreditLine != null ? String.Format("{0:n}", decimal.Parse(Model.MaxCreditLine)) : string.Empty, new { @class = "form-control-static text-right" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-6"><label>Total Credit Balance (Group as a whole)</label></div>
+                                <div class="col-lg-6">
+                                    @Html.HiddenFor(o => o.TCBalanceGroup)
+                                    @HtmlUtility.P(Model, o => o.TCBalanceGroup, String.Format("{0:n}", Model.TCBalanceGroup), new { @class = "form-control-static text-right" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-6"><label>Over Due Amount</label></div>
+                                <div class="col-lg-6">
+                                    @Html.HiddenFor(o => o.OverdueAmount)
+                                    @HtmlUtility.P(Model, o => o.OverdueAmount, String.Format("{0:n}", Model.OverdueAmount), new { @class = "form-control-static text-right" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-6"><label>Total Credit Balance (Single)</label></div>
+                                <div class="col-lg-6">
+                                    @Html.HiddenFor(o => o.TCBalanceSingle)
+                                    @HtmlUtility.P(Model, o => o.TCBalanceSingle, String.Format("{0:n}", Model.TCBalanceSingle), new { @class = "form-control-static text-right" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-6"><label>Number of Over due</label></div>
+                                <div class="col-lg-6">
+                                    @Html.HiddenFor(o => o.OverdueNumber)
+                                    @HtmlUtility.P(Model, o => o.OverdueNumber, new {@class = "form-control-static text-right"})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="profile-2">
+                    <table class="table table-striped table-input m-b-none text-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer Owned Unit</th>
+                                <th>DSF Contract Unit</th>
+                                <th>Potential Unit</th>
+                                <th>Information Acquisition Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold">
+                                    Number of Vehicle Unit
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CustomerVehicleUnit)
+                                    @HtmlUtility.P(Model, o => o.CustomerVehicleUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.DSFVehicleUnit)
+                                    @HtmlUtility.P(Model, o => o.DSFVehicleUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PotentialVehicleUnit)
+                                    @HtmlUtility.P(Model, o => o.PotentialVehicleUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.IADVehicleUnit)
+                                    @HtmlUtility.P(Model, o => o.IADVehicleUnit, String.Format("{0:d}", Model.IADVehicleUnit), new { @class = "form-control-static text-right" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    Number of Forklift Unit
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CustomerForkliftUnit)
+                                    @HtmlUtility.P(Model, o => o.CustomerForkliftUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.DSFForkliftUnit)
+                                    @HtmlUtility.P(Model, o => o.DSFForkliftUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PotentialForkliftUnit)
+                                    @HtmlUtility.P(Model, o => o.PotentialForkliftUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.IADForkliftUnit)
+                                    @HtmlUtility.P(Model, o => o.IADForkliftUnit, String.Format("{0:d}", Model.IADForkliftUnit), new { @class = "form-control-static text-right" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    Number of HE Unit
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CustomerHEUnit)
+                                    @HtmlUtility.P(Model, o => o.CustomerHEUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.DSFHEUnit)
+                                    @HtmlUtility.P(Model, o => o.DSFHEUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PotentialHEUnit)
+                                    @HtmlUtility.P(Model, o => o.PotentialHEUnit, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.IADHEUnit)
+                                    @HtmlUtility.P(Model, o => o.IADHEUnit, String.Format("{0:d}", Model.IADHEUnit), new { @class = "form-control-static text-right" })
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="profile-3">
+                    <table class="table table-striped table-input m-b-none text-sm">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">#</th>
+                                <th colspan="3" class="text-center">Operating Lease</th>
+                                <th rowspan="2">Finance Lease</th>
+                            </tr>
+                            <tr>
+                                <th>Non-Maintenance</th>
+                                <th>Maintenance</th>
+                                <th>CSD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold">
+                                    LCV
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.LCVNonMaintenance)
+                                    @HtmlUtility.P(Model, o => o.LCVNonMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.LCVMaintenance)
+                                    @HtmlUtility.P(Model, o => o.LCVMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.LCVCSD)
+                                    @HtmlUtility.P(Model, o => o.LCVCSD, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.LCVFinanceLease)
+                                    @HtmlUtility.P(Model, o => o.LCVFinanceLease, new {@class = "form-control-static text-right"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    CV
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CVNonMaintenance)
+                                    @HtmlUtility.P(Model, o => o.CVNonMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CVMaintenance)
+                                    @HtmlUtility.P(Model, o => o.CVMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CVCSD)
+                                    @HtmlUtility.P(Model, o => o.CVCSD, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.CVFinanceLease)
+                                    @HtmlUtility.P(Model, o => o.CVFinanceLease, new {@class = "form-control-static text-right"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    PC
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PCNonMaintenance)
+                                    @HtmlUtility.P(Model, o => o.PCNonMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PCMaintenance)
+                                    @HtmlUtility.P(Model, o => o.PCMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PCCSD)
+                                    @HtmlUtility.P(Model, o => o.PCCSD, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.PCFinanceLease)
+                                    @HtmlUtility.P(Model, o => o.PCFinanceLease, new {@class = "form-control-static text-right"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    Forklift
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.ForkliftNonMaintenance)
+                                    @HtmlUtility.P(Model, o => o.ForkliftNonMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.ForkliftMaintenance)
+                                    @HtmlUtility.P(Model, o => o.ForkliftMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.ForkliftCSD)
+                                    @HtmlUtility.P(Model, o => o.ForkliftCSD, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.ForkliftFinanceLease)
+                                    @HtmlUtility.P(Model, o => o.ForkliftFinanceLease, new {@class = "form-control-static text-right"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    HE
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.HENonMaintenance)
+                                    @HtmlUtility.P(Model, o => o.HENonMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.HEMaintenance)
+                                    @HtmlUtility.P(Model, o => o.HEMaintenance, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.HECSD)
+                                    @HtmlUtility.P(Model, o => o.HECSD, new {@class = "form-control-static text-right"})
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => o.HEFinanceLease)
+                                    @HtmlUtility.P(Model, o => o.HEFinanceLease, new {@class = "form-control-static text-right"})
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Commercial Vehicle Type</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.VehicleCommercialType, String.Format("{0:0}", Model.VehicleCommercialType), new { @class = "form-control mandatory numeric" })
+                                @Html.ValidationMessageFor(o => o.VehicleCommercialType)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Competitor Company</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.CompetCompany, null, new { @class = "form-control mandatory", @maxlength = "50" })
+                                @Html.ValidationMessageFor(o => o.CompetCompany)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Passenger Vehicle Type</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.VehiclePassengerType, String.Format("{0:0}", Model.VehiclePassengerType), new { @class = "form-control mandatory numeric" })
+                                @Html.ValidationMessageFor(o => o.VehiclePassengerType)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Vehicle Supervision</label></div>
+                            <div class="col-lg-6">
+                                @Html.DropDownListFor(o => o.VhcSupervision, ViewBag.SupervisionVehicle as List<SelectListItem>, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(o => o.VhcSupervision)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Possession Method Cash(%)</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.PossessionMethodCash, String.Format("{0:N2}", Model.PossessionMethodCash), new { @class = "form-control mandatory percentage" })
+                                @Html.ValidationMessageFor(o => o.PossessionMethodCash)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Number of Branch Office</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.NumBranchOffice, null, new { @class = "form-control numeric mandatory", @readonly = "true" })
+                                @Html.ValidationMessageFor(o => o.NumBranchOffice)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Possession Method Bank(%)</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.PossessionMethodBank, String.Format("{0:N2}", Model.PossessionMethodBank), new { @class = "form-control mandatory percentage" })
+                                @Html.ValidationMessageFor(o => o.PossessionMethodBank)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Frequent Maintenance</label></div>
+                            <div class="col-lg-6">
+                                @Html.ListBoxFor(o => o.FreqMaintenance, ViewBag.FrequentMaintenance as List<SelectListItem>, new { @class = "js-example-basic-multiple form-control mandatory select2-choices", @multiple = "multiple" })
+                                @Html.ValidationMessageFor(o => o.FreqMaintenance)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Possession Method Lease(%)</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.PossessionMethodLease, String.Format("{0:N2}", Model.PossessionMethodLease), new { @class = "form-control mandatory percentage" })
+                                @Html.ValidationMessageFor(o => o.PossessionMethodLease)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Frequent Maintenance (Other)</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.FreqMaintenanceOthers, null, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(o => o.FreqMaintenanceOthers)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Possession Method Rent(%)</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.PossessionMethodRent, String.Format("{0:N2}", Model.PossessionMethodRent), new { @class = "form-control mandatory percentage" })
+                                @Html.ValidationMessageFor(o => o.PossessionMethodRent)
+                                @Html.ValidationMessageFor(o => o.PossessionMethodTotal)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Disposal Method</label></div>
+                            <div class="col-lg-6">
+                                @Html.ListBoxFor(o => o.DisposMethod, ViewBag.DisposalMethod as List<SelectListItem>, new { @class = "js-example-basic-multiple form-control mandatory select2-choices", @multiple = "multiple" })
+                                @Html.ValidationMessageFor(o => o.DisposMethod)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Vehicle Maintenance</label></div>
+                            <div class="col-lg-6">
+                                @Html.ListBoxFor(o => o.VhcMaintenance, ViewBag.VehicleMaintenance as List<SelectListItem>, new { @class = "js-example-basic-multiple form-control mandatory select2-choices", @multiple = "multiple" })
+                                @Html.ValidationMessageFor(o => o.VhcMaintenance)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label id="label">Disposal Method (Other)</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.DisposMethodOthers, null, new { @class = "form-control mandatory", @readonly = "true", @maxlength = "50" })
+                                @Html.ValidationMessageFor(o => o.DisposMethodOthers)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Number of Workshops</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.NumWorkshops, null, new { @class = "form-control numeric", @readonly = "true" })
+                                @Html.ValidationMessageFor(o => o.NumWorkshops)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Maintenance Costs</label>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp</span>
+                                    @Html.TextBoxFor(o => o.MaintenanceCost, "{0:n0}", new {@class = "form-control text-right mandatory numeric", @id = "inputMaintenanceCost"})
+                                </div>
+                                @Html.ValidationMessageFor(o => o.MaintenanceCost)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Number of Mechanics</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.NumMechanics, null, new { @class = "form-control numeric", @readonly = "true" })
+                                @Html.ValidationMessageFor(o => o.NumMechanics)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-6"><label>Extra Notes Unit</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.ExtraNotesUnit, null, new { @class = "form-control mandatory", @maxlength = "2000" })
+                                @Html.ValidationMessageFor(o => o.ExtraNotesUnit)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CustomerVisitResult -->
+    <section class="panel">
+        <header class="panel-heading  font-bold">Customer Visit Result</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <div class="col-lg-6"><label>Recommended</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(o => o.Recommended, new SelectList(choice, "Value", "Text"), new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.Recommended)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="col-lg-3"><label>Extra Notes</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="col-lg-12">
+                            @Html.TextAreaFor(o => o.ExtraNotes, new { @class = "form-control mandatory", @rows = "4", @placeholder = "", @maxlength = "500" })
+                            @Html.ValidationMessageFor(o => o.ExtraNotes)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RevisionHistory -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Revision History</header>
+        <div class="panel-body">
+            <table class="table table-striped table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.RevHistories.Count; i++)
+                    {
+                        <tr>
+	                        <td width="20">
+		                        @Html.HiddenFor(o => Model.RevHistories[i].CreateBy, new { @class = "form-control" })
+		                        <label class="form-control">@Model.RevHistories[i].CreateBy</label>
+	                        </td>
+	                        <td width="20">
+		                        @Html.HiddenFor(o => Model.RevHistories[i].CreateDate, new { @class = "form-control" })
+		                        <label class="form-control">@Model.RevHistories[i].CreateDate</label>
+	                        </td>
+	                        <td width="20">
+		                        @Html.HiddenFor(o => Model.RevHistories[i].Act, new { @class = "form-control" })
+		                        <label class="form-control">@Model.RevHistories[i].Act</label>
+	                        </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-footer bg-light lter">
+            @Html.HiddenFor(o => o.RowVersion)
+            @Html.HiddenFor(o => o.IdTb_MKT_VisitCustSurvey)
+
+            @Html.HiddenFor(o => o.IdTb_OPL_Status)
+
+            @Html.HiddenFor(o => o.IdTb_OPL_Employee)
+
+            @Html.HiddenFor(o => o.IdTb_OPL_Branch)
+
+            @Html.HiddenFor(o => o.IsValid)
+
+            @Html.HiddenFor(o => o.IsRecomended)
+
+            @Html.HiddenFor(o => o.IsDeleted)
+
+            @Html.HiddenFor(o => o.IsDraft)
+
+            @Html.HiddenFor(o => o.CreatedBy)
+
+            @Html.HiddenFor(o => o.CreatedDate)
+
+			@Html.HiddenFor(o => o.LastModifiedBy)
+
+			@Html.HiddenFor(o => o.LastModifiedDate)
+
+            <input type="hidden" id="submitButtonText"/>
+            @StateButton.CreateStateVisitCustomerSurvey("edit", Model.IsDraft, Model.IsRecomended)
+        </div>
+    </section>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script src="~/Content/js/CustomerVisitSurvey.js"></script>
+    <script src="~/Content/ui-framework/js/util.js"></script>
+    <script>
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+
+            var submitvalue = $(this).val();
+            var msg = '';
+            if (submitvalue === 'Save Changes') {
+                msg = 'Save';
+            } else if (submitvalue === 'Submit') {
+                msg = 'Submit';
+            }
+
+            $('#msgModal').text(msg);
+            $('#submitButtonText').val(submitvalue);
+        });
+
+        $('#confirmModal').click(function (e) {
+            var submitvalue = $('#submitButtonText').val();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            $(this).prop('disabled', true);
+        });
+
+        $('.datepicker').datepicker({
+            format: '@localeDateFormat.ToLower()'
+        });
+        
+        // Global variable for CustomerVisitSurvey.js
+        var serverRoot = '@Url.Content("~")';
+
+        var recommendationOthersId = '@OlssOptionItem.Value.RecommendationOthers';
+        var DisposMethodOthersId = '@OlssOptionItem.Value.DisposMethodOthers';
+        var FreqMaintenanceOthersId = '@OlssOptionItem.Value.FreqMaintenanceOthers';
+        var UsagePurposeOthersId = '@OlssOptionItem.Value.UsagePurposeOthers';
+        var OwnWorkshopId = '@OlssOptionItem.Value.OwnWorkshop';
+        var BranchOfficeId = '@OlssOptionItem.Value.BranchOffice';
+        var UnitWillBePurchasedId = '@OlssOptionItem.Value.UnitWillBePurchased';
+		var UnitWillBeExtendedId = '@OlssOptionItem.Value.UnitWillBeExtended';
+		var UsageLocatonOtherId = '@OlssOptionItem.Value.UsageLocationOthers';
+
+        $(document).ready(function () {
+
+            //Initialize
+            RecommendationEvent();
+            DisposMethodEvent();
+            FreqMaintenanceEvent();
+            UsagePurposeEvent();
+            VhcMaintenanceEvent();
+            SupervisionVhcEvent();
+            AfterEndOfPeriodEvent();
+            ReplacementCarEvent();
+	        UsageLocationEvent();
+
+            //change type submit to button to provide modal popup
+            $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#myModal');
+            //setCurrency($('#inputMaintenanceCost').keyup());
+        });
+
+        $(function () {
+            $('.js-example-basic-multiple').select2()
+                .on("change", function (e) {
+                    var select2Id = this.id;
+
+                    //Selecting 'Others' will open Others Field
+                    if (select2Id == 'Recommendation') {
+                        RecommendationEvent();
+                    }
+
+                    if (select2Id == 'DisposMethod') {
+                        DisposMethodEvent();
+                    }
+
+                    if (select2Id == 'FreqMaintenance') {
+                        FreqMaintenanceEvent();
+                    }
+
+                    if (select2Id == 'UsagePurpose') {
+                        UsagePurposeEvent();
+                    }
+
+                    if (select2Id == 'VhcMaintenance') {
+                        VhcMaintenanceEvent();
+                    }
+                });
+        });
+
+        $('#VhcSupervision').change(SupervisionVhcEvent);
+        $('#AfterEndOfPeriod').change(AfterEndOfPeriodEvent);
+        $('#ReplacementCar').change(ReplacementCarEvent);
+        $('#UsageLocation').change(UsageLocationEvent);
+
+        $('#inputMaintenanceCost').bind('input propertychange', function () {
+            if (isNaN($(this).val().replace(/,/gi, '')))
+                $(this).val("");
+            else
+                AddThousandSeperator($(this), true);
+        });
+
+        $('#inputMaintenanceCost').keydown(function (event) {
+            if (!event.ctrlKey && ((event.keyCode >= 65 && event.keyCode <= 90) || event.keyCode >= 186 && event.keyCode <= 192 || event.keyCode >= 219 && event.keyCode <= 222))
+                event.preventDefault();
+            else if (event.shiftKey && (event.keyCode >= 48 && event.keyCode <= 57))
+                event.preventDefault();
+        });
+</script>
+
+}

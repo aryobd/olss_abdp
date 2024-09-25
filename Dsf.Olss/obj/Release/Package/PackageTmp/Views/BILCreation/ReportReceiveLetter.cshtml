@@ -1,0 +1,26 @@
+﻿@using System.Web.UI.WebControls
+
+@{
+    ViewBag.Title = "Report Receive Letter";
+    var id = ViewBag.Id;
+    var idInv = ViewBag.IdInvoice;
+}
+@if (idInv > 0) // S0107780 - CR View Invoice (7 days)
+{
+    <a href="@Url.Action("ListInvoiceStatusApproval", "BILCreation", new { id = idInv })" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+}
+else
+{
+    <a href="@Url.Action("Index", "BILSchedule" )" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+}
+
+@Html.Partial("ReportViewer")
+
+@if (ViewBag.IsHaveMaintenanceBilling == true)
+{
+    <a title="" class="btn btn-white" href="@Url.Action("ReportMaintenanceReceipt", "BILCreation", new {id})" class=" btn btn-white" data-original-title=""><i class="fa fa-chevron-left"></i> Previous Page</a>
+}
+else
+{
+    <a title="" class="btn btn-white" href="@Url.Action("ReportInstallmentReceipt", "BILCreation", new { id })" class=" btn btn-white" data-original-title=""><i class="fa fa-chevron-left"></i> Previous Page</a>
+}

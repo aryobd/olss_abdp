@@ -1,0 +1,240 @@
+﻿@model Dsf.Olss.Models.OPLProposalCashflowViewModel
+@{
+    var remark = System.Convert.ToInt32(Model.OPLCalcRemarks);
+    ViewBag.Title = "Calculation of Operating Lease (Proposal Data)- Step 6";
+}
+<style type="text/css">
+    body {
+        color: black;
+    }
+</style>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 6, remark, x => @Url.RouteUrl("OPLCalculationCashflowDetail", new { Controller = "OPLCalculationCashflow", Action = "Detail", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <table class="table">
+        <td class="font-bold"><i class="fa fa-user text-danger"></i> Created by</td>
+        <td>@Html.DisplayFor(o => o.CreateBy)</td>
+        <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Created Date</td>
+        <td>@Html.DisplayFor(o => o.CreateDate)</td>
+        <td class="font-bold"><i class="fa fa-user text-danger"></i> Last Modified By</td>
+        <td>@Html.DisplayFor(o => o.LastModifiedBy)</td>
+        <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</td>
+        <td>@Html.DisplayFor(o => o.LastModified)</td>
+    </table>
+</div>
+<section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Proposal Info</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Proposal Number</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.OPLProposalNumber)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Proposal Date (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProposalDate)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Customer Code</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.CustomerCode)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.CustomerName)</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Person In Charge</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>PIC Name</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PICName)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>PIC Position</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PICPosition)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>PIC Phone</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PICTelephone)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>PIC Email</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PICEmail)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Additional Item for Proposal</header>
+        <div class="panel-body">
+            <div class="row">
+                @*<div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Is COP Program?</label>
+                        <p class="form-control-static">@(Model.IsCOPProgramme ? "Yes" : "No")</p>
+                    </div>
+                </div>*@
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Proposed By</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProposeBy)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Purpose of Use</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PurposeOfUse)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Valid Until (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Validuntil)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Acknowledge By 1</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.AcknowledgeBy1)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Acknowledge By 2</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.AcknowledgeBy2)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Acknowledge By 3</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.AcknowledgeBy3)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Remarks)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Approved By</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ApproveBy)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>To</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.To)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer">
+            @using (Html.BeginForm())
+            {
+                @Html.HiddenFor(o => o.IdOPLIProposal)
+                @Html.HiddenFor(o => o.IdOPLCalculation)
+                <a href="@Url.RouteUrl("OPLCalculationCashflowDetail", new { Controller = "OPLCalculationCashflow", Action = "Detail", step = "5", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+                {
+                    if (Model.IsDraft)
+                    {
+                        <input type="submit" class="btn btn-info" value="Submit" name="DetailAction" />
+                    }
+                    else if (Model.IsSubmitted)
+                    {
+                        <input type="submit" class="btn btn-default" value="Set To Draft" name="Action" />
+                        //<input type="submit" class="btn btn-default" value="Set To Draft" name="Action" />
+                        @*<input type="submit" class="btn btn-info" value="Validate" name="Action" />*@
+                    }
+                    else if (Model.IsValid)
+                    {
+                        @*<input type="submit" value="Invalidate" class="btn btn-danger" name="Action" />*@
+                    }
+
+                }
+                if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+                {
+                    if (Model.IsDraft)
+                    {
+                        <input type="submit" class="btn btn-info" value="Submit" name="DetailAction" />
+                    }
+                }
+            }
+        </footer>
+    </section>
+</section>
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+
+        OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation') {
+                bootbox.alert("Data has been changes by other user, page will be reloaded ..", function () {
+                    location.reload();
+                });
+            }
+        };
+        OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation') {
+                bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                    location.reload();
+                });
+            }
+        };
+        $.connection.hub.start();
+    </script>
+}

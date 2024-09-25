@@ -1,0 +1,115 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@{
+    ViewBag.Title = "Manage Asset Write Off";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "DISAgreement", new { id = "2" })" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div id="alert_placeholder"></div>
+<div id="printsuccess"></div>
+
+<div class="tab-pane" id="datatable">
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">Office</option>
+                            <option value="2">Agreement</option>
+                            <option value="3">Customer Name</option>
+                            <option value="4">Asset Description</option>
+                            <option value="5">License Plate No.</option>
+                            <option value="6">Asset Code</option>
+                            <option value="7">Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">
+            List of Disposal
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+
+        <div class="panel-body" style="padding:0px !important;">
+            <div class="tab-content">
+                <div class="table-responsive">
+                    <table id="DISAssetSelling-list" class="table table-striped m-b-none ">
+                        <thead>
+                            <tr>
+                                <th>DSF Office</th>
+                                <th>Asset Selling No.</th>
+                                <th>Created By</th>
+                                <th>Created Date</th>
+                                <th>Approved By</th>
+                                <th>Approved Date</th>
+                                <th width="140">Disposal Status</th>
+                                <th width="80">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>JKN</td>
+                                <td>741/OPL/INT/IX/2017</td>
+                                <td>DEDI SUPRIYADI</td>
+                                <td>05/05/2017</td>
+                                <td>JUSUF SETIAWAN</td>
+                                <td></td>
+                                <td align="center"><span class='label label-success'>Open</span></td>
+                                <td align="center"><a title='View History' href='@Url.Action("DetailDirectSelling", "DISAssetSelling")' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a> <a title='Auction' href='@Url.Action("EditDirectSelling", "DISAssetSelling")' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>JKC</td>
+                                <td>742/OPL/INT/IX/2017</td>
+                                <td>HASAN NURDIN</td>
+                                <td>13/05/2017</td>
+                                <td>JUSUF SETIAWAN</td>
+                                <td></td>
+                                <td align="center"><span class='label label-success'>Open</span></td>
+                                <td align="center"><a title='View History' href='@Url.Action("DetailDirectSelling", "DISAssetSelling")' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a> <a title='Auction' href='@Url.Action("EditDirectSelling", "DISAssetSelling")' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a></td>
+                            </tr>
+                            <tr>
+                                <td>JKC</td>
+                                <td>743/OPL/INT/IX/2017</td>
+                                <td>HANNY ANDRIANY</td>
+                                <td>13/05/2017</td>
+                                <td>JUSUF SETIAWAN</td>
+                                <td>17/05/2017</td>
+                                <td align="center"><span class='label label-info'>Approved</span></td>
+                                <td align="center"><a title='View History' href='@Url.Action("DetailDirectSelling", "DISAssetSelling")' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a> <a title='Auction' href='@Url.Action("EditDirectSelling", "DISAssetSelling")' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

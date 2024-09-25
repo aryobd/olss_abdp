@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "Calculation of Operating Lease";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Create", "OPLCalculationCashflow")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+@*@Html.RouteLink("Create", "OPLCalculationCreateNew", new { Controller = "OPLCalculation", Action = "Create", step = "1" }, new { @class = "btn btn-primary" })*@
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            List of Calculation Operating Lease
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="OPLCalculationCashflow-list" class="table table-striped m-b-none">
+                <thead>
+                <tr>
+                    <th width="15%">OPL Calculation Number</th>
+                    <th width="15%">Customer Name</th>
+                    <th width="10%">Lease Category</th>
+                    <th width="10%">Product Brand Name</th>
+                    <th width="15%">Maintenance Type</th>
+                    <th width="10%">Quantity</th>
+                    <th width="15%">Monthly Installment</th>
+                    <th width="10%">CreateBy</th>
+                    <th width="1%">CreateDate</th>
+                    <th width="10%">Status</th>
+                    <th width="10%">Action</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var oTable;
+        var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+
+        OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+            oTable.fnDraw();
+        };
+
+        OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+            oTable.fnDraw();
+        };
+
+        $.connection.hub.start();
+        $(document).ready(function () {
+            LoadTable();
+        });
+
+        // datatable
+        function LoadTable() {
+            $('#OPLCalculationCashflow-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "aaSorting": [[0, "desc"]],
+                    "bProcessing": true,
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "OPLCalculationCashflow")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                {
+                    "mData": "OPLCalculationNumber"
+                },
+                { "mData": "CustomerName" },
+                        { "mData": "LeaseCategory" },
+                        { "mData": "BrandName" },
+                        { "mData": "MaintenanceType" },
+                        {
+                            "mData": "TotalUnitQuantityLease",
+                            "fnRender": function (aObj) {
+                                if (aObj.aData["TotalUnitQuantityLease"] != null) {
+                                    return "<div class='text-right'>" + aObj.aData["TotalUnitQuantityLease"] + "</div>";
+                                }
+                                return null;
+                            }
+                        },
+                        {
+                            "mData": "MonthlyInstallmentAmount",
+                            "fnRender": function (aObj) {
+                                if (aObj.aData["MonthlyInstallmentAmount"] != null) {
+                                    return "<div class='text-right'>" + aObj.aData["MonthlyInstallmentAmount"] + "</div>";
+                                }
+                                return null;
+                            }
+                        },
+                        { "mData": "CreateBy" },
+                        {
+                            "mData": "CreateDate",
+                            "fnRender": function (aObj) {
+                                var date = new Date(parseInt(aObj.aData["CreateDate"].substr(6)));
+                                var modeldate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                                return modeldate;
+                            }
+                        },
+                        {
+                            "mData": "IsDeleted",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var IsValid = oObj.aData["IsValid"];
+                                var IsDraft = oObj.aData["IsDraft"];
+                                var IsSubmit = oObj.aData["IsSubmitted"];
+
+                                if (IsDraft) {
+                                    return "<span class='label label-default'>draft</span>";
+                                }
+                                else if (IsSubmit) {
+                                    return "<span class='label label-info'>submitted</span>";
+                                }
+                                else if (IsValid) {
+                                    return "<span class='label label-success'>valid</span>";
+                                }
+                                else {
+                                    return "<span class='label label-default bg-light'>invalid</span>";
+                                }
+                            }
+                        },
+                        {
+                            "mData": "IdOPLCalculation",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "sClass": "datatables_action",
+                            "fnRender": function (oObj) {
+                                var Id = oObj.aData["IdOPLCalculation"];
+                                var IsValid = oObj.aData["IsValid"];
+                                var IsDraft = oObj.aData["IsDraft"];
+                                var IsSubmit = oObj.aData["IsSubmitted"];
+                                var step = oObj.aData["Remarks"];
+                                if ((IsValid == false && IsSubmit == false && IsDraft == false)) {
+                                    return "<a title='Detail' href='@Url.Action("Detail", "OPLCalculationCashflow")/" + Id + "/1' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "OPLCalculationCashflow")/" + Id + "/" + step + "' class='btn btn-primary btn-xs' disabled='disabled'><i class='fa fa-edit'></i></a>&nbsp;<a title='Proposal Report' href='@Url.Action("ProposalReport", "OPLCalculationCashflow")/" + Id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>&nbsp;<a title='OPLCalculationReport' href='@Url.Action("OPLCalculationReport", "OPLCalculationCashflow")/" + Id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>"
+                                }
+                                    @*else if (step == '5') {
+                                    return "<a title='Detail' href='@Url.Action("Detail", "OPLCalculation")/" + Id + "/1' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "OPLCalculation")/" + Id + "/" + step + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;<a title='Proposal Report' href='@Url.Action("ProposalReport", "OPLCalculation")/" + Id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>&nbsp;<a title='OPLCalculationReport' href='@Url.Action("OPLCalculationReport", "OPLCalculation")/" + Id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>"
+                                }*@
+                                else {
+                                    return "<a title='Detail' href='@Url.Action("Detail", "OPLCalculationCashflow")/" + Id + "/1' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "OPLCalculationCashflow")/" + Id + "/" + step + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;<a title='Proposal Report' href='@Url.Action("ProposalReport", "OPLCalculationCashflow")/" + Id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>&nbsp;<a title='OPLCalculationReport' href='@Url.Action("OPLCalculationReport", "OPLCalculationCashflow")/" + Id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>"
+                                }
+                            }
+                        },
+                    ]
+                });
+            });
+        };
+
+    </script>
+}

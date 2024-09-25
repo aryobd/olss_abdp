@@ -1,0 +1,7 @@
+﻿@ddlSearchCriteria=''
+@txtSearch=''
+@txtStartDate=''
+@txtEndDate=''
+@username=''
+@idParam=''
+@policeNumber=''

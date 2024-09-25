@@ -1,0 +1,85 @@
+﻿<div class="modal fade" id="partModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title"><strong id="partModalLabel">Add Parts Item</strong></h5>
+            </div>
+            <div class="modal-body">
+                <form id="partForm" class="form-horizontal" method="post" >
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Part Code</label>
+                        <div class="col-sm-8">
+                            <input data-maxlength="80"  class="form-control parsley-validated" data-required="true" data-val="true" id="PartCode" name="PartCode" placeholder="Part Code" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Part Name</label>
+                        <div class="col-sm-8">
+                            <input data-maxlength="100" class="form-control parsley-validated" data-required="true" data-val="true" id="PartName" name="PartName" placeholder="Part Name" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Type Of Action</label>
+                        <div class="col-sm-8">
+                            <select class="form-control parsley-validated" data-required="true" id="TypeOfAction" name="TypeOfAction"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Quantity</label>
+                        <div class="col-sm-8">
+                            <input id="Quantity" data-required="true" data-val="true" name="Quantity" type="number" placeholder="Quantity" class="form-control numbersOnly parsley-validated">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Amount</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                <input id="Amount" data-required="true" data-maxlength="18" data-val="true" name="Amount" placeholder="Amount" class="form-control currenciesOnly parsley-validated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">PPn</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                <input id="partPPnTax" data-required="true" data-maxlength="18" data-val="true" name="partPPnTax" placeholder="PPn" class="form-control currenciesOnly parsley-validated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">PPh</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                <input id="partPPhTax" data-required="true" data-maxlength="18" data-val="true" name="partPPhTax" placeholder="PPh" class="form-control currenciesOnly parsley-validated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Remarks</label>
+                        <div class="col-sm-8">
+                            <input data-maxlength="200" id="PartRemarks" data-val="true" type="text" placeholder="Remarks" class="form-control parsley-validated">
+                            <input id="IdOPLSHistoryParts" type="hidden" />
+                            <input id="IdOPLServiceHistory" type="hidden" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="partSubmitId" type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>

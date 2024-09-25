@@ -1,0 +1,39 @@
+﻿@model Dsf.Olss.Data.Entities.Permission
+
+@{
+    ViewBag.Title = "Add New Permission";
+}
+
+<a href="@Url.Action("Index", "Permission")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+
+@using (Html.BeginForm("Add", "Permission", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading">Add New Permission</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.PermissionName)
+                        @Html.TextBoxFor(modelItem => Model.PermissionName, new { @class = "form-control", @placeholder = "Permission Name", @data_required = "true", @data_parsley_maxlength = "50" })
+                        @Html.ValidationMessageFor(modelItem => Model.PermissionName)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.Remarks)
+                        @Html.TextBoxFor(modelItem => Model.Remarks, new { @class = "form-control", @placeholder = "Remarks", @data_parsley_maxlength = "200" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer bg-light lter">
+            @StateButton.Create("add")
+        </footer>
+    </section>
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+}

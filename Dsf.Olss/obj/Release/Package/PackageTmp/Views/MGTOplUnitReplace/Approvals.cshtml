@@ -1,0 +1,262 @@
+﻿@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "List Replacement Approval";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/css/style.css")" type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a title="" class="btn btn-white" href="@Url.Action("Index", "MGTOplUnitReplace")" data-original-title=""><i class="fa fa-chevron-left"></i> Back</a>
+<br /><br />
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+
+<!-- Start Dynamic Searching -->
+<section class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-2">
+                <label>Search Criteria</label>
+                <div class="form-group">
+                    <select id="ddlSearchCriteria" class="form-control">
+                        <option value="1">BAST Number</option>
+                        <option value="2">Replacement Police No</option>
+                        <option value="3">Agreement No</option>
+                        <option value="4">OPL Police No</option>
+                        <option value="5">Creation Date</option>
+                        <option value="6">Memo Status</option>
+                        <option value="7">Created By</option>
+                        <option value="8">Last Approve By</option>
+                        <option value="9">Next Approve By</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <label>Parameter</label>
+                <div class="form-group">
+                    <input id="txtSearch" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <label>Start Creation Date</label>
+                <div class="form-group">
+                    <div class="input-group date">
+                        <input id="txtStartDate" class="form-control datepicker-input" data-date-format="mm/dd/yyyy" type="text">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <label>End Creation Date</label>
+                <div class="form-group">
+                    <div class="input-group date">
+                        <input id="txtEndDate" class="form-control datepicker-input" data-date-format="mm/dd/yyyy" type="text">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <label></label>
+                <div class="form-group">
+                    <input id="btnSearch" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Dynamic Searching -->
+<section class="panel">
+    <div class="DocumentList">
+        <div class="table-responsive">
+            <table id="table-list" class="table table-striped " width="100%">
+                <thead class="table-bordered">
+                    <tr>
+                        <th width="20%">BAST Number</th>
+                        <th width="20%">Replacement Police No</th>
+                        <th width="20%">Agreement No </th>
+                        <th width="20%">OPL Police No</th>
+                        <th width="20%">Creation Date</th>
+                        <th width="20%">Memo Status</th>
+                        <th width="20%">Created By</th>
+                        <th width="20%">Last Approve By</th>
+                        <th width="20%">Next Approve By</th>
+                        <th width="20%">Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+            var oTable;
+            // datatable
+            $('#table-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[9, "desc"]],
+                    "sScrollXInner": "200%",
+                    "sAjaxSource": "@Url.Action("AjaxHandlerApprovals", "MGTOplUnitReplace")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() },
+                            { "name": "txtStartDate", "value": $("#txtStartDate").val() },
+                            { "name": "txtEndDate", "value": $("#txtEndDate").val() }
+                        );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "bAutoWidth": false,
+                    "aoColumns": [
+                        { "mData": "BASTNumber" },
+                        { "mData": "ReplacementPoliceNumber" },
+                        { "mData": "AgreementNumber" },
+                        { "mData": "OPLPoliceNumber" },
+                        { "mData": "CreationDate" },
+                        {
+                            "mData": "MemoStatusName",
+                            "fnRender": function (oObj) {
+                                var status = oObj.aData["MemoStatus"];
+                                var statusName = oObj.aData["MemoStatusName"];
+
+                                if (status == '@((int)OlssOplStatus.Draft)') {
+                                    return "<span class='label label-default'>" + statusName + "</span>";
+                                }
+
+                                if (status == '@((int)OlssOplStatus.Approved)') {
+                                    return "<span class='label label-success'>" + statusName + "</span>";
+                                }
+
+                                if (status == '@((int)OlssOplStatus.Rejected)') {
+                                    return "<span class='label label-danger'>" + statusName + "</span>";
+                                }
+
+                                if (status == '@((int)OlssOplStatus.Submitted)') {
+                                    return "<span class='label label-primary'>" + statusName + "</span>";
+                                }
+
+                                if (status == '@((int)OlssOplStatus.Checked)') {
+                                    return "<span class='label label-success'>" + statusName + "</span>";
+                                }
+
+                                if (status == '@((int)OlssOplStatus.Revised)') {
+                                    return "<span class='label label-revisioned'>" + statusName + "</span>";
+                                }
+
+                                return statusName;
+                            }
+                        },
+                        { "mData": "CreateBy" },
+                        { "mData": "LastApproveBy" },
+                        { "mData": "NextApproveBy" },
+                        {
+                            "mData": "Action",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData["IdTb_MGT_BASTRPC"];
+
+                                return "<a href='@Url.Action("DetailApprovals", "MGTOplUnitReplace")/" + id + "' title='View' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>";
+                            }
+                        },
+                    { "mData": "SortableCreationDate", "bVisible": false }
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0,
+                            "error": handleAjaxError
+                        });
+                    }
+                });
+            });
+
+            var htmlTemp = '<div class="dataTables_wrapper row">';
+            var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+            var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+            $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+            htmlTemp += fakePagination + '</div>';
+            $('.table-responsive').append(htmlTemp);
+            $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+            $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+            $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+        });
+
+        // Searching
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+
+                $('#table-list').dataTable().fnDraw();
+            }
+        });
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            } else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+
+    </script>
+}

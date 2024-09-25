@@ -1,0 +1,188 @@
+﻿<!-- Promise To Pay Modal -->
+<div class="modal fade" id="promisetoPayModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" onclick="ShowPromiseToPayConfirmation('Close');">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Promise to Pay Date</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Agreement No </label>
+                                <input id="AgreementNumber" type="text" disabled="disabled" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Customer Name</label>
+                                <input id="CustomerName" type="text" disabled="disabled" class="form-control">
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Promise to Pay Date</label>
+                                <div class="input-group date">
+                                    <input id="PTPDate" class="form-control datepicker-input mandatory" type="text">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" onclick="ShowPromiseToPayConfirmation('Save');" id="btnPrint" class="btn btn-info">Save</a>
+                <button type="button" class="btn btn-primary" onclick="ShowPromiseToPayConfirmation('Close');">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Send Reminder Email Pop Up-->
+<div class="modal fade" id="sendReminderEmailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Send Remainder Email</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>PIC Name</label>
+                                <input type="text" id="PICName" class="form-control mandatory">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" id="Email" class="form-control mandatory">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a href="#" onclick="ShowSendReminderEmailConfirmation()" class="btn btn-info">Send</a>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p style="font-size:medium;"><span class="msgModal"></span> Confirmation</p>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="panel-footer bg-light lter modal-body">
+                <p>Are you sure you want to <span class="confirmationMessage"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- View Maintenance Billing Detail Pop Up -->
+<div class="modal fade" id="MainTenanceBillModal" tabindex="-1" role="dialog" aria-labelledby="LblMaintenanceBillModal" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="LblMaintenanceBillModal">
+                    <div class="row" style="font-size:12pt;">
+                        <div class="col-lg-3"><label>Agreement No</label></div>
+                        <div class="col-lg-8"><label>:</label> <label id="lbagnumber"></label></div>
+                    </div>
+                    <div class="row" style="font-size:12pt;">
+                        <div class="col-lg-3"><label>Contract Period</label></div>
+                        <div class="col-lg-9"><label>:</label> <label id="lbcontperiod"></label></div>
+                    </div>
+                </h4>
+                <hr />
+            </div>
+            <div class="modal-body">      
+                          
+                <div class="DocumentList">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-responsive" style="table-layout:fixed">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;width:5%;">No</th>
+                                    <th style="text-align:center">Unit Model</th>
+                                    <th style="text-align:center">Unit Type</th>
+                                    <th style="text-align:center">Police Number</th>
+                                    <th style="text-align:center">Engine Number</th>
+                                    <th style="text-align:center">Maintenance Type</th>
+                                    <th style="text-align:center">Billing Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maintenance-detail-list"></tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="6" style="text-align:right">
+                                        <label>Total</label>
+                                    </td>
+                                    <td style="text-align:right">
+                                        <label id="lblttlbillingdetail"></label>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>   
+</div>
+
+<!-- Reminder Memo Pop Up -->
+<div class="modal fade" id="ReminderMemoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Reminder Memo</h4>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+﻿@model Dsf.Olss.Data.Entities.User
+
+@{
+    ViewBag.Title = "Edit User";
+}
+
+@StatusLabel.Create(@Model.IsDraft, Model.IsSubmit, Model.IsActive)
+<a href="@Url.Action("Index", "User")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr />
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    @Html.HiddenFor(model => Model.IdUser)
+    @Html.HiddenFor(model => Model.IsDraft)
+    @Html.HiddenFor(model => Model.IsSubmit)
+    @Html.HiddenFor(model => Model.IsActive)
+    @Html.HiddenFor(model => Model.CreateDate)
+    @Html.HiddenFor(model => Model.IsDeleted)
+    @Html.HiddenFor(model => Model.CreateBy)
+    
+    <section class="panel">
+        <header class="panel-heading">Edit User</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.UserName)
+                        @Html.TextBoxFor(modelItem => Model.UserName, new { @class = "form-control", @placeholder = "Username", @data_parsley_maxlength = "50", @readonly = "Readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.IdRole)
+                        @Html.DropDownListFor(modelItem => Model.IdRole, (List<SelectListItem>)ViewBag.Role, new { @class = "form-control", @data_required = "true" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.Remarks)
+                        @Html.TextBoxFor(modelItem => Model.Remarks, new { @class = "form-control", @placeholder = "Remarks" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer bg-light lter">
+            @StateButton.Create("edit", Model.IsDraft, Model.IsSubmit, Model.IsActive)
+        </footer>
+    </section>
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+<script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+<script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+<script src="~/signalr/hubs"></script>
+    <script>
+        var userHub = $.connection.User;
+        userHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdUser') {
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                });
+            }
+        };
+
+        roleHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdUser') {
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "User")';
+                });
+            }
+        };
+    </script>
+}

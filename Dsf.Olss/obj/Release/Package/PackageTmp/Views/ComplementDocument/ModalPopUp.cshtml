@@ -1,0 +1,142 @@
+﻿<!-- Agreement Data Pop Up-->
+<div class="modal fade" id="agreementModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Agreement Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="agreement-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Agreement No</th>
+                                    <th width="20%">SKD No</th>
+                                    <th width="20%">Customer Name</th>
+                                    <th width="20%">Lease Category</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Complement Document List Pop Up-->
+<div class="modal fade" id="addComplement">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Add Complement Document List</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Category </label>
+                                <select class="form-control js-example-placeholder-single" id="Category"><option value=""></option></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Document Name</label>
+                                <input type="text" class="form-control mandatory" id="txtAddDocName" value="">
+                                <span class="field-validation-valid" data-valmsg-for="NewDocumentName" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Status Document</label>
+                                <div id="rbAddRow">
+                                    <input type="radio" name="statusDocument" value="Not Available" onclick="StatusDocumentSettingModalView()">Not Available
+                                    <input type="radio" name="statusDocument" value="Pending" onclick="StatusDocumentSettingModalView()">Pending
+                                    <input type="radio" name="statusDocument" value="Available" onclick="StatusDocumentSettingModalView()">Available
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Receiving Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="datepicker form-control" data-date-format="dd/mm/yyyy" disabled="disabled" id="NewReceiveDate">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Due Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="datepicker form-control" data-date-format="dd/mm/yyyy" disabled="disabled" id="NewDueDate">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea rows="4" class="form-control" value="" disabled="disabled" id="NewRemarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnSave" class="btn btn-info" data-toggle="modal">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <span class="msg-modal"></span> ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,232 @@
+﻿@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "Approval Path";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+
+<a href="@Url.Action("Add", "ApprovalPath")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+
+<div class="tab-pane" id="datatable">
+
+
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">Module</option>
+                            <option value="2">DSF Office</option>
+                            <option value="3">Amount</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+               
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            List of Visit Approval Path
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="DocumentList">
+            <div class="table-responsive">
+                <table id="table-list" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="header-grid-very-short">DSF Office</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-identity">Module</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-name">Range Amount<br />(Rp)</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Proposed</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Checked</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-name">Approved</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-very-short">Start Active Date</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-very-short">Status</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-very-short">Action</div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var oTable;
+            // datatable
+            $('#table-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bResponsive": true,
+                    "aaSorting": [[8, "desc"]],
+                    "sScrollXInner": "200%",
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "ApprovalPath")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() }
+                        );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "BranchName" },
+                        { "mData": "ModuleName" },
+                        {
+                            "mData": "RangeAmount",
+                            "fnRender": function (oObj) {
+                                var rab = oObj.aData["RangeAmountBase"];
+                                var ral = oObj.aData["RangeAmountLimit"];
+                                return rab + " - " + ral;
+                            }
+                        },
+                        { "mData": "Proposed" },
+                        { "mData": "Checked" },
+                        { "mData": "Approved" },
+                        { "mData": "SortableStartActiveDate" },
+                        {
+                            "mData": "StartActive",
+                            "bSearchable": false,
+                            "fnRender": function (oObj) {
+                                var status = oObj.aData["StartActive"];
+
+                                if (status === '@StatusCode.Active') {
+                                    return "<span class='label label-success'>Active</span>";
+                                } else {
+                                    return "<span class='label label-danger'>Inactive</span>";
+                                }
+                            }
+                        },
+                        {
+                            "mData": "IdTb_SYS_ApprovalPath",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData["IdTb_SYS_ApprovalPath"];
+                                var activeStatus = oObj.aData["ActiveStatus"];
+                                var htmlButtonAction = "";
+
+                                if (activeStatus === '@StatusCode.Inactive') {
+                                    htmlButtonAction += "<a title='Edit' href='@Url.Action("Edit", "ApprovalPath")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>";
+                                }
+                                else {
+                                    htmlButtonAction += "<span class='btn btn-primary disabled btn-xs'><i class='fa fa-edit'></i></span>";
+                                }
+
+                                return htmlButtonAction;
+                            }
+                        },
+                        {
+                            "mData": "SortableCreatedDate",
+                            "bVisible": false
+                        }
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0, // optional if you want to handle timeouts (which you should)
+                            "error": handleAjaxError // this sets up jQuery to give me errors
+                        });
+                    },
+                    "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                        $('td:eq(2)', nRow).css("text-align", "right");
+                        return nRow;
+                    }
+                });
+            });
+
+            var htmlTemp = '<div class="dataTables_wrapper row">';
+            var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+            var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+            $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+            htmlTemp += fakePagination + '</div>';
+            $('.table-responsive').append(htmlTemp);
+            $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+            $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+            $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+
+        });
+
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            } else if (textStatus != "") {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        // Searching
+        $('#btnSatus').on('click', function (e) {
+            e.preventDefault();
+
+            $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+        });
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+
+</script>
+}
+
+

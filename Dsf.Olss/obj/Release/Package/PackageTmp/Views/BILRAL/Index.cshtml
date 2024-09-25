@@ -1,0 +1,343 @@
+﻿@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "List of RAL";
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "BILOverdue")" class="btn btn-white">
+    <i class="fa fa-chevron-left"></i> Back
+</a> <br /> <hr>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+<div id="printsuccess"></div>
+
+<section class="panel">
+    <table class="table table-striped m-b-none">
+        <tr>
+            <th width="20%">Search Criteria</th>
+            <th width="20%">Parameter</th>
+            <th width="20%">Start RAL Creation Date</th>
+            <th width="20%">End RAL Creation Date</th>
+        </tr>
+        <tr>
+            <td>
+                <select id="ddlSearchCriteria" class="form-control">
+                    <option value="1">DSF Office</option>
+                    <option value="2">RAL Number</option>
+                    <option value="3">Agreement Number</option>
+                    <option value="4">RAL Issue Date</option>
+                    <option value="5">Customer Name</option>
+                    <option value="6">Unit Description</option>
+                    <option value="7">Created By</option>
+                    <option value="8">Last Approve By</option>
+                    <option value="9">Next Approve By</option>
+                    <option value="10">RAL Status</option>
+                </select>
+            </td>
+            <td>
+                <div>
+                    <input id="txtSearch" type="text" class="form-control">
+                </div><!-- /input-group -->
+            </td>
+            <td>
+                <div class="input-group date">
+                    <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="input-group date">
+                    <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+            </td>
+
+            <td>
+                <input id="btnSearch" class="btn btn-primary right-side" type="submit" value="Search">
+            </td>
+        </tr>
+        <tbody></tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <div class="DocumentList">
+        <div class="table-responsive">
+            <table id="table-list" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th>DSF Office</th>
+                        <th>RAL Number</th>
+                        <th>Agreement Number</th>
+                        <th>RAL Issue Date</th>
+                        <th>Customer Name</th>
+                        <th>Unit Description</th>
+                        <th>Total Unit</th>
+                        <th>Created By</th>
+                        <th>Last Approve By</th>
+                        <th>Next Approve By</th>
+                        <th>RAL Status</th>
+                        <th width="150px" style="text-align:center">Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <footer class="panel-footer bg-light lter">
+        <div id='loadingmessage' style='display: none'>
+            <img src='@Url.Content(ImgUrl)' />
+        </div>
+        <input name="statusButton" id="btnPrint" class="btn btn-info" type="button" value="Print Report">
+    </footer>
+</section>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+            var oTable;
+
+            $("#table-list").each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[3, "desc"]],
+                    "sScrollXInner": "200%",
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "BILRAL")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() },
+                            { "name": "txtStartDate", "value": $("#txtStartDate").val() },
+                            { "name": "txtEndDate", "value": $("#txtEndDate").val() }
+                        );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "bAutoWidth": false,
+                    "aoColumns": [
+                        { "mData": "DsfOffice" },
+                        { "mData": "RALNo" },
+                        { "mData": "AgreementNumber" },
+                        { "mData": "RalIssueDate" },
+                        { "mData": "CustomerName" },
+                        { "mData": "UnitDescription" },
+                        { "mData": "TotalUnit" },
+                        { "mData": "CreatedBy" },
+                        { "mData": "LastApproveBy" },
+                        { "mData": "NextApproveBy" },
+                        {
+                            "mData": null,
+                            "fnRender": function (oObj) {
+                                var statusName = oObj.aData["RalStatusName"];
+                                var retElement = "";
+                                switch (statusName) {
+                                    case "@StatusCode.Submitted":
+                                        retElement = "<span class='label label-info'>" + statusName + "</span>";
+                                        break;
+                                    case "@StatusCode.Approve":
+                                    case "@StatusCode.Escalated":
+                                        retElement = "<span class='label label-primary'>" + statusName + "</span>";
+                                        break;
+                                    case "@StatusCode.NotRecommended":
+                                    case "@StatusCode.Terminated":
+                                    case "@StatusCode.Inactive":
+                                    case "@StatusCode.Reject":
+                                        retElement = "<span class='label label-danger'>" + statusName + "</span>";
+                                        break;
+                                    case "@StatusCode.Active":
+                                    case "@StatusCode.Check":
+                                    case "@StatusCode.Recommended":
+                                    case "@StatusCode.Open":
+                                    case "@StatusCode.InitialCreation":
+                                    case "@StatusCode.SignByCustomer":
+                                        retElement = "<span class='label label-success'>" + statusName + "</span>";
+                                        break;
+                                    case "@StatusCode.Revise":
+                                        retElement = "<span class='label label-revise'>" + statusName + "</span>";
+                                        break;
+                                    case "@StatusCode.Closed":
+                                    case "@StatusCode.CloseByTerminationIncomplete":
+                                    case "@StatusCode.CloseByTerminationComplete":
+                                    case "@StatusCode.CloseByRescheduleIncomplete":
+                                    case "@StatusCode.CloseByRescheduleComplete":
+                                    case "@StatusCode.CloseByNovationIncomplete":
+                                    case "@StatusCode.CloseByNovationComplete":
+                                        retElement = "<span class='label label-default' style='background-color: rgb(23, 22, 22); !important;'>" + statusName + "</span>";
+                                        break;
+                                    default:
+                                        retElement = "<span class='label label-default'>" + statusName + "</span>";
+                                        break;
+                                }
+                                return retElement;
+                            }
+                        },
+                        {
+                            "mData": "Action",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData['IdTb_BIL_RAL'];
+                                var statusName = oObj.aData["RalStatusName"];
+                                var createdBy = oObj.aData["CreatedBy"];
+                                var htmlButtonAction = "<div style='word-wrap: break-word; white-space: nowrap;'>";
+                                if (statusName === '@StatusCode.Draft' || (statusName === '@StatusCode.Revise')) {
+                                    if (createdBy === '@Dsf.Olss.Common.SimpleSessionPersister.Username') {
+                                        htmlButtonAction += "<a title='Edit' href='@Url.Action("Edit", "BILRAL")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;";
+                                    } else {
+                                        htmlButtonAction += "<a href='#' class='btn btn-primary btn-xs disabled'><i class='fa fa-edit'></i></a>&nbsp;";
+                                    }
+                                } else {
+                                    htmlButtonAction += "<a href='#' class='btn btn-primary btn-xs disabled'><i class='fa fa-edit'></i></a>&nbsp;";
+                                }
+                                htmlButtonAction += "<a href='@Url.Action("Detail", "BILRAL")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;";
+                                htmlButtonAction += "<a href='@Url.Action("ReturnAuthorizationLetterReport", "BILRAL")/" + id + "' class='btn btn-white btn-xs'><i class='fa fa-print'></i></a>&nbsp;";
+                                htmlButtonAction += "</div>";
+                                return htmlButtonAction;
+                            }
+                        },
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0,
+                            "error": handleAjaxError,
+                            "global": false,
+                            "complete": function () {
+
+                                var fakePagination = $("#table-list_wrapper > div:eq(1)");
+                                if (typeof (fakePagination.html()) != "undefined") {
+                                    $(".table-responsive").append("<div class='dataTables_wrapper row' style='padding-left: 15px; padding-right: 15px;'><div>");
+                                    fakePagination.appendTo($(".table-responsive div[class='dataTables_wrapper row']"));
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        // Searching
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+
+                $('#table-list').dataTable().fnDraw();
+            }
+        });
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            }
+            else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+
+        $('#btnPrint').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessage').show();
+            $('#btnPrint').hide();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintRal", "BILRAL")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                global: false,
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "./Base/Download?fileName=" + response + "&rptType=" + 18;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrint').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrint').show();
+                }
+            });
+        })
+    </script>
+}

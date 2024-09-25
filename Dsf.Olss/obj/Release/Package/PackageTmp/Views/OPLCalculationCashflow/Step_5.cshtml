@@ -1,0 +1,933 @@
+﻿@model Dsf.Olss.Models.OPLCCashflowSubmitViewModel
+@using System.Web.UI.WebControls;
+
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    var step = 5;
+    ViewBag.Title = "Calculation of Operating Lease - Step 5";
+    var success = ViewBag.Success ?? TempData["Success"];
+    var error = ViewBag.Error ?? TempData["Error"];
+}
+<style type="text/css">
+    body {
+        color: black;
+    }
+</style>
+@Message.Display(success, error)
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 5, remark, x => @Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "SubmitForm", @data_validate = "parsley" }))
+{
+    @Html.HiddenFor(o => o.ConnId)
+    @Html.HiddenFor(o => o.IdOPLCalculation)
+    @Html.HiddenFor(o => o.OPLRemarks)
+    @Html.HiddenFor(o => o.TotalGrossPremium)
+
+      <!-- Input Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information (Lease Fee)
+        @if (Model.IsNewCalculation == true)
+        {
+            <label id="TextNewCalculation" class="label label-warning label-lg pull-right">New Calculation</label>
+        }
+        </header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Start Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        @Html.TextBoxFor(o => o.StartPeriodPlan, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Start Date Usage Unit Plan (mm/dd/yyyy)", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>End Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        @Html.TextBoxFor(o => o.EndPeriodPlan, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "End Date Usage Unit Plan (mm/dd/yyyy)", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Lease Period Plan (Months)</label>
+                        @Html.TextBoxFor(o => o.LeasePeriodPlan, null, new { @class = "form-control text-right", @placeholder = "Lease Period Plan (Months)", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Rate Insurance Income</label>
+                        @Html.TextBoxFor(o => o.RateInsuranceIncome, null, new { @class = "form-control percentOnly", @placeholder = "Rate Insurance Income", @tabindex = "1", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Admin Fee Amout</label>
+                        @Html.TextBoxFor(o => o.AdministrationFeeAmount, "{0:N0}", new { @class = "form-control text-right currenciesOnly", @placeholder = "Administration Fee Amount", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Interest Income</label>
+                        @Html.TextBoxFor(o => o.InterestIncome, "{0:N0}", new { @class = "form-control percentOnly", @placeholder = "Administration Fee Amount", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Target IRR (without compensation VAT In)</label>
+                        @Html.TextBoxFor(o => o.TargetIrrWithoutCompVatInPercent, null, new { @class = "form-control percentOnly", @placeholder = "Target IRR (without compensation VAT In)", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>IRR (without compensation VAT In)</label>
+                        @Html.TextBoxFor(o => o.CRIRRWithoutCompVATIn, null, new { @class = "form-control percentOnly", @placeholder = "IRR (without compensation VAT In)", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>IRR (with compensation VAT In)</label>
+                        @Html.TextBoxFor(o => o.CRIRRWithCompVATIn, null, new { @class = "form-control percentOnly", @placeholder = "IRR (with compensation VAT In)", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>BAST Handover Schedule (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.BASTHAndoverSchedule, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "BAST Handover Schedule (mm/dd/yyyy)", @tabindex = "2" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>First Lease Payment (Days)</label>
+                        @Html.TextBoxFor(o => o.FirstLeasePayment, null, new { @class = "form-control numbersOnly", @placeholder = "First Lease Payment (Days)", @tabindex = "5" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Security Deposit Payment</label>
+                        @{
+    var secdeppaymentlistItems = new List<ListItem>
+                                {
+                                      new ListItem { Text = "Yes", Value = "true" },
+                                      new ListItem { Text = "No", Value = "false" },
+                                };
+                        }
+                        @Html.DropDownListFor(o => o.SecurityDepositPayment, new SelectList(secdeppaymentlistItems, "Value", "Text"), new { @class = "form-control", @tabindex = "3" })
+                    </div>
+                    <div class="form-group">
+                        <label>Total Unit Quantity Lease</label>
+                        @Html.TextBoxFor(o => o.TotalUnitQuantityLease, null, new { @class = "form-control numbersOnly", @placeholder = "Total Unit Quantity Lease", @tabindex = "6" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Security Deposit Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.SecurityDepositAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Security Deposit Amount", @tabindex = "4" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Special Case (Remarks)</label>
+                        @Html.TextBoxFor(o => o.SpecialCaseRemarks, null, new { @class = "form-control", @placeholder = "Remarks", @tabindex = "7" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Setting Monthly Installment -->
+    <section class="panel">
+
+        <div class="panel-body">
+            <header class="panel-heading bg-info font-bold">
+                I. Contract
+            </header>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    01. Unit Price (Include VAT)
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.ProductPriceWithVAT, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    02. Unit Price (Exclude VAT)
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.ProductPriceWithoutVAT, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    03. Leased Period
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        @Html.TextBoxFor(o => o.LeasePeriodPlan, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    04. Lending Rate
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.PrimeEffectivePercent, new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                            <span class="input-group-addon bg-info">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    05. Borrowing Rate
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.BorrowingEffectivePercent, new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                            <span class="input-group-addon bg-info">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    06. Spread
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.SpreadEffectivePercent, new { @class = "form-control currenciesOnly", @placeholder = "" })
+                            <span class="input-group-addon bg-info">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <header class="panel-heading bg-info font-bold">
+                II. RV
+            </header>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    07. Vehicle list price
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.VehicleListPrice, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    08. RV
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ResidualValuePercent, new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                            <span class="input-group-addon bg-info">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    09. RV (Include VAT)
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.ResidualValueAmountWithVAT, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <header class="panel-heading bg-info font-bold">
+                III. Installment
+            </header>
+            <div class="line line-dashed pull-in"></div>
+            
+            <div class="row font-bold">
+                <div class="col-lg-4 col-md-4">
+                    10. Exclude VAT
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.MonthlyInstallmentWithoutVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    11.  　⇒Total
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalInstallmentWithoutVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    12. Include VAT
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.MonthlyInstallmentWithVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    13.  　⇒Total
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalInstallmentWithVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <header class="panel-heading bg-info font-bold">
+                IV. Income
+            </header>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row font-bold">
+                <div class="col-lg-4 col-md-4">
+                    14. Installment Total
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalInstallmentWithoutVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                @if (Model.IsNewCalculation)
+                {
+                    <div class="col-lg-4 col-md-4">
+                        15. RV (Exclude VAT)
+                    </div>
+                }
+                else
+                {
+                    <div class="col-lg-4 col-md-4">
+                        15. RV (Include VAT)
+                    </div>
+                }
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.ResidualValueAmountWithoutVAT, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    16. Commission (@Decimal.Round(Model.RateInsuranceIncome, 0)%)
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.InsuranceDiscount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    17. Discount KTB
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.DiscountKtb, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row font-bold">
+                <div class="col-lg-4 col-md-4">
+                    18. Subtotal
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.SubTotalIncomeWithVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <header class="panel-heading bg-info font-bold">
+                V. Expenses
+            </header>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    19. Insurance Expenses
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.InsuranceCost, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    20. Unit Price
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.ProductPriceWithoutVAT, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    21. Mobilization
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.MobilizationCost, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    22. Demobilization
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.DemobilizationCost, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    23. TOP (@Model.TermPaymentDays)
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.InterestCostTOP, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    24. Registration
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.STNKKEURRenewalCost, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    25. Maintenance
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.MaintenanceCost, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    26. Borrowing Cost
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.InterestCostWithVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    27. Borrowing Cost for DP
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.InterestCostBAST, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    28. Replacement
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.ReplacementUnitCost, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row font-bold">
+                <div class="col-lg-4 col-md-4">
+                    29. Subtotal
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.SubTotalExpensesWithVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="line line-dashed pull-in"></div>
+            <header class="panel-heading font-bold bg-info font-bold">
+                VI. Profit
+            </header>
+            <div class="line line-dashed pull-in"></div>
+            <div class="row font-bold">
+                <div class="col-lg-4 col-md-4">
+                    30. Net Income DSF
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.NetIncomeWithVatTax, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    31. Per year
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.NetIncomeWithVatTaxPerYear, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div><div class="row">
+                <div class="col-lg-4 col-md-4">
+                    32. Average asset
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon bg-info">Rp</span>
+                            @Html.TextBoxFor(o => o.AverageAsset, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                </div>
+                      <div class="col-lg-4 col-md-4">
+
+                      </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    33. ROA
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ROA, "{0:N1}", new { @class = "form-control currenciesOnly", @placeholder = "", @readonly = "readonly" })
+                            <span class="input-group-addon bg-info">%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer bg-light lter">
+
+            @if (remark < step)
+            {
+                <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                <input type="submit" class="btn btn-info" value="Save Changes" name="step_5" />
+            }
+            else
+            {
+                <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+                {
+                    <input type="submit" class="btn btn-info" value="Save Changes" name="step_5" />
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "6", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+                }
+                if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+                {
+                    if (Model.IsDraft)
+                    {
+                        <input type="submit" class="btn btn-info" value="Save Changes" name="step_5" />
+                        <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "6", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+                    }
+                    else
+                    {
+
+                        <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "6", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+                    }
+                }
+
+                @Html.HiddenFor(o => o.IsValid)
+                @Html.HiddenFor(o => o.IsSubmitted)
+                @Html.HiddenFor(o => o.IsDraft)
+            }
+        </div>
+    </section>
+
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+        $footer = $('.panel-footer');
+        $button = $footer.find("[type='submit']");
+        var confirm = false;
+        OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+
+        OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "OPLCalculationCashflow")';
+                });
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+
+        var $form = $('#SubmitForm'),
+            $qtys = $form.find('.Qty');
+
+        function CalculatePrimeEffective() {
+            var prime = 0;
+            var borrow = 0;
+            var spread = 0;
+            if (!isNaN($('#BorrowingEffectivePercent').val()))
+                borrow = Number($('#BorrowingEffectivePercent').val());
+            if (!isNaN($('#SpreadEffectivePercent').val()))
+                spread = Number($('#SpreadEffectivePercent').val());
+            $('#PrimeEffectivePercent').val(spread + borrow).change();
+        }
+        var nper = @(Model.LeasePeriodPlan);
+        var getUrlSpread = '@Url.Action("CalculateSpreadRateFlat", "OPLCalculationCashflow")';
+        function CalculateSpreadFlat(borrowingrate, primerate, paymenttype) {
+            var pricenet = Number($('#ProductPriceTotal').val().replace(/,/g, ''));
+            var accesoriesnet = Number($('#AccesoriesPriceTotal').val().replace(/,/g, ''));
+            var carroseriesnet = Number($('#CarroserriePriceTotal').val().replace(/,/g, ''));
+            if (isNaN(pricenet))
+                pricenet = 0;
+            if (isNaN(accesoriesnet))
+                accesoriesnet = 0;
+            if (isNaN(carroseriesnet))
+                carroseriesnet = 0;
+
+            $.ajax({
+                url: getUrlSpread,
+                dataType: "json",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ borrowingrate: borrowingrate, primerate: primerate, nper: nper, paymenttype: paymenttype, pricenet: pricenet, accesoriesnet: accesoriesnet, carroseriesnet: carroseriesnet }),
+                async: true,
+                processData: false,
+                cache: false,
+                success: function (data) {
+                    $('#SpreadFlatPercent').val(data);
+                    CalculatePrimeFlat();
+                },
+                error: function (xhr) {
+                    alert('Error on calculate');
+                }
+            });
+        }
+        
+        $('#SpreadEffectivePercent').change(function () {
+            CalculatePrimeEffective();
+            var borrowingrate = Number($('#BorrowingEffectivePercent').val().replace(/,/g, ''));
+            var primerate = Number($('#PrimeEffectivePercent').val().replace(/,/g, ''));
+            if (isNaN(borrowingrate))
+                borrowingrate = 0;
+            if (isNaN(primerate))
+                primerate = 0;
+            var paymenttype = $('#PaymentType').val();
+            CalculateSpreadFlat(borrowingrate, primerate, paymenttype);
+        });
+
+        function CalculatePrimeEffective() {
+            var prime = 0;
+            var borrow = 0;
+            var spread = 0;
+            if (!isNaN($('#BorrowingEffectivePercent').val()))
+                borrow = Number($('#BorrowingEffectivePercent').val());
+            if (!isNaN($('#SpreadEffectivePercent').val()))
+                spread = Number($('#SpreadEffectivePercent').val());
+            $('#PrimeEffectivePercent').val(spread + borrow).change();
+        }
+    </script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+}

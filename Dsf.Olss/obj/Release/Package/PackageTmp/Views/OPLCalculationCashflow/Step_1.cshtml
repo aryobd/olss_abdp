@@ -1,0 +1,1125 @@
+﻿@model Dsf.Olss.Models.OPLCalculationCashflowViewModel
+@using System.Web.UI.WebControls;
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<style type="text/css">
+    body {
+        color: black;
+    }
+</style>
+
+@{
+    var remark = Convert.ToInt32(Model.OPLRemarks);
+    var state = ViewContext.RouteData.Values["action"].ToString();
+    ViewBag.Title = "Calculation of Operating Lease - Step 1";
+    var success = ViewBag.Success ?? TempData["Success"];
+}
+@Message.Display(success, ViewBag.Error)
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+
+@{
+    var yesNoList = new List<ListItem>
+    {
+        new ListItem {Text = "Yes", Value = "true"},
+        new ListItem {Text = "No", Value = "false"}
+    };
+}
+
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 1, remark, x => @Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+@if (!state.Equals("Create"))
+{
+    <div class="panel label-panel">
+        <div class="row" style="padding-bottom:5px; padding-top:5px;">
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+            </div>
+        </div>
+    </div>
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    @Html.HiddenFor(o => o.ConnId)
+    @Html.HiddenFor(o => o.IdOPLCalculation)
+    @Html.HiddenFor(o => o.OPLRemarks)
+    @Html.HiddenFor(o => o.PrevMaintenanceType)
+    @Html.HiddenFor(o => o.LeaseCategoryName)
+    @Html.HiddenFor(o => o.CalculationTypeName)
+    @Html.HiddenFor(o => o.UnitIds)
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>OPL Calculation Number</label>
+                        @Html.TextBoxFor(o => o.OPLCalculationNumber, null, new { @class = "form-control", @placeholder = "OPL Calculation Number", @readonly = "true" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information (Product)</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Registration Code</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ProductCode, null, new { @class = "form-control", @placeholder = "Product Registration Code", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "1" })
+                            <span id="btnLoadProduct" class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#productModal" type="button" onclick="LoadProduct()" tabindex="2">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.ProductCode)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Code</label>
+                        @Html.TextBoxFor(o => o.ProductBrandCode, null, new { @class = "form-control", @placeholder = "Product Brand Code", @readonly = "true", @tabindex = "3" })
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        @Html.TextBoxFor(o => o.ModelName, null, new { @class = "form-control", @placeholder = "Product Model Name", @readonly = "true", @tabindex = "4" })
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        @Html.TextBoxFor(o => o.Transmission, null, new { @class = "form-control", @placeholder = "Transmission", @readonly = "true", @tabindex = "5" })
+                    </div>
+                    <div class="form-group">
+                        <label>Usage</label>
+                        @Html.DropDownListFor(o => o.Usage, (List<SelectListItem>)ViewBag.ProductUsage, new { @class = "form-control", @tabindex = "6" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        @Html.TextBoxFor(o => o.ProductType, null, new { @class = "form-control", @placeholder = "Product Type", @readonly = "true", @tabindex = "7" })
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        @Html.TextBoxFor(o => o.BrandName, null, new { @class = "form-control", @placeholder = "Product Brand Name", @readonly = "true", @tabindex = "8" })
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Type</label>
+                        @Html.TextBoxFor(o => o.ModelType, null, new { @class = "form-control", @placeholder = "Product Model Type", @readonly = "true", @tabindex = "9" })
+                    </div>
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        @Html.TextBoxFor(o => o.FuelType, null, new { @class = "form-control", @placeholder = "Fuel Type", @readonly = "true", @tabindex = "10" })
+                    </div>
+                    <div class="form-group">
+                        <label>Number Plate Color</label>
+                        @Html.DropDownListFor(o => o.NumberPlatColor, ViewBag.NumberPlatColor as SelectList, new { @class = "form-control", @tabindex = "11" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        @Html.TextBoxFor(o => o.ProductCategoryName, null, new { @class = "form-control", @placeholder = "Product Category", @readonly = "true", @tabindex = "12" })
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Code</label>
+                        @Html.TextBoxFor(o => o.ModelCode, null, new { @class = "form-control", @placeholder = "Product Model Code", @readonly = "true", @tabindex = "13" })
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Year (yyyy/mm)</label>
+                        @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new { @class = "form-control", @placeholder = "Product Model Year (yyyy/mm)", @readonly = "true", @tabindex = "14" })
+                    </div>
+                    <div class="form-group">
+                        <label>Displacement (CC)</label>
+                        @Html.TextBoxFor(o => o.Displacement, null, new { @class = "form-control", @placeholder = "Displacement", @readonly = "true", @tabindex = "15" })
+                    </div>
+                    <div class="form-group" hidden>
+                        <label>Monthly Mileage (Km)</label>
+                        @Html.TextBoxFor(o => o.MonthlyMileage, null, new { @class = "form-control numbersOnly", @placeholder = "Monthly Mileage", @tabindex = "16" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Input Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information (Lease)</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <div class="input-group">
+                            @Html.HiddenFor(o => o.CustomerCode)
+                            @Html.TextBoxFor(o => o.CustomerName, null, new { @class = "form-control", @placeholder = "Customer Name", @data_required = "true", @parsley_error_container = ".input-group", @readonly = "true", @tabindex = "17" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#customerModal" type="button" onclick="LoadCustomer()" tabindex="18">...</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Lease Category</label>
+                        @Html.DropDownListFor(o => o.LeaseCategory, ViewBag.LeaseCategory as SelectList, new { @class = "form-control", @tabindex = "19" })
+                    </div>
+                    <div class="form-group">
+                        <label>Calculation Type</label>
+                        @Html.DropDownListFor(o => o.CalculationType, ViewBag.CalculationType as SelectList, new { @class = "form-control", @tabindex = "20" })
+                    </div>
+                    <div class="form-group">
+                        <label>Previous Agreement Number</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ContractNumberReff, null, new { @class = "form-control", @placeholder = "Previous Agreement Number", @readonly = "true", @tabindex = "21" })
+                            <span class="input-group-btn">
+                                <button id="btnPrevAgreement" class="btn btn-white" data-toggle="modal" data-target="#prevAgreementModal" type="button" onclick="LoadPrevAgreement()" tabindex="22" disabled="disabled">...</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.StartPeriodPlan, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "Start Date Usage Unit Plan (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @tabindex = "23" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+
+                        </div>
+                        @Html.ValidationMessageFor(o => o.StartPeriodPlan)
+                    </div>
+                    <div class="form-group">
+                        <label>Lease Period Plan (Months)</label>
+                        @Html.TextBoxFor(o => o.LeasePeriodPlan, null, new { @class = "form-control numbersOnly", @placeholder = "Lease Period Plan (Months)", @data_required = "true", @tabindex = "24" })
+                    </div>
+                    @Html.ValidationMessageFor(o => o.LeasePeriodPlan)
+                    <div class="form-group">
+                        <label>Term of Payment (Days)</label>
+                        @Html.TextBoxFor(o => o.TermPaymentDays, null, new { @class = "form-control numbersOnly", @placeholder = "Term of Payments", @tabindex = "25", @data_required = "true" })
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Maintenance Type</label>
+                        @Html.DropDownListFor(o => o.MaintenanceType, (List<SelectListItem>)ViewBag.MaintenanceType, new { @class = "form-control", @tabindex = "26" })
+                    </div>
+                    <div class="form-group">
+                        <label>Insurance</label>
+                        @{
+                            var insurancelistItems = new List<ListItem>
+                            {
+                                new ListItem {Text = "Yes", Value = "true"},
+                                new ListItem {Text = "No", Value = "false"}
+                            };
+                        }
+                        @Html.DropDownListFor(o => o.Insurance, new SelectList(insurancelistItems, "Value", "Text"), new { @class = "form-control", @tabindex = "27" })
+                    </div>
+                    <div class="form-group">
+                        <label>End Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        @Html.TextBoxFor(o => o.EndPeriodPlan, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "End Date Usage Unit Plan (mm/dd/yyyy)", @data_required = "true", @readonly = "true", @tabindex = "28" })
+                        @Html.ValidationMessageFor(o => o.EndPeriodPlan)
+                    </div>
+                    <div class="form-group">
+                        <label>Purchase Requirement After Lease</label>
+                        @{
+                        var afterleaselistItems = new List<ListItem>
+                            {
+                                new ListItem {Text = "Yes", Value = "true"},
+                                new ListItem {Text = "No", Value = "false"}
+                            };
+                        }
+                        @Html.DropDownListFor(o => o.PurchaseAfterLease, new SelectList(afterleaselistItems, "Value", "Text"), new { @class = "form-control", @tabindex = "29" })
+                    </div>
+                    <div class="form-group">
+                        <label>Carroserrie</label>
+                        @Html.DropDownListFor(o => o.CarroserrieIsExist, new SelectList(yesNoList, "Value", "Text"), new { @class = "form-control", @tabindex = "30" })
+                    </div>
+                    <div class="form-group">
+                        <label>Carroserie Type</label>
+                            @Html.TextBoxFor(o => o.CarroserrieType, null, new { @class = "form-control", @placeholder = "Carroserrie Type", @data_maxlength = "200", @tabindex = "31" })
+                    </div>
+                    @Html.ValidationMessageFor(o => o.CarroserrieType)
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Accessories</label>
+                        @Html.DropDownListFor(o => o.AccessoriesIsExist, new SelectList(yesNoList, "Value", "Text"), new { @class = "form-control", @tabindex = "32" })
+                    </div>
+                    <div class="form-group">
+                        <label>Accessories Type</label>
+                        @Html.TextBoxFor(o => o.AccessoriesType, null, new { @class = "form-control", @placeholder = "Accessories Type", @data_maxlength = "200", @tabindex = "33" })
+                    </div>
+                    <div class="form-group">
+                        <label>Purchase Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.PurchaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "Purchase Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @tabindex = "34" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+
+                        </div>
+                        @Html.ValidationMessageFor(o => o.PurchaseDate)
+                    </div>
+                    <div class="form-group">
+                        <label>Replacement Car</label>
+                        @Html.DropDownListFor(o => o.ReplacementCarIsExist, new SelectList(yesNoList, "Value", "Text"), new { @class = "form-control", @tabindex = "35" })
+                    </div>
+                    <div class="form-group">
+                        <label>Mobilization</label>
+                        @Html.DropDownListFor(o => o.MobilizationFeeIsExist, new SelectList(yesNoList, "Value", "Text"), new { @class = "form-control", @tabindex = "36" })
+                    </div>
+                    <div class="form-group">
+                        <label>Demobilization</label>
+                        @Html.DropDownListFor(o => o.DemobilizationFeeIsExist, new SelectList(yesNoList, "Value", "Text"), new { @class = "form-control", @tabindex = "37" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" id="novation">
+        <header class="panel-heading font-bold">Novation / Reschedule Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group" id="fg-OverdueInstallment">
+                        <label>Overdue Installment</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverdueInstallment, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Installment", @data_maxlength = "23", @readonly = "true", @tabindex = "38" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-OverdueInstallmentCalc">
+                        <label>Overdue Installment for Customer</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverdueInstallmentCalc, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Installment for Customer", @data_maxlength = "23", @readonly = "true", @tabindex = "39" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-OverduePenalty">
+                        <label>Overdue Penalty</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverduePenalty, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Penalty", @data_maxlength = "23", @readonly = "true", @tabindex = "40" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-OverduePenaltyCalc">
+                        <label>Overdue Penalty for Customer</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverduePenaltyCalc, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Penalty for Customer", @data_maxlength = "23", @readonly = "true", @tabindex = "41" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group" id="fg-OverdueActualMaintenance">
+                        <label>Overdue Actual Maintenance</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverdueActualMaintenance, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Actual Maintenance", @data_maxlength = "23", @readonly = "true", @tabindex = "42" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-OverdueActualMaintenanceCalc">
+                        <label>Overdue Actual Maintenance for Customer</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverdueActualMaintenanceCalc, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Actual Maintenance for Customer", @data_maxlength = "23", @readonly = "true", @tabindex = "43" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-OverdueBackCharge">
+                        <label>Overdue Back Charge</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverdueBackCharge, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Back Charge", @data_maxlength = "23", @readonly = "true", @tabindex = "44" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-OverdueBackChargeCalc">
+                        <label>Overdue Back Charge for Customer</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.OverdueBackChargeCalc, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Overdue Back Charge for Customer", @data_maxlength = "23", @readonly = "true", @tabindex = "45" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group" id="fg-UnitReconditionFee">
+                        <label>Unit Recondition Fee</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.UnitReconditionFee, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Unit Recondition Fee", @data_maxlength = "23", @readonly = "true", @tabindex = "46" })
+                        </div>
+                    </div>
+                    <div class="form-group" id="fg-UnitReconditionFeeCalc">
+                        <label>Unit Recondition Fee for Customer</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.UnitReconditionFeeCalc, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Unit Recondition Fee for Customer", @data_maxlength = "23", @readonly = "true", @tabindex = "47" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" id="sc-unit">
+        <header class="panel-heading font-bold">Product Unit</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <button class="btn btn-white" data-toggle="modal" data-target="#unitModal" type="button" onclick="LoadUnit()" tabindex="48">Add Unit</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="oplunit-list" class="table table-striped m-b-none table-calc">
+                    <thead>
+                        <tr>
+                            <th width="120px">Police Number</th>
+                            <th width="110px">Engine Number</th>
+                            <th width="110px">Chassis Number</th>
+                            <th width="110px">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="panel-footer bg-light lter">
+            @if (state.ToLower().Equals("create"))
+            {
+                <input type="submit" class="btn btn-info" value="Save as Draft" name="action" tabindex="49" />
+            }
+            else
+            {
+                if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+                {
+                    if (Model.IsDraft)
+                    {
+                        <input type="submit" class="btn btn-info" value="Save Changes" name="step_1" tabindex="50" />
+                    }
+                    else if (Model.IsSubmitted)
+                    {
+                        <input type="submit" class="btn btn-info" value="Save Changes" name="step_1" tabindex="51" />
+                    }
+                }
+                if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+                {
+                    if (Model.IsDraft)
+                    {
+
+                        <input type="submit" class="btn btn-info" value="Save Changes" name="step_1" tabindex="52" />
+                    }
+                }
+
+                if (Model.IsEditableAfterValid && !Model.IsDraft && !Model.IsSubmitted)
+                { //added by Sonny (26 Mar 2018), pada step 1, ditambahkan juga
+                    <input type="submit" class="btn btn-info" value="Set to Draft" name="step_1" />
+                }
+
+                if (Model.IsEditableAfterValid && Model.IsDraft && Model.IsValid && !Model.IsSubmitted)
+                { //added by Sonny (26 Mar 2018), pada step 1, ditambahkan juga
+                    <input type="submit" class="btn btn-info" value="Set to Valid" name="step_1" />
+                }
+
+                @Html.HiddenFor(o => o.IsValid)
+                @Html.HiddenFor(o => o.IsSubmitted)
+                @Html.HiddenFor(o => o.IsDraft)
+                @Html.HiddenFor(o => o.IsEditableAfterValid) @* Added by Sonny (26 Mar 2018) untuk flag boleh edit setelah isvalud=true/approved*@
+                <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" tabindex="53" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+            }
+
+        </div>
+    </section>
+
+}
+@*</section>*@
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jsDate.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="@Url.Content("~/Content/js/Common.js")"></script>
+    <script>
+        var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+        $footer = $('.panel-footer');
+        $button = $footer.find("[type='submit']");
+        var confirm = false;
+        OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.href = location.href;
+                    }
+                    confirm = false;
+                });
+            }
+        };
+
+        OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "OPLCalculationCashflow")';
+                });
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+
+        $('.datepicker-input').datepicker({
+            format: 'mm/dd/yyyy',
+            minViewMode: 0,
+            startView: 0,
+            endDate: '12/31/9999',
+            startDate: '01/01/1753'
+        });
+        $('#StartPeriodPlan').datepicker().on('changeDate', function () {
+            var firstpaymentduedate = GetEndPeriod();
+            GetValidityMonth();
+            GetValidityDate(firstpaymentduedate);
+            $('#StartPeriodPlan').focus();
+        });
+        $('#LeasePeriodPlan').change(function () {
+            var firstpaymentduedate = GetEndPeriod();
+            GetValidityMonth();
+            GetValidityDate(firstpaymentduedate);
+            $('#LeasePeriodPlan').focus();
+        });
+        $('#TermPaymentDays').change(function () {
+            var firstpaymentduedate = GetEndPeriod();
+            GetValidityMonth();
+            GetValidityDate(firstpaymentduedate);
+            $('#TermPaymentDays').focus();
+        });
+
+        function GetEndPeriod() {
+
+            var daysUsageUnit = 30;
+            var firstStartDate = new Date($('#StartPeriodPlan').datepicker().val());
+            var leasePeriod = $('#LeasePeriodPlan').val();
+            if (leasePeriod <= 0) {
+                return;
+            }
+            if (firstStartDate == null) {
+                return;
+            }
+            var firstEndDate = firstStartDate;
+            firstEndDate.setDate(firstEndDate.getDate() + daysUsageUnit);
+            var d1 = firstEndDate.getDate();
+            var m1 = firstEndDate.getMonth() + 1;
+            var y1 = firstEndDate.getFullYear();
+            var formattedDate1 = ("0" + m1).slice(-2) + '/' + ("0" + d1).slice(-2) + '/' + y1;
+
+            var top = Number($('#TermPaymentDays').val());
+            var firstDueDate = firstEndDate;
+            firstDueDate.setDate(firstDueDate.getDate() + top);
+            var d2 = firstDueDate.getDate();
+            var m2 = firstDueDate.getMonth() + 1;
+            var y2 = firstDueDate.getFullYear();
+            var formattedDate2 = ("0" + m2).slice(-2) + '/' + ("0" + d2).slice(-2) + '/' + y2;
+
+            var lastDueDate = firstDueDate;
+            lastDueDate.setMonth(lastDueDate.getMonth() + (leasePeriod - 1));
+            var d3 = lastDueDate.getDate();
+            var m3 = lastDueDate.getMonth() + 1;
+            var y3 = lastDueDate.getFullYear();
+            var formattedDate3 = ("0" + m3).slice(-2) + '/' + ("0" + d3).slice(-2) + '/' + y3;
+
+            var lastEndDate = lastDueDate;
+            lastEndDate.setDate(lastEndDate.getDate() - top);
+            var d4 = lastEndDate.getDate();
+            var m4 = lastEndDate.getMonth() + 1;
+            var y4 = lastEndDate.getFullYear();
+            var formattedDate4 = ("0" + m4).slice(-2) + '/' + ("0" + d4).slice(-2) + '/' + y4;
+            $("#EndPeriodPlan").val(formattedDate4);
+            return formattedDate2;
+        }
+
+        function GetValidityMonth() {
+
+            var date1 = new Date($('#StartPeriodPlan').datepicker().val());
+            var date2 = new Date($('#EndPeriodPlan').val());
+            if (date2 < date1) {
+                //  var a = $('#LeaseCategory').parsley();
+                // window.ParsleyUI.addError(a, "myCustomError", 'End Period Plan Should not Bigger than Start Period');
+                $('span[data-valmsg-for=EndPeriodPlan]').html("End Period Plan Should be Bigger than Start Period");
+                $('span[data-valmsg-for=EndPeriodPlan]').addClass("text-danger").addClass("text-sm").show();
+                $('#LeasePeriodPlan').val('');
+            } else {
+                $('span[data-valmsg-for=EndPeriodPlan]').hide();
+                // window.ParsleyUI.removeError($('#LeaseCategory').parsley(), "myCustomError");
+            }
+
+        }
+
+        function GetValidityDate(date) {
+            if (date == null)
+                return;
+            var duedate = new Date(date);
+            if (duedate.getDate() > 28) {
+                // $('span[data-valmsg-for=StartPeriodPlan]').html("The payment due date cannot be on 29th,30th, or 31st. please change the start date");
+                // $('span[data-valmsg-for=StartPeriodPlan]').addClass("text-danger").addClass("text-sm").show();
+                // $('#StartPeriodPlan').val('');
+            } else {
+                // $('span[data-valmsg-for=StartPeriodPlan]').hide();
+                // window.ParsleyUI.removeError($('#LeaseCategory').parsley(), "myCustomError");
+            }
+        }
+
+
+        var loadProductCount = 0;
+
+        function LoadProduct() {
+            var oTable = null;
+            $('#product-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("ProductDatatable", "OPLCalculationCashflow")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "ProductCode" },
+                        { "mData": "ProductCategory1" },
+                        { "mData": "BrandName" },
+                        { "mData": "ModelName" },
+                        {
+                            "mData": "ModelYear"
+                            //"fnRender": function (aObj) {
+                            //    var date = new Date(parseInt(aObj.aData["ModelYear"].substr(6)));
+                            //    var modeldate = date.getFullYear() + "/" + date.getMonth();
+                            //    return modeldate;
+                            //}
+                        },
+                        {
+                            "mData": "ModelCode",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "BrandCode",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "Transmission",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "ProductType1",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "DisPlacement",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "FuelType",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "ModelType",
+                            "bVisible": false
+                        }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+
+            if (window.loadProductCount == 1) {
+                oTable.fnFilter('');
+            }
+            window.loadProductCount = 1;
+            $("#product-list tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                $("#ProductCode").val(data.ProductCode);
+                $("#ProductType").val(data.ProductType1);
+                $("#ProductCategoryName").val(data.ProductCategory1);
+                $("#ProductBrandCode").val(data.BrandCode);
+                $("#BrandName").val(data.BrandName);
+                $("#ModelCode").val(data.ModelCode);
+                $("#ModelName").val(data.ModelName);
+                $("#ModelType").val(data.ModelType);
+                $("#ModelYear").val(data.ModelYear);
+                $("#Transmission").val(data.Transmission);
+                $("#FuelType").val(data.FuelType);
+                $("#Displacement").val(data.DisPlacement);
+
+                $("#PoliceNumber").val('');
+                $("#ContractNumberReff").val('');
+
+                $('#productModal').modal('hide');
+                $("#product-list tbody").undelegate("tr", "click");
+                $("#ProductCode").focus();
+            });
+
+
+        };
+
+        var loadUnitCount = 0;
+
+        function LoadUnit() {
+            // datatable
+            var oTable = null;
+            $('#unit-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "bRetrieve": true,
+                    "bDestroy": true,
+                    "bCache": false,
+                    "bStateSave": false,
+                    "sAjaxSource": "@Url.Action("UnitDataTable", "OPLCalculationCashflow")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "productCode", "value": $("#ProductCode").val() }
+                        );
+                    },
+                    "cache": false,
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "ProductCode" },
+                        { "mData": "PoliceNumber" },
+                        { "mData": "EngineNumber" },
+                        { "mData": "ChassisNumber" },
+                        {
+                            "mData": "IdTbOplUnit",
+                            "bVisible": false
+                        }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+            if (window.loadUnitCount == 1) {
+                oTable.fnFilter('');
+                //$('#unit-list').dataTable().fnDraw();
+            }
+            window.loadUnitCount = 1;
+            $("#unit-list tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+                if (data != null) {
+                    var unitId = data.IdTbOplUnit;
+                    var flag = 0;
+                    $('table[id="oplunit-list"]').find('tr[id="' + unitId + '"]').each(function () { //iterate through rows
+                        flag = 1;
+                    });
+
+                    if (flag == 1) {
+                        alert('The product unit with Police Number ' + data.PoliceNumber + ' is already exist in the table.');
+                    } else {
+                        var _html = '<tr id="' + unitId + '" class="">' +
+                            '<td>' + data.PoliceNumber + '</td>' +
+                            '<td>' + data.EngineNumber + '</td>' +
+                            '<td>' + data.ChassisNumber + '</td>' +
+                            '<td class="datatables_action">' +
+                            '<a id="a_Delete" title="Delete" data-toggle="modal" onclick="DeleteOplUnit(' + unitId + ')" href="#" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></td>' +
+                            '</tr>';
+                        $('table[id="oplunit-list"]').find('tbody').append(_html);
+
+                        GetUnitIds();
+                    }
+                }
+                $('#unitModal').modal('hide');
+                $("#unit-list tbody").undelegate("tr", "click");
+            });
+        };
+
+        function GetUnitIds() {
+            var unitIds = "";
+            var sparator = 0;
+            $('table[id="oplunit-list"]').find('tbody tr').each(function () {
+                var trid = $(this).closest('tr').attr('id');
+                if (sparator == 0) {
+                    unitIds += '' + trid + '';
+                    sparator = 1;
+                } else {
+                    unitIds += ',' + trid + '';
+                }
+            });
+            $('#UnitIds').val(unitIds);
+        }
+
+        function DeleteOplUnit(unitId) {
+            $('table[id="oplunit-list"]').find('tr[id="' + unitId + '"]').remove();
+            GetUnitIds();
+        }
+
+        var loadPrevAgreementCount = 0;
+
+        function LoadPrevAgreement() {
+            // datatable
+            var oTable = null;
+
+            $('#prevAgreement-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sScrollXInner": "200%",
+                    "bRetrieve": true,
+                    "bDestroy": true,
+                    "bCache": false,
+                    "bStateSave": false,
+                    "sAjaxSource": "@Url.Action("PrevAgreementDataTable", "OPLCalculationCashflow")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "productCode", "value": $("#ProductCode").val() }
+                        );
+                    },
+                    "cache": false,
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "PrevAgreementNumber" },
+                        { "mData": "PrevOplCalculationNumber" },
+                        { "mData": "PrevMaintenanceType" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+            if (window.loadPrevAgreementCount == 1) {
+                oTable.fnFilter('');
+                //$('#unit-list').dataTable().fnDraw();
+            }
+            window.loadPrevAgreementCount = 1;
+
+            $("#prevAgreement-list tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+                if (data != null) {
+                    $("#ContractNumberReff").val(data.PrevAgreementNumber);
+                    $("#PrevMaintenanceType").val(data.PrevMaintenanceType);
+                    PrevAgreementEvent();
+                }
+                $('#prevAgreementModal').modal('hide');
+                $("#prevAgreement-list tbody").undelegate("tr", "click");
+            });
+
+        };
+
+        function LoadCustomer() {
+
+            // datatable
+            var oTable = null;
+            $('#customer-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("CustomerDatatable", "OPLCalculationCashflow")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "CustomerCode" },
+                        { "mData": "CustomerName" },
+                        { "mData": "Address" },
+                        { "mData": "Telephone" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+            $("#customer-list tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                $("#CustomerCode").val(data.CustomerCode);
+                $("#CustomerName").val(data.CustomerName);
+
+                $('#customerModal').modal('hide');
+                $("#customer-list tbody").undelegate("tr", "click");
+                $("#CustomerName").focus();
+            });
+        };
+
+        function PrevAgreementEvent() {
+            if (($('option:selected', $("select#CalculationType")).text() == "Novation Agreement") || ($('option:selected', $("select#CalculationType")).text() == "Reschedule")) {
+
+                if ($("#PrevMaintenanceType").val() == "Customer Service Desk") {
+                    $("#OverdueActualMaintenance").prop("readonly", false);
+                    $("#OverdueActualMaintenanceCalc").prop("readonly", false);
+                } else {
+                    $("#OverdueActualMaintenance").val('');
+                    $("#OverdueActualMaintenanceCalc").val('');
+                    $("#OverdueActualMaintenance").prop("readonly", true);
+                    $("#OverdueActualMaintenanceCalc").prop("readonly", true);
+                }
+
+                if ($("#PrevMaintenanceType").val() == "Full Maintenance") {
+                    $("#OverdueBackCharge").prop("readonly", false);
+                    $("#OverdueBackChargeCalc").prop("readonly", false);
+                } else {
+                    $("#OverdueBackCharge").val('');
+                    $("#OverdueBackChargeCalc").val('');
+                    $("#OverdueBackCharge").prop("readonly", true);
+                    $("#OverdueBackChargeCalc").prop("readonly", true);
+                }
+            } else {
+                $("#OverdueActualMaintenance").val('');
+                $("#OverdueActualMaintenanceCalc").val('');
+                $("#OverdueActualMaintenance").prop("readonly", true);
+                $("#OverdueActualMaintenanceCalc").prop("readonly", true);
+
+                $("#OverdueBackCharge").val('');
+                $("#OverdueBackChargeCalc").val('');
+                $("#OverdueBackCharge").prop("readonly", true);
+                $("#OverdueBackChargeCalc").prop("readonly", true);
+            }
+
+        }
+
+        function CalculationTypeEvent() {
+            if (($("#CalculationTypeName").val() == "Novation Agreement") || ($("#CalculationTypeName").val() == "Reschedule")) {
+                $("#OverdueInstallment").prop("readonly", false);
+                $("#OverdueInstallmentCalc").prop("readonly", false);
+                $("#OverduePenalty").prop("readonly", false);
+                $("#OverduePenaltyCalc").prop("readonly", false);
+                $("#UnitReconditionFee").prop("readonly", false);
+                $("#UnitReconditionFeeCalc").prop("readonly", false);
+
+                $("#btnPrevAgreement").prop("disabled", false);
+                if ($("#PrevMaintenanceType").val() == "Customer Service Desk") {
+                    $("#OverdueActualMaintenance").prop("readonly", false);
+                    $("#OverdueActualMaintenanceCalc").prop("readonly", false);
+                } else {
+                    $("#OverdueActualMaintenance").val('');
+                    $("#OverdueActualMaintenanceCalc").val('');
+                    $("#OverdueActualMaintenance").prop("readonly", true);
+                    $("#OverdueActualMaintenanceCalc").prop("readonly", true);
+                }
+
+                if ($("#PrevMaintenanceType").val() == "Full Maintenance") {
+                    $("#OverdueBackCharge").prop("readonly", false);
+                    $("#OverdueBackChargeCalc").prop("readonly", false);
+                } else {
+                    $("#OverdueBackCharge").val('');
+                    $("#OverdueBackChargeCalc").val('');
+                    $("#OverdueBackCharge").prop("readonly", true);
+                    $("#OverdueBackChargeCalc").prop("readonly", true);
+                }
+            } else {
+                $("#btnPrevAgreement").prop("disabled", true);
+                $("#ContractNumberReff").val('');
+
+                $("#OverdueInstallment").val('');
+                $("#OverdueInstallmentCalc").val('');
+                $("#OverduePenalty").val('');
+                $("#OverduePenaltyCalc").val('');
+                $("#UnitReconditionFee").val();
+                $("#UnitReconditionFeeCalc").val();
+
+                $("#OverdueInstallment").prop("readonly", true);
+                $("#OverdueInstallmentCalc").prop("readonly", true);
+                $("#OverduePenalty").prop("readonly", true);
+                $("#OverduePenaltyCalc").prop("readonly", true);
+                $("#UnitReconditionFee").prop("readonly", true);
+                $("#UnitReconditionFeeCalc").prop("readonly", true);
+
+                $("#OverdueActualMaintenance").val('');
+                $("#OverdueActualMaintenanceCalc").val('');
+                $("#OverdueActualMaintenance").prop("readonly", true);
+                $("#OverdueActualMaintenanceCalc").prop("readonly", true);
+
+                $("#OverdueBackCharge").val('');
+                $("#OverdueBackChargeCalc").val('');
+                $("#OverdueBackCharge").prop("readonly", true);
+                $("#OverdueBackChargeCalc").prop("readonly", true);
+            }
+        }
+
+        function LoadUnitTable() {
+            var idOplCalculation = $('#IdOPLCalculation').val();
+            var getUnitsByCalculationNumber = '@Url.Action("GetUnitsByCalculationNumber", "OPLCalculationCashflow")';
+            $.ajax({
+                type: "GET",
+                url: getUnitsByCalculationNumber,
+                data: { idOplCalculation: idOplCalculation },
+                cache: false,
+                success: function (data) {
+                    $.each(data.result, function (i) {
+                        var html = '<tr id="' + data.result[i].IdTb_OPL_Unit + '" class="">' +
+                            '<td>' + data.result[i].PoliceNumber + '</td>' +
+                            '<td>' + data.result[i].EngineNumber + '</td>' +
+                            '<td>' + data.result[i].ChassisNumber + '</td>' +
+                            '<td class="datatables_action">' +
+                            '<a id="a_Delete" title="Delete" data-toggle="modal" onclick="DeleteOplUnit(' + data.result[i].IdTb_OPL_Unit + ')" href="#" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></td>' +
+                            '</tr>';
+                        $('table[id="oplunit-list"]').find('tbody').append(html);
+                    });
+                    GetUnitIds();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            if ($("#LeaseCategoryName").val() == "Refinance") {
+                $("#sc-unit").show();
+            } else {
+
+                $("#PoliceNumber").val('');
+                $("#sc-unit").hide();
+            }
+
+            $("#CalculationTypeName").val($('option:selected', $("select#CalculationType")).text());
+            if ($("#IdOPLCalculation").val() != 0) {
+                PrevAgreementEvent();
+                CalculationTypeEvent();
+                if ($("#LeaseCategoryName").val() == "Refinance") {
+                    LoadUnitTable();
+                }
+            }
+
+            $(".currenciesOnly").on('keydown', currenciesOnly)
+                .on('blur', function () { $(this).formatCurrency(); });
+            $(".numbersOnly").on('keydown', numbersOnly);
+            $("select#LeaseCategory").change(function () {
+                $("#LeaseCategoryName").val($('option:selected', $(this)).text());
+                if ($('option:selected', $(this)).text() == "Refinance") {
+                    $("#sc-unit").show();
+                } else {
+                    $('#UnitIds').val('');
+                    $("#PoliceNumber").val('');
+                    $("#sc-unit").hide();
+                }
+            });
+
+
+            $("select#CalculationType").change(function () {
+                $("#CalculationTypeName").val($('option:selected', $(this)).text());
+                CalculationTypeEvent();
+            });
+
+            if ($("#CarroserrieIsExist").val() == 'true') {
+                $("#CarroserrieType").prop("disabled", false);
+            } else {
+                $("#CarroserrieType").prop("disabled", true);
+            }
+
+            if ($("#AccessoriesIsExist").val() == 'true') {
+                $("#AccessoriesType").prop("disabled", false);
+            } else {
+                $("#AccessoriesType").prop("disabled", true);
+            }
+            
+            $('input[type="submit"]').on('click', function (e) {
+                if ($("#CarroserrieIsExist").val() == 'true') {
+                    $("#CarroserrieType").parsley('destroy');
+                    $("#CarroserrieType").addClass('required');
+                    $("#CarroserrieType").parsley('validate');
+                    if ($("#CarroserrieType").val() == '') event.preventDefault();
+                } else {
+                    $("#CarroserrieType").removeClass('required');
+                    $("#CarroserrieType").parsley('destroy');
+                }
+
+                if ($("#AccessoriesIsExist").val() == 'true') {
+                    $("#AccessoriesType").parsley('destroy');
+                    $("#AccessoriesType").addClass('required');
+                    $("#AccessoriesType").parsley('validate');
+                    if ($("#AccessoriesType").val() == '') event.preventDefault();
+                } else {
+                    $("#AccessoriesType").removeClass('required');
+                    $("#AccessoriesType").parsley('destroy');
+                }
+            });
+        });
+
+
+        $('#CarroserrieIsExist').change(function () {
+            if ($("#CarroserrieIsExist").val() == 'true') {
+                $("#CarroserrieType").prop("disabled", false);
+                $("#CarroserrieType").addClass('required');
+                $("#CarroserrieType").parsley('validate');
+            } else {
+                $("#CarroserrieType").parsley('destroy');
+                $("#CarroserrieType").prop("disabled", true).val('');
+            }
+        });
+
+        $('#AccessoriesIsExist').change(function () {
+            if ($("#AccessoriesIsExist").val() == 'true') {
+                $("#AccessoriesType").prop("disabled", false);
+                $("#AccessoriesType").addClass('required');
+                $("#AccessoriesType").parsley('validate');
+            } else {
+                $("#AccessoriesType").parsley('destroy');
+                $("#AccessoriesType").prop("disabled", true).val('');
+            }
+        });
+
+        $('#CarroserrieType').change(function () {
+            if ($("#CarroserrieIsExist").val() == 'true' && $("#CarroserrieType").val() == '') {
+                $("#CarroserrieType").parsley('destroy');
+                $("#CarroserrieType").addClass('required');
+                $("#CarroserrieType").parsley('validate');
+            } else {
+                $("#CarroserrieType").parsley('destroy');
+            }
+        });
+
+        $('#AccessoriesType').change(function () {
+            if ($("#AccessoriesIsExist").val() == 'true' && $("#AccessoriesType").val() == '') {
+                $("#AccessoriesType").parsley('destroy');
+                $("#AccessoriesType").addClass('required');
+                $("#AccessoriesType").parsley('validate');
+            } else {
+                $("#AccessoriesType").parsley('destroy');
+            }
+        });
+
+    </script>
+
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+}

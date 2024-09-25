@@ -1,0 +1,540 @@
+﻿@model Dsf.Olss.Models.SalesQuotationViewModel
+
+@{
+    ViewBag.Title = "Detail Refinance Quotation";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "SalesQuotation")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+
+@if (Model.IsSubmitted == true && Model.IsDraft == false && Model.IsValid == false)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == true && Model.IsValid == false)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+
+<hr>
+
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Refinance Quotation Number</label>
+                    <p class="form-control-static">@(Model.COSQuotationNumber)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Refinance Calc. Number</label>
+                    <p class="form-control-static">@(Model.COSNumber ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Customer Name / Buyer</label>
+                    <p class="form-control-static">@(Model.CustomerName ?? "-")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Product Basic Information</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Product Registration Code</label>
+                    <p class="form-control-static">@(Model.ProductCode ?? "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Product Brand Code</label>
+                    <p class="form-control-static">@(Model.BrandCode ?? "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Product Model Name</label>
+                    <p class="form-control-static">@(Model.ModelName ?? "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Transmission</label>
+                    <p class="form-control-static">@(Model.Transmission ?? "-")</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4">
+
+                <div class="form-group">
+                    <label>Product Type</label>
+                    <p class="form-control-static">@(Model.ProductType ?? "-")</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Brand Name</label>
+                    <p class="form-control-static">@(Model.BrandName ?? "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Product Model Type</label>
+                    <p class="form-control-static">@(Model.ModelType ?? "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Fuel Type</label>
+                    <p class="form-control-static">@(Model.FuelType ?? "-")</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4">
+
+                <div class="form-group">
+                    <label>Product Category</label>
+                    <p class="form-control-static">@(Model.ProductCategory1 ?? "-")</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Model Code</label>
+                    <p class="form-control-static">@(Model.ModelCode ?? "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Product Model Year (yyyy/mm)</label>
+                    <p class="form-control-static">@(Model.ModelYear.HasValue ? String.Format("{0:yyyy/MM}", Model.ModelYear) : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Displacement (CC)</label>
+                    <p class="form-control-static text-right">@(Model.DisPlacement ?? "-")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Maximum Loading Capacity</label>
+                    <p class="form-control-static text-right">@(Model.MaxLoadingCapacity ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Riding Capacity</label>
+                    <p class="form-control-static text-right">@(Model.RidingCapacity ?? 0)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Number Plat Color</label>
+                    <p class="form-control-static">@(Model.NumberPlatColor ?? "-")</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Registration Date (mm/dd/yyyy)</label>
+                    <p class="form-control-static">@(Model.RegistrationDate.HasValue ? String.Format("{0:MM/dd/yyyy}", Model.RegistrationDate) : "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Usage</label>
+                    <p class="form-control-static">@(Model.Usage ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Location</label>
+                    <p class="form-control-static">@(Model.Location ?? "-")</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Engine Number</label>
+                    <p class="form-control-static">@(Model.EngineNumber ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Police Number</label>
+                    <p class="form-control-static">@(Model.PoliceNumber ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Special Options</label>
+                    <p class="form-control-static">@(Model.SpecialOptions ?? "-")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@*<section class="panel">
+        <header class="panel-heading">Product Basic Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Brand Code</label>
+                        <p class="form-control-static">@(Model.BrandCode ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Brand Name</label>
+                        <p class="form-control-static">@(Model.BrandName ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Model Name</label>
+                        <p class="form-control-static">@(Model.ModelName ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Model Year</label>
+                        <p class="form-control-static">@(Model.ModelYear.HasValue ? String.Format("{0:yyyy/MM}", Model.ModelYear) : "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Schedule Date for Registration (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@(Model.ScheduleDateForRegistration.HasValue ? String.Format("{0:yyyy/MM}", Model.ScheduleDateForRegistration) : "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Displacement</label>
+                        <p class="form-control-static">@(Model.DisPlacement ?? "-")</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        <p class="form-control-static">@(Model.Transmission ?? "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        <p class="form-control-static">@(Model.FuelType ?? "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Maximum Loading Capacity</label>
+                        <p class="form-control-static">@(Model.MaxLoadingCapacity ?? "-")</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <p class="form-control-static">@(Model.ProductCategory1 ?? "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Special OP</label>
+                        <p class="form-control-static">@(Model.SpecialOptions?? "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Registration Date (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@(Model.RegistrationDate.HasValue ? String.Format("{0:yyyy/MM}", Model.RegistrationDate) : "-")</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Usage</label>
+                        <p class="form-control-static">@(Model.Usage ?? "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Location</label>
+                        <p class="form-control-static">@(Model.Location ?? "-")</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number Plate Color</label>
+                        <p class="form-control-static">@(Model.NumberPlatColor ?? "-")</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>*@
+
+<section class="panel">
+    <header class="panel-heading">Quotation Information</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>COR Proposal Number</label>
+                    <p class="form-control-static">@(Model.COSProposalNumber ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>COR Quotation Date (mm/dd/yyyy)</label>
+                    <p class="form-control-static">@(String.Format("{0:MM/dd/yyyy}", Model.ModelYear))</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Valid Until (mm/dd/yyyy)</label>
+                    <p class="form-control-static">@(String.Format("{0:MM/dd/yyyy}", Model.Validuntil))</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Validity Days</label>
+                    <p class="form-control-static text-right">@(Model.ValidityMonth ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Terms</label>
+                    <p class="form-control-static">@(Model.Terms ?? "-")</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Expected Delivery (mm/dd/yyyy)</label>
+                    <p class="form-control-static">@(Model.ExpectedDeliveryDate.HasValue ? String.Format("{0:MM/dd/yyyy}", Model.ExpectedDeliveryDate) : "-")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Down Payment</label>
+                    <p class="form-control-static text-right">@(Model.DownPayment.HasValue ? String.Format("{0:N0}", Model.DownPayment) : "0")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Delivery Place</label>
+                    <p class="form-control-static">@(Model.DeliveryPlace ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Remarks</label>
+                    <p class="form-control-static">@(Model.Remarks ?? "-")</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="panel-footer bg-light lter">
+        @using (Html.BeginForm())
+        {
+            @Html.HiddenFor(o => o.IdSalesQuotation)
+            @Html.HiddenFor(o => o.ConnId)
+
+            @StateButton.QuotationStateButton("detail", Model.IsDraft, Model.IsValid, Model.IsSubmitted)
+        }
+    </div>
+</section>
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+
+    @*<script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>*@
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var SalesQuotationHub = $.connection.SalesQuotation;
+        var confirm = false;
+        SalesQuotationHub.client.OnStatusValidateLock = function (id) {
+            if (id == '@Model.IdSalesQuotation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been validate by other user, you will be reloaded ..", function () {
+                    location.reload();
+                    confirm = false;
+                });
+            }
+        };
+
+        SalesQuotationHub.client.OnStatusInvalidateLock = function (id) {
+            if (id == '@Model.IdSalesQuotation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been validate by other user, you will be reloaded ..", function () {
+                    location.reload();
+                    confirm = false;
+                });
+            }
+        };
+
+        SalesQuotationHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdSalesQuotation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "SalesQuotation")';
+                });
+            }
+        };
+
+        SalesQuotationHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdSalesQuotation' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                        confirm = false;
+                    }
+                });
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+
+
+        function LoadProductCategory() {
+            // datatable
+            var oTable = null;
+            $('#cos-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("SalesCalculationModalDataTable", "SalesQuotation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                    {
+                        "mData": "IdCalculationOfSales",
+                        "bVisible": false,
+                    },
+                    { "mData": "COSNumber" },
+                    { "mData": "CustomerName" },
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+
+            });
+
+
+            $("#cos-lookup tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                if (data.ModelYear) {
+                    var modYear = new Date(parseInt(data.ModelYear.substr(6)));
+                    var modeldate = modYear.getFullYear() + "/" + (modYear.getMonth() + 1);
+                    $("#ModelYear").val(modeldate);
+                }
+
+                if (data.ScheduleDateForRegistration != null) {
+                    var SchDateForRegistration = new Date(parseInt(data.ScheduleDateForRegistration.substr(6)));
+                    var ScheduleDate = (SchDateForRegistration.getMonth() + 1) + "/" + SchDateForRegistration.getFullYear();
+                    $("#CalculationOfSale_ScheduleDateForRegistration").val(ScheduleDate)
+                }
+
+                if (data.RegistrationDate) {
+                    var RegistrationDate = new Date(parseInt(data.RegistrationDate.substr(6)));
+                    var RegDate = (RegistrationDate.getMonth() + 1) + "/" + RegistrationDate.getFullYear();
+                    $("#CalculationOfSale_RegistrationDate").val(RegDate);
+                }
+
+                $("#COSNumber").val(data.COSNumber);
+                $("#Customer_CustomerName").val(data.CustomerName);
+                $("#BrandCode").val(data.BrandCode);
+                $("#BrandName").val(data.BrandName);
+                $("#ModelName").val(data.ModelName);
+                $("#DisPlacement").val(data.DisPlacement);
+                $("#Transmission").val(data.Transmission);
+                $("#FuelType").val(data.FuelType);
+                $("#MaxLoadingCapacity").val(data.MaxLoadingCapacity);
+                $("#ProductCategory_ProductCategory1").val(data.ProductCategory1);
+                $("#CalculationOfSale_SpecialOptions").val(data.SpecialOptions);
+                $("#CalculationOfSale_Usage").val(data.Usage);
+                $("#CalculationOfSale_Location").val(data.Location);
+                $("#CalculationOfSale_NumberPlatColor").val(data.NumberPlatColor);
+
+                $('#calculationModal').modal('hide');
+            });
+        };
+    </script>
+
+}

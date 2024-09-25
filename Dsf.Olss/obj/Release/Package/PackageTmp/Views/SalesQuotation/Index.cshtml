@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "Refinance Quotation";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Create", "SalesQuotation")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            List of Refinance Quotation
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="oqor-list" class="table table-striped m-b-none table-calc">
+                <thead>
+                    <tr>
+                        <th width="9%">Quotation Number</th>
+                        <th width="">Customer Name / Buyer</th>
+                        <th width="">Product Name</th>
+                        <th width="">Expected Delivery</th>
+                        <th width="">Delivery Place</th>
+                        <th width="">Valid Until</th>
+                        <th width="">Quantity</th>
+                        <th width="">Sales Price</th>
+                        <th width="">Created By</th>
+                        <th width="">Created Date</th>
+                        <th width="">Status</th>
+                        <th width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+    var SalesQuotationHub = $.connection.SalesQuotation;
+
+    SalesQuotationHub.client.OnStatusValidateCalcLock = function (id) {
+        //alert('Locked!!!');
+        $('#Status' + id).attr('class', 'label label-success');
+        $('#Status' + id).html('valid');
+    };
+
+    SalesQuotationHub.client.OnStatusInvalidateCalcLock = function (id) {
+        //alert('Locked!!!');
+        $('#Valid' + id).attr('class', 'label label-default bg-light');
+        $('#Valid' + id).html('invalid');
+    };
+
+    SalesQuotationHub.client.OnSaveLock = function (id) {
+        location.reload();
+    };
+
+    $.connection.hub.start();
+
+	// object lease list
+	$('#oqor-list').each(function() {
+	    var oTable = $(this).dataTable({
+	        "bServerSide": true,
+	        "bProcessing": true,
+	        "aaSorting": [[0, "desc"]],
+		    "sAjaxSource": "@Url.Action("AjaxHandler", "SalesQuotation")",
+			"sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+			"sPaginationType": "full_numbers",
+			"aoColumns": [
+				{
+				    "mData" : "QuotationNumber",
+				    "sClass": "WrapTdValue"
+				},
+				{ "mData": "CustomerName" },
+				{ "mData": "ProductName" },
+                {
+                    "mData": "ExpectedDelivery"
+                },
+				{ "mData": "DeliveryPlace" },
+                {
+                    "mData": "ValidityMonth",
+                    "fnRender": function (aObj) {
+                        if (aObj.aData["ValidityMonth"] != null) {
+                            var date = new Date(parseInt(aObj.aData["ValidityMonth"].substr(6)));
+                            var modeldate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                            return modeldate;
+                        }
+                        return null;
+                    }
+                },
+                {
+                    "mData": "UnitQuantity",
+                    "fnRender": function (aObj) {
+                        if (aObj.aData["UnitQuantity"] != null) {
+                            return "<div class='text-right'>" + aObj.aData["UnitQuantity"] + "</div>";
+                        }
+                        return null;
+                    }
+                },
+                {
+                    "mData": "ActualResidualValue",
+                    "fnRender": function (aObj) {
+                        if (aObj.aData["ActualResidualValue"] != null) {
+                            var num = aObj.aData["ActualResidualValue"];
+                            var n = num.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+                            return "<div class='text-right'>" + n + "</div>";
+                        }
+                        return null;
+                    }
+                },
+                { "mData": "CreateBy" },
+                {
+                    "mData": "CreateDate",
+                    "fnRender": function (aObj) {
+                        if (aObj.aData["CreateDate"] != null) {
+                            var date = new Date(parseInt(aObj.aData["CreateDate"].substr(6)));
+                            var modeldate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                            return modeldate;
+                        }
+                        return null;
+                    }
+                },
+				{
+					"mData": "COSNumber",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var IsValid = oObj.aData["IsValid"];
+                                var IsDraft = oObj.aData["IsDraft"];
+                                var IsSubmit = oObj.aData["IsSubmitted"];
+
+                                if (IsDraft == true) {
+                                    return "<span class='label label-default'>draft</span>"
+                                }
+                                else if (IsSubmit == true) {
+                                    return "<span class='label label-info'>submitted</span>"
+                                }
+                                else if (IsValid == true) {
+                                    return "<span class='label label-success'>valid</span>"
+                                }
+                                else {
+                                    return "<span class='label label-default bg-light'>invalid</span>"
+                                }
+                            }
+                },
+                {
+                    "mData": "IdSalesQuotation",
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "sClass": "datatables_action",
+                    "fnRender": function (oObj) {
+                        var IsValid = oObj.aData["IsValid"];
+                        var IsDraft = oObj.aData["IsDraft"];
+                        var IsSubmit = oObj.aData["IsSubmitted"];
+                        var Id = oObj.aData["IdSalesQuotation"];
+
+                        if (IsValid == true || (IsValid == false && IsDraft == false && IsSubmit == false)) {
+                            return "<a title='Detail' href='@Url.Action("Detail", "SalesQuotation")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' disabled='disabled' href='@Url.Action("Edit", "SalesQuotation")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;<a title='Report' href='@Url.Action("Report", "SalesQuotation")/" + Id + "' class='btn btn-white btn-xs'><i class='fa fa-print'></i></a>"
+                        }
+                        else {
+                            return "<a title='Detail' href='@Url.Action("Detail", "SalesQuotation")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "SalesQuotation")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;<a title='Report' href='@Url.Action("Report", "SalesQuotation")/" + Id + "' class='btn btn-white btn-xs'><i class='fa fa-print'></i></a>"
+                        }
+
+
+                    }
+                }
+			]
+		} );
+	});
+	</script>
+}

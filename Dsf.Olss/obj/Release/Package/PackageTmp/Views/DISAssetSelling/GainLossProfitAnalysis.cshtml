@@ -1,0 +1,77 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <div class="col-lg-3">
+                    <label>Disposal Number:</label>&nbsp;
+                    <label id="disposalno" class="font-thin">@ViewBag.DisposalNumber</label>
+                    <input id="disposalNoTxt" type="text" value="@ViewBag.DisposalNumber" hidden />
+                </div>
+                <div class="col-lg-3">
+                    <label>Created Date:</label>&nbsp;<label class="font-normal">@ViewBag.CreatedDate</label>
+                </div>
+                <div class="col-lg-3">
+                    <label>Created By:</label>&nbsp;<label class="font-normal">@ViewBag.CreatedBy</label>
+                </div>
+                <div class="col-lg-3">
+                    <label>Remarks:</label>&nbsp;<label class="font-normal">@ViewBag.Remarks</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Asset Details</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table id="assetDetails-list" class="table table-striped m-b-none display nowrap">
+                        <thead>
+                            <tr>
+                                <th width="10%">Agreement No.</th>
+                                <th width="7%">Asset Code</th>
+                                <th width="35%">Asset Description</th>
+                                <th width="12%" style="text-align:right">Base Price</th>
+                                <th width="12%" style="text-align:right">PPn</th>
+                                <th width="12%" style="text-align:right">Book Value</th>
+                                <th width="12%" style="text-align:right">Impairement</th>
+                                <th width="12%" style="text-align:right">Gain/Loss</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Profit Analysis</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="table-responsive">
+                    <table id="agreementDetails-list" class="table table-striped m-b-none display nowrap">
+                        <thead>
+                            <tr>
+                                <th width="10%">Agreement No.</th>
+                                <th width="30%">Model Name</th>
+                                <th width="10%">Model Year</th>
+                                <th width="10%">Quantity Budget</th>
+                                <th width="15%">Profit Budget</th>
+                                <th width="10%">Quantity Budget</th>
+                                <th width="15%">Profit Actual</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>   

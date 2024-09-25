@@ -1,0 +1,524 @@
+﻿@model Dsf.Olss.Models.OPLCInsuranceViewModel
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    ViewBag.Title = "Calculation of Operating Lease - Step 4";
+}
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 4, remark, x => @Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(o => o.ConnId)
+<section class="panel">
+    <header class="panel-heading font-bold">Insurance Basic Information</header>
+    <div class="panel-body">
+        <form role="form">
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Start Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.StartPeriodPlan)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>End Date Usage Unit Plan (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.EndPeriodPlan)</p>
+                    </div>
+                </div>
+
+                @*<div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Lease Period Plan (Months)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.LeasePeriod)</p>
+                    </div>
+                </div>*@
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Coverage Period (Months)</label>
+                        <p class="form-control-static  text-right">@Html.DisplayFor(o => o.CoveragePeriod)</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance Company</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.InsuranceCompanyName)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Class of Insurance</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ClassOfInsurance)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance Agent</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.InsuranceAgent)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Commission Rate (%)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.CommissionRate)</p>
+                    </div>
+                </div>
+
+                @*<div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Coverage Period (Month + 1)</label>
+                        <p class="form-control-static  text-right">@Html.DisplayFor(o => o.CoveragePeriod)</p>
+                    </div>
+                </div>*@
+
+                @*<div class="col-lg-3">
+                        <div class="form-group">
+                            <label>Rate of Mediator Fee (%)</label>
+                            <p class="form-control-static text-right">@Html.DisplayFor(o => o.MediatorFeePercent)</p>
+                        </div>
+                    </div>*@
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance of Payment Cycle</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.InsurancePaymentCycleName)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Region</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.RegionName)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Seat Capacity</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.SeatCapacity)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Remarks)</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Product</header>
+    <div class="panel-body">
+        <form role="form">
+
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Model Name</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ModelName)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProductType)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProductCategoryName)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Model Year (yyyy/mm)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ModelYear)</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<div class="panel">
+    <header class="panel-heading font-bold">Insurance Condition & Cost</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Basic Premium</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRatePremium)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRatePremium)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.TotalGrossPremium)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Third Party Liability (TPL)</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRateTPL)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRateTPL)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.TPLAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Passenger Legal Liability (PLL)</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRatePPL)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRatePPL)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.PPLAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Personal Accident for Passenger (PAP)</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRatePAP)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRatePAP)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.PAPAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Personal Accident for Driver (PAD)</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRatePAD)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRatePAD)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group text-right">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.PADAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Strike, Riots & Civil Commotion (SRCC) </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRateSRCC)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRateSRCC)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.SRCCAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Terrorism & Sabotage (TS)</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRateTS)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRateTS)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.TSAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Flood & Windstorm (FLD)</div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRateFLD)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRateFLD)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.FLDAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Earthquake & Tsunami (EAQ) </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRateEAQ)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRateEAQ)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.EAQAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3 font-bold">Authorized Workshop </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComprehensiveRateAW)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BasicRateAW)</p>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AWAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-9"></div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Total Gross Premium</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.TotalGrossPremium)</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Commission Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ComissionAmount)</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Mediator Fee Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MediatorFeeAmount)</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Net Premium</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.NetPremium)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <footer class="panel-footer bg-light lter">
+        <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "3", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+        @if (System.Convert.ToInt32(Model.OPLRemarks) > 4)
+        {
+            <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "5", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+        }
+        else
+        {
+            <a class="btn btn-primary" onclick="NoNext();">Next Step <i class="fa fa-chevron-right"></i></a>
+        }
+    </footer>
+</div>
+
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        function NoNext() {
+            bootbox.alert("there's no recorded data for next step..");
+        }
+        var OPLCalculationHub = $.connection.OPLCalculation;
+        var confirm = false;
+        OPLCalculationHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks' && !confirm) {
+                confirm = true;
+                bootbox.alert("Data has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        OPLCalculationHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

@@ -1,0 +1,142 @@
+﻿@model Dsf.Olss.Models.SystemSettings.ApprovalEscalationViewModel
+@using Dsf.Lib.Constant
+@using Dsf.Olss.Utility
+@using System.Web.Script.Serialization
+@using System.Web.UI.WebControls;
+@{
+    ViewBag.Title = "Document’s Approval Path Escalation Detail";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/css/style.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/js/datatables/datatables.css")" type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+@using (Html.BeginForm("Edit", "ApprovalEscalation", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.IdLastApprove)
+    <section class="panel">
+        <header class="panel-heading font-bold">Approval Path Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>DSF Office</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.BranchName, null, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.BranchName)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Module</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ModulName, null, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.ModulName)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Document Number</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.DocumentNumber, null, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.DocumentNumber)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Created By</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.CreatedBy, null, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.CreatedBy)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Next Approve</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.NextApprove, null, new { @class = "form-control", @readonly = "true" })
+                            @Html.ValidationMessageFor(o => o.NextApprove)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Creation Date (mm/dd/yyyy)</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.CreatedDate, String.Format("{{0: " + localeDateFormat + "}}", Model.CreatedDate), new { @class = "form-control datepicker", @readonly = "true" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.CreatedDate)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Escalate Level Destination</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(o => o.Level, ViewBag.LevelDestination as List<SelectListItem>, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(o => o.Level)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading  font-bold">Remarks</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <div class="col-lg-12">
+                            @Html.TextAreaFor(o => o.Remarks, new { @class = "form-control", @rows = "4", @placeholder = "", @maxlength = "500" })
+                            @Html.ValidationMessageFor(o => o.Remarks)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            @Html.HiddenFor(o => o.IdNextApprove)
+
+            @Html.HiddenFor(o => o.LastModifiedDate)
+
+            @Html.HiddenFor(o => o.LastApprove)
+
+            @Html.HiddenFor(o => o.Status)
+
+            @Html.HiddenFor(o => o.CreatedDate)
+            @if (ViewBag.ButtonEnabled)
+            {
+                <input name="statusButton" class="btn btn-primary" type="submit" value="Submit">
+            }
+            else
+            {
+                <input name="statusButton" class="btn btn-primary disabled" type="submit" value="Submit">
+            }
+        </footer>
+    </section>
+}

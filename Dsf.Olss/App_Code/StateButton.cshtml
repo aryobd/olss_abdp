@@ -1,0 +1,1882 @@
+﻿@helper Create(string viewmode, bool isdraft = false, bool issubmitted = false, bool isactive = false)
+{
+
+    // isDraft = 1 AND isActive = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isActive = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isActive = 1 isSubmitted = 0    ---> Active
+    // isDraft = 0 AND IsActive = 0 isSubmitted = 0    ---> Inactive
+
+    // Marketing Super User
+
+    if (String.Equals(Session["Username"].ToString(), Dsf.Lib.Constant.AppPathSubmitedPermit.Username, StringComparison.CurrentCultureIgnoreCase))
+    {
+        /* Add*/
+        if (viewmode == "submitApprovalPath")
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+    }
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Active*/
+        else if (viewmode == "edit" && isactive && !isdraft && !issubmitted)
+        {
+            //deactivate
+            @*<input type="submit" name="statusButton" value="Deactivate" class="btn btn-danger" />*@
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Edit when Inactive*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isactive)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+            //activate
+            <input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            //<input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isactive && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Deactivate" class="btn btn-danger" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isactive)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperAdmin ||
+        Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Active*/
+        else if (viewmode == "edit" && isactive && !isdraft && !issubmitted)
+        {
+            //deactivate
+            @*<input type="submit" name="statusButton" value="Deactivate" class="btn btn-danger" />*@
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Edit when Inactive*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isactive)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+            //activate
+            <input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            //<input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isactive && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Deactivate" class="btn btn-danger" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isactive)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Activate" class="btn btn-primary" />
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+}
+
+
+@helper QuotationStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // StateButton2 is For Calculation and Quotation Module
+
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+    }
+}
+
+
+@helper CalculationStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // StateButton2 is For Calculation and Quotation Module
+
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            @*<input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />*@
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+    }
+}
+
+@helper AgreementStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+    }
+}
+
+
+@helper OPLServiceHistoryStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+        }
+
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft && !isvalid)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Detail when Valid */
+        else if (viewmode == "detail" && isvalid)
+        {
+            //Save Changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+            //activate
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+            //deactivate
+            @*<input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />*@
+
+        }
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+        }
+
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Detail when Valid */
+        else if (viewmode == "detail" && isvalid)
+        {
+            //deactivate
+            @*<input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />*@
+        }
+    }
+}
+
+@helper StateButtonSKD(string viewmode, bool isdraft = false, bool issubmitted = false, bool isactive = false)
+{
+
+
+    /* Add */
+    if (viewmode == "add")
+    {
+        //save as draft
+        <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+        //submit
+        <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+    }
+
+            /* Edit when Draft*/
+    else if (viewmode == "edit" && isdraft && !issubmitted)
+    {
+        //save changes
+        <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+        //submit
+        <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+    }
+}
+
+@helper OPLAgreementStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Sign By Customer*/
+        else if (viewmode == "sign")
+        {
+            <input name="statusButton" class="btn btn-info" value="Sign By Customer" type="submit" />
+
+        }
+
+        /*Open*/
+        else if (viewmode == "open")
+        {
+            <input name="statusButton" class="btn btn-danger" value="Terminate" type="submit" />
+        }
+
+        /* Revise*/
+        else if (viewmode == "revise")
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /* Revise*/
+        else if (viewmode == "revise")
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+    }
+}
+
+@helper CreateStateVisitCustomerSurvey(string viewmode, bool isdraft = false, bool isrecommended = false)
+{
+    //if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    //{
+    /* Edit when Draft*/
+    if (viewmode == "edit" && isdraft && !isrecommended)
+    {
+        //save changes
+        <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+        //submit
+        <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+    }
+    //}
+}
+
+@helper CreateStateApprovalPath(string viewmode)
+{
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser)
+    {
+        /* Edit when Draft*/
+        if (viewmode == "edit")
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+    }
+}
+
+@helper PurchaseOrderStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+                /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-primary" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        else if (viewmode == "approval")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-primary" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        else if (viewmode == "revise")
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-primary" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+        /*Check and Revise*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+}
+
+@helper BASTReplacementStateButton(string viewmode)
+{
+    /*Approve*/
+    if (viewmode == "approve")
+    {
+        <input type="button" name="statusButton" class="btn btn-primary" value="Approve" />
+        <input type="button" name="statusButton" class="btn btn-danger" value="Reject" />
+    }
+    /*Check and Revise*/
+    else if (viewmode == "check")
+    {
+        <input type="button" name="statusButton" class="btn btn-primary" value="Check" />
+        <input type="button" name="statusButton" class="btn btn-danger" value="Revise" />
+    }
+}
+
+@helper MaintenanceCalculationStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // StateButton2 is For Calculation and Quotation Module
+
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit Detail" class="btn btn-primary" />
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+    }
+}
+
+
+
+@helper MTNWorkOrderStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-primary" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+    }
+}
+
+@helper WarningLetterStateButton(string viewmode)
+{
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /*Approve*/
+        if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+        /*Approve*/
+        if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+}
+
+@helper BilRALStateButton(string viewmode)
+{
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /*Approve*/
+        if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+        /*Approve*/
+        if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+    }
+}
+
+@helper InvoiceReceiptStateButton(string viewmode)
+{
+    /*Approve*/
+    if (viewmode == "approve")
+    {
+        <input type="button" name="statusButton" class="btn btn-primary" value="Approve" />
+        <input type="button" name="statusButton" class="btn btn-danger" value="Reject" />
+    }
+
+        /*Check and Reject*/
+    else if (viewmode == "check")
+    {
+        <input type="button" name="statusButton" class="btn btn-primary" value="Check" />
+        <input type="button" name="statusButton" class="btn btn-danger" value="Revise" />
+    }
+
+
+}
+
+@helper DisposalStateButton(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //Delete
+            <input type="submit" name="statusButton" value="Delete" class="btn btn-danger" />
+            //Reject
+            <input type="submit" name="statusButton" value="Reject" class="btn btn-danger" />
+            //save as draft
+            <input type="submit" name="statusButton" value="Save and Generate" class="btn btn-success" />
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        if (viewmode == "new")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        else if (viewmode == "generate")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save and Generate" class="btn btn-success" />
+        }
+
+        /* Draft */
+        else if (viewmode == "draft")
+        {
+            //save changes
+            <button type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" >Save as Draft</button>
+        }
+
+        /* Edit */
+        else if (viewmode == "edit")
+        {
+            //Delete
+            <input type="submit" name="statusButton" value="Delete" class="btn btn-danger" />
+
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "approve")
+        {
+            //Reject
+            <input type="submit" name="statusButton" value="Reject" class="btn btn-primary" />
+
+            //Revise
+            <input type="submit" name="statusButton" value="Revise" class="btn btn-danger" />
+
+            //Approve
+            <input type="submit" name="statusButton" value="Approve" class="btn btn-info" />
+
+        }
+
+        /* Detail when reject */
+        else if (viewmode == "reject")
+        {
+            //Reject
+            <input type="submit" name="statusButton" value="Reject" class="btn btn-danger" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "sign")
+        {
+
+            //Approve
+            <input type="submit" name="statusButton" value="Sign" class="btn btn-info" />
+
+        }
+
+        /*Check*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+        }
+
+        /* Detail when delete */
+        else if (viewmode == "delete")
+        {
+            //Reject
+            <input type="submit" name="statusButton" value="Delete" class="btn btn-danger" />
+
+        }
+
+        /* Detail when submit */
+        else if (viewmode == "submit")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-info" />
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+    }
+
+    // User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //Delete
+            <input type="submit" name="statusButton" value="Delete" class="btn btn-danger" />
+            //Reject
+            <input type="submit" name="statusButton" value="Reject" class="btn btn-danger" />
+            //save as draft
+            <input type="submit" name="statusButton" value="Save and Generate" class="btn btn-success" />
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        else if (viewmode == "generate")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save and Generate" class="btn btn-success" />
+        }
+
+        /* Draft */
+        else if (viewmode == "draft")
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+        }
+
+        /* Edit */
+        else if (viewmode == "edit")
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //Delete
+            <input type="submit" name="statusButton" value="Delete" class="btn btn-danger" />
+
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "approve")
+        {
+            //Reject
+            <input type="submit" name="statusButton" value="Reject" class="btn btn-primary" />
+
+            //Revise
+            <input type="submit" name="statusButton" value="Revise" class="btn btn-danger" />
+
+            //Approve
+            <input type="submit" name="statusButton" value="Approve" class="btn btn-info" />
+
+        }
+
+        /* Detail when reject */
+        else if (viewmode == "reject")
+        {
+            //Reject
+            <input type="submit" name="statusButton" value="Reject" class="btn btn-danger" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "sign")
+        {
+
+            //Approve
+            <input type="submit" name="statusButton" value="Sign" class="btn btn-info" />
+
+        }
+
+        /*Check*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+        }
+
+        /* Detail when delete */
+        else if (viewmode == "delete")
+        {
+            //Reject
+            <input type="submit" name="statusButton" value="Delete" class="btn btn-danger" />
+
+        }
+
+        /* Detail when submit */
+        else if (viewmode == "submit")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-info" />
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+    }
+}
+
+@*add by rudolf*@
+@helper MaintenancePaymentApproval(string viewmode, bool isdraft = false, bool isvalid = false, bool issubmitted = false)
+{
+    // isDraft = 1 AND isValid = 0 isSubmitted = 0    ---> Draft
+    // isDraft = 0 AND isValid = 0 isSubmitted = 1    ---> Submitted
+    // isDraft = 0 AND isValid = 1 isSubmitted = 0    ---> Valid
+    // isDraft = 0 AND isValid = 0 isSubmitted = 0    ---> Invalid
+
+    // Marketing Super User
+
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+    {
+
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" onclick="saveDraft()" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Submitted*/
+        else if (viewmode == "edit" && issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+        }
+
+        /* Edit when Valid*/
+        else if (viewmode == "edit" && isvalid && !isdraft && !issubmitted)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Edit when Invalid*/
+        else if (viewmode == "edit" && !isdraft && !issubmitted && !isvalid)
+        {
+            //save changes
+            @*<input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />*@
+        }
+
+        /* Detail when Draft */
+        else if (viewmode == "detail" && isdraft)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+
+        }
+
+        /* Detail when Submitted */
+        else if (viewmode == "detail" && issubmitted)
+        {
+            //activate
+            <input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />
+            //set to draft
+            <input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />
+        }
+
+        /* Detail when Active */
+        else if (viewmode == "detail" && isvalid && !issubmitted && !isdraft)
+        {
+            //deactivate
+            <input type="submit" name="statusButton" value="Invalidate" class="btn btn-danger" />
+            //set to draft
+            @*<input type="submit" name="statusButton" value="Set to Draft" class="btn btn-white" />*@
+        }
+
+        /* Detail when Inactive */
+        else if (viewmode == "detail" && !isdraft && !issubmitted && !isvalid)
+        {
+            //activate
+            @*<input type="submit" name="statusButton" value="Validate" class="btn btn-primary" />*@
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-primary" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+    }
+
+    // Marketing User
+    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+    {
+        /* Add */
+        if (viewmode == "add")
+        {
+            //save as draft
+            <input type="submit" name="statusButton" value="Save as Draft" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "edit" && isdraft && !issubmitted)
+        {
+            //save changes
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /* Edit when Draft*/
+        else if (viewmode == "detail" && isdraft && !issubmitted)
+        {
+            //submit
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        }
+
+        /*Approve*/
+        else if (viewmode == "approve")
+        {
+            <input name="statusButton" class="btn btn-info" value="Approve" type="submit" />
+            <input name="statusButton" class="btn btn-info" value="Reject" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+        /*Check and Reject*/
+        else if (viewmode == "check")
+        {
+            <input name="statusButton" class="btn btn-info" value="Check" type="submit" />
+            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+        }
+
+    }
+}
+
+
+@*end add*@

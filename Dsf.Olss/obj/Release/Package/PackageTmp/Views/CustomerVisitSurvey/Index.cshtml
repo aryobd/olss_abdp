@@ -1,0 +1,378 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@{
+    ViewBag.Title = "Visit Customer Survey Process";
+    // Get loading image url
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+
+<a href="@Url.Action("Add", "CustomerVisitSurvey")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+
+<div class="tab-pane" id="datatable">
+
+
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">DSF Office</option>
+                            <option value="2">Survey Number</option>
+                            <option value="3">Customer Name</option>
+                            <option value="4">Marketing Officer</option>
+                            <option value="5">Location</option>
+                            <option value="6">Product Model</option>
+                            <option value="7">Recommendation</option>
+                            <option value="8">Business Of Economy Sector</option>
+                            <option value="9">Created By</option>
+                            <option value="11">Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Start Visit Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>End Visit Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            List of Visit Customer Survey
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="DocumentList">
+            <div class="table-responsive">
+                <table id="table-list" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="header-grid-very-short">DSF Office</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-identity">Survey Number</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-name">Customer Name</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Marketing Officer</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-date">Visit Date</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Location</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-very-long">Product Model</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Recomendation</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-name">Business of Economy Sector</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Created By</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-date">Created Date</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-status">Status</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-action">Action</div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <div id='loadingmessage' style='display:none'>
+                <img src='@Url.Content(ImgUrl)' />
+            </div>
+            <input id="btnPrintAll" name="statusButton" class="btn btn-info" type="submit" value="Print Report">
+        </footer>
+    </section>
+
+</div>
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+
+    <script>
+        var oTable;
+        $(document).ready(function () {
+
+            // datatable
+            $('#table-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[13, "desc"]],
+                    "sScrollXInner": "200%",
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "CustomerVisitSurvey")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() },
+                            { "name": "txtStartDate", "value": $("#txtStartDate").val() },
+                            { "name": "txtEndDate", "value": $("#txtEndDate").val() }
+                        );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "bAutoWidth": false,
+                    "aoColumns": [
+                        { "mData": "Branch" },
+                        { "mData": "SurveyNo" },
+                        { "mData": "CustomerName" },
+                        { "mData": "MarketingOfficerName" },
+                        { "mData": "VisitDate" },
+                        { "mData": "Location" },
+                        { "mData": "ModelName" },
+                        { "mData": "Recommendation" },
+                        { "mData": "BusinessEconomySector" },
+                        { "mData": "CreatedBy" },
+                        { "mData": "CreatedDate" },
+                        {
+                            "mData": "Status",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var status = oObj.aData["StatusCodeConst"];
+
+                                if (status === '@StatusCode.Draft') {
+                                    return "<span class='label label-default'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Recommended') {
+                                    return "<span class='label label-success'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.NotRecommended') {
+                                    return "<span class='label label-danger'>" + status + "</span>";
+                                }
+
+                                return "<span class='label label-default'>" + status + "</span>";
+                            }
+                        },
+                        {
+                            "mData": "IdTb_MKT_VisitCustSurvey",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData["IdTb_MKT_VisitCustSurvey"];
+                                var htmlButtonAction = "<a title='Detail' href='@Url.Action("Detail", "CustomerVisitSurvey")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>";
+
+                                var status = oObj.aData["StatusCodeConst"];
+                                var createdBy = oObj.aData["CreatedBy"];
+
+                                if (createdBy === '@SimpleSessionPersister.Username') {
+                                    if (status === '@StatusCode.Draft') {
+                                        htmlButtonAction += "&nbsp;<a title='Edit' href='@Url.Action("Edit", "CustomerVisitSurvey")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>";
+                                    } else {
+                                        htmlButtonAction += "&nbsp;<span class='btn btn-primary disabled btn-xs'><i class='fa fa-edit'></i></span>";
+                                    }
+                                    htmlButtonAction += "&nbsp;<a title='Print Report' href='@Url.Action("CustomerVisitSurveyReport", "CustomerVisitSurvey")/" + id + "' class='btn btn-white btn-xs' ><i class='fa fa-print'></i></a>";
+                                } else {
+                                    htmlButtonAction += "&nbsp;<span class='btn btn-primary disabled btn-xs'><i class='fa fa-edit'></i></span>";
+                                    htmlButtonAction += "&nbsp;<span class='btn btn-white disabled btn-xs'><i class='fa fa-print'></i></span>";
+                                }
+
+                                return htmlButtonAction;
+                            }
+                        },
+                        { "mData": "SortableCreateDate", "bVisible": false },
+                        { "mData": "StatusCodeConst", "bVisible": false }
+                    ],
+                    "aoColumnDefs": [
+                        { "sWidth": "50%", "aTargets": [0] },
+                        { "sClass": "center", "aTargets": [1] }
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0, // optional if you want to handle timeouts (which you should)
+                            "error": handleAjaxError // this sets up jQuery to give me errors
+                        });
+                    }
+                });
+            });
+
+            var htmlTemp = '<div class="dataTables_wrapper row">';
+            var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+            var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+            $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+            htmlTemp += fakePagination + '</div>';
+            $('.table-responsive').append(htmlTemp);
+            $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+            $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+            $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+
+        });
+
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            } else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        // Searching
+        $('#btnSatus').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+                $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+            }
+        });
+
+        $('#btnPrintAll').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessage').show();
+            $('#btnPrintAll').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReport", "CustomerVisitSurvey")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "./Base/Download?fileName=" + response + "&rptType=" + 0;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                }
+            });
+        });
+
+        bootstrap_alert = function () { };
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        };
+
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        };
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+
+    </script>
+}
+
+

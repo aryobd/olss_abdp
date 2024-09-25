@@ -1,0 +1,357 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@{
+    ViewBag.Title = "Monitor Overdue";
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+    Session["backURL"] = "BILOverdue";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<hr>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+<div id="printsuccess"></div>
+
+
+<section class="panel">
+    <table class="table table-striped m-b-none">
+        <tr>
+            <th width="20%">Search Criteria</th>
+            <th width="20%">Parameter</th>
+            <th width="20%">Start Billing Date</th>
+            <th width="20%">End Billing Date</th>
+            <th width="20%"></th>
+        </tr>
+        <tr>
+            <td>
+                <select id="ddlSearchCriteria" class="form-control">
+                    <option value="1">DSF Office</option>
+                    <option value="2">Customer Group</option>
+                    <option value="3">Customer Name</option>
+                    <option value="4">Agreement Number</option>
+                    <option value="5">Agreement Date</option>
+                    <option value="6">End Usage Unit Date</option>
+                    <option value="7">Total Overdue</option>
+                    <option value="8">Overdue Days</option>
+                    <option value="9">Overdue Bucket</option>
+                    <option value="10">Promise to Pay Date</option>
+                    <option value="11">Last Modified By</option>
+                    <option value="12">Last Modified Date</option>
+                    <option value="13">Warning Letter Status</option>
+                    <option value="14">RAL Status</option>
+                </select>
+            </td>
+            <td>
+                <div>
+                    <input id="txtSearch" type="text" class="form-control">
+                </div><!-- /input-group -->
+            </td>
+            <td>
+                <div class="input-group date">
+                    <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <div class="input-group date">
+                    <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                </div>
+            </td>
+            <td>
+                <input id="btnSearch" class="btn btn-primary right-side" type="submit" value="Search">
+            </td>
+        </tr>
+        <tbody></tbody>
+    </table>
+</section>
+
+<section class="panel">
+    <ul class="nav nav-tabs pull-left bg-light">
+        <li class=" font-bold active"><a href="#30DaysPeriod" data-toggle="tab">1 - 30 Days</a></li>
+        <li class="font-bold"><a href="#60DaysPeriod" data-toggle="tab">31-60 Days</a></li>
+        <li class="font-bold"><a href="#90DaysPeriod" data-toggle="tab">61-90 Days</a></li>
+        <li class="font-bold"><a href="#91DaysPeriod" data-toggle="tab">>90 Days</a></li>
+    </ul>
+    <br>
+    <span class="hidden-sm" style="visibility:hidden">Left tab</span>
+
+    <section class="tab-content">
+        <div class="tab-pane fade active in" style="padding:16px" id="30DaysPeriod">
+            <section class="panel">
+                <div class="DocumentList">
+                    <div class="table-responsive billingOverdue30days_responsive">
+                        <table id="billingOverdue30days" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" width="7%">DSF Office</th>
+                                    <th rowspan="2" width="7%">Customer Group</th>
+                                    <th rowspan="2" width="7%" nowrap>Customer Name</th>
+                                    <th rowspan="2" width="7%">Agreement Number</th>
+                                    <th rowspan="2" width="7%">Agreement Date</th>
+                                    <th rowspan="2" width="7%">End Usage Unit Date</th>
+                                    <th rowspan="2" width="7%" style="text-align:center">Total Overdue<br />(Rp)</th>
+                                    <th rowspan="2" width="7%">Overdue Days</th>
+                                    <th rowspan="2" width="7%">Overdue Bucket</th>
+                                    <th colspan="2" width="10%" style="text-align:center">Promise to Pay Date</th>
+                                    <th rowspan="2" width="7%">Last Modified By</th>
+                                    <th rowspan="2" width="7%">Last Modified Date</th>
+                                    <th rowspan="2" width="7%">Warning Letter Status</th>
+                                    <th rowspan="2" width="7%">RAL Status</th>
+                                    <th rowspan="2" width="240px">Action</th>
+                                </tr>
+                                <tr>
+                                    <th>Previous</th>
+                                    <th>Current</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="tab-pane" style="padding:16px" id="60DaysPeriod">
+            <section class="panel">
+                <div class="DocumentList">
+                    <div class="table-responsive billingOverdue60days_responsive">
+                        <table id="billingOverdue60days" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" width="7%">DSF Office</th>
+                                    <th rowspan="2" width="7%">Customer Group</th>
+                                    <th rowspan="2" width="7%" nowrap>Customer Name</th>
+                                    <th rowspan="2" width="7%">Agreement Number</th>
+                                    <th rowspan="2" width="7%">Agreement Date</th>
+                                    <th rowspan="2" width="7%">End Usage Unit Date</th>
+                                    <th rowspan="2" width="7%" style="text-align:center">Total Overdue<br />(Rp)</th>
+                                    <th rowspan="2" width="7%">Overdue Days</th>
+                                    <th rowspan="2" width="7%">Overdue Bucket</th>
+                                    <th colspan="2" width="10%" style="text-align:center">Promise to Pay Date</th>
+                                    <th rowspan="2" width="7%">Last Modified By</th>
+                                    <th rowspan="2" width="7%">Last Modified Date</th>
+                                    <th rowspan="2" width="7%">Warning Letter Status</th>
+                                    <th rowspan="2" width="7%">RAL Status</th>
+                                    <th rowspan="2" width="240px">Action</th>
+                                </tr>
+                                <tr>
+                                    <th>Previous</th>
+                                    <th>Current</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="tab-pane" style="padding:16px" id="90DaysPeriod">
+            <section class="panel">
+                <div class="DocumentList">
+                    <div class="table-responsive billingOverdue90days_responsive">
+                        <table id="billingOverdue90days" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" width="7%">DSF Office</th>
+                                    <th rowspan="2" width="7%">Customer Group</th>
+                                    <th rowspan="2" width="7%" nowrap>Customer Name</th>
+                                    <th rowspan="2" width="7%">Agreement Number</th>
+                                    <th rowspan="2" width="7%">Agreement Date</th>
+                                    <th rowspan="2" width="7%">End Usage Unit Date</th>
+                                    <th rowspan="2" width="7%">Total Overdue<br />(Rp)</th>
+                                    <th rowspan="2" width="7%">Overdue Days</th>
+                                    <th rowspan="2" width="7%">Overdue Bucket</th>
+                                    <th colspan="2" width="10%" style="text-align:center">Promise to Pay Date</th>
+                                    <th rowspan="2" width="7%">Last Modified By</th>
+                                    <th rowspan="2" width="7%">Last Modified Date</th>
+                                    <th rowspan="2" width="7%">Warning Letter Status</th>
+                                    <th rowspan="2" width="7%">RAL Status</th>
+                                    <th rowspan="2" width="240px">Action</th>
+                                </tr>
+                                <tr>
+                                    <th>Previous</th>
+                                    <th>Current</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="tab-pane" style="padding: 16px" id="91DaysPeriod">
+            <section class="panel">
+                <div class="DocumentList">
+                    <div class="table-responsive billingOverdue91days_responsive">
+                        <table id="billingOverdue91days" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" width="7%">DSF Office</th>
+                                    <th rowspan="2" width="7%">Customer Group</th>
+                                    <th rowspan="2" width="7%" nowrap>Customer Name</th>
+                                    <th rowspan="2" width="7%">Agreement Number</th>
+                                    <th rowspan="2" width="7%">Agreement Date</th>
+                                    <th rowspan="2" width="7%">End Usage Unit Date</th>
+                                    <th rowspan="2" width="7%">Total Overdue<br />(Rp)</th>
+                                    <th rowspan="2" width="7%">Overdue Days</th>
+                                    <th rowspan="2" width="7%">Overdue Bucket</th>
+                                    <th colspan="2" width="10%" style="text-align: center">Promise to Pay Date</th>
+                                    <th rowspan="2" width="7%">Last Modified By</th>
+                                    <th rowspan="2" width="7%">Last Modified Date</th>
+                                    <th rowspan="2" width="7%">Warning Letter Status</th>
+                                    <th rowspan="2" width="7%">RAL Status</th>
+                                    <th rowspan="2" width="240px">Action</th>
+                                </tr>
+                                <tr>
+                                    <th>Previous</th>
+                                    <th>Current</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+<section class="panel" id="panelBtn">
+    <footer class="panel-footer bg-light lter">
+        <div id='loadingmessage' style='display: none'>
+            <img src='@Url.Content(ImgUrl)' />
+        </div>
+        <input type="hidden" id="submitButtonText" />
+        <input id="btnPrintAll" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report" onclick="printBilOverdueReport()">
+    </footer>
+</section>
+
+@{
+    Html.RenderPartial("ModalPopUp");
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/BILOverdue.js")"></script>
+
+    <script>
+        var serverRoot = '@Url.Content("~")';
+
+        var picTitleCode = '@JobTitles.AD';
+
+        var iActiveTabIndex = '@((int)OverduePeriodType.From1To30Days)';
+        var tabId = 'billingOverdue30days';
+        var ObjectName = 'oOverdue30days';
+        var CounterData = -1;
+
+        //Server variable
+        var srv_approved = '@((int)OlssOplStatus.Approved)';
+        var srv_rejected = '@((int)OlssOplStatus.Rejected)';
+        var srv_submitted = '@((int)OlssOplStatus.Submitted)';
+        var srv_draft = '@((int)OlssOplStatus.Draft)';
+        var srv_check = '@((int)OlssOplStatus.Checked)';
+        var srv_revised = '@((int)OlssOplStatus.Revised)';
+
+        $(document).ready(function () {
+
+            PopulateOverdue(ObjectName, tabId, iActiveTabIndex);
+        });
+
+        //handling Change Tab
+        $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+
+            switch ($(this).html()) {
+                case "1 - 30 Days":
+                    CounterData = -1;
+                    iActiveTabIndex = '@((int)OverduePeriodType.From1To30Days)';
+                    tabId = 'billingOverdue30days';
+                    ObjectName = 'oOverdue30days';
+                    break;
+                case "31-60 Days":
+                    CounterData = -1;
+                    iActiveTabIndex = '@((int)OverduePeriodType.From31To60Days)';
+                    tabId = 'billingOverdue60days';
+                    ObjectName = 'oOverdue60days';
+                    break;
+                case "61-90 Days":
+                    iActiveTabIndex = '@((int)OverduePeriodType.From61To90Days)';
+                    tabId = 'billingOverdue90days';
+                    ObjectName = 'oOverdue90days';
+                    break;
+                case "&gt;90 Days":
+                    iActiveTabIndex = '@((int)OverduePeriodType.MoreThan90Days)';
+                    tabId = 'billingOverdue91days';
+                    ObjectName = 'oOverdue91days';
+                    break;
+            }
+
+            if (typeof (window[ObjectName]) != "undefined")
+                $("#" + tabId).dataTable().fnDraw();
+            else
+                PopulateOverdue(ObjectName, tabId, iActiveTabIndex);
+
+        });
+
+        // Searching
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+                switch (iActiveTabIndex) {
+                    case '@((int)OverduePeriodType.From1To30Days)':
+                        $('#billingOverdue30days').dataTable().fnDraw();
+                        break;
+                    case '@((int)OverduePeriodType.From31To60Days)':
+                        $('#billingOverdue60days').dataTable().fnDraw();
+                        break;
+                    case '@((int)OverduePeriodType.From61To90Days)':
+                        $('#billingOverdue90days').dataTable().fnDraw();
+                        break;
+                    case '@((int)OverduePeriodType.MoreThan90Days)':
+                        $('#billingOverdue91days').dataTable().fnDraw();
+                        break;
+                }
+            }
+        });
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+    </script>
+}

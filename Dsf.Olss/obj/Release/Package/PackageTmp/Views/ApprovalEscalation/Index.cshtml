@@ -1,0 +1,191 @@
+﻿@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "List of Document’s Approval Path Escalation";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">Module</option>
+                            <option value="2">DSF Office</option>
+                            <option value="3">Document Number</option>
+                            <option value="4">Next Approve</option>
+                            <option value="5">Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            List of Visit Approval Path
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="DocumentList">
+            <div class="table-responsive">
+                <table id="table-list" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; width: 5% !important;">DSF Office</th>
+                            <th style="text-align:center; width: 10%;">Module</th>
+                            <th style="text-align:center; width: 20%;">Document Number</th>
+                            <th style="text-align:center; width: 15%;">Last Approve</th>
+                            <th style="text-align:center; width: 15%;">Next Approve</th>
+                            <th style="text-align:center; width: 15%;">Created By</th>
+                            <th style="text-align:center; width: 10%;">Created Date</th>
+                            <th style="text-align:center; width: 5%;">Status</th>
+                            <th style="text-align:center; width: 5%;">Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var oTable;
+            // datatable
+            $('#table-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[9, "desc"]],
+                    "sScrollXInner": "200%",
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "ApprovalEscalation")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+
+                            { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() }
+                            );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "bAutoWidth": false,
+                    "aoColumns": [
+                        { "mData": "BranchName" },
+                        { "mData": "ModuleName" },
+                        { "mData": "DocumentNumber" },
+                        { "mData": "LastApprove" },
+                        { "mData": "NextApprove" },
+                        { "mData": "CreatedBy" },
+                        { "mData": "CreatedDate" },
+                        {
+                            "mData": "Status",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var status = oObj.aData["Status"];
+
+                                if (status === '@StatusCode.Submitted') {
+                                    return "<span class='label label-info'>Submitted</span>";
+                                }
+
+                                if (status === '@StatusCode.Check') {
+                                    return "<span class='label label-success'>Checked</span>";
+                                }
+
+                                if (status === '@StatusCode.Approve') {
+                                    return "<span class='label label-primary'>Approved</span>";
+                                }
+
+                                if (status === '@StatusCode.Revise') {
+                                    return "<span class='label label-revise'>Revised</span>";
+                                }
+
+                                if (status === '@StatusCode.Reject') {
+                                    return "<span class='label label-danger'>Rejected</span>";
+                                }
+
+                                if (status === '@StatusCode.Recommended') {
+                                    return "<span class='label label-success'>Recommended</span>";
+                                }
+
+                                if (status === '@StatusCode.NotRecommended') {
+                                    return "<span class='label label-danger'>Not Recommended</span>";
+                                }
+
+                                return "<span class='label label-default'>" + status + "</span>";
+                            }
+                        },
+                        {
+                            "mData": "IdLastApprove",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData["IdLastApprove"];
+                                var nApp = oObj.aData["NextApprove"];
+                                var docNo = oObj.aData["DocumentNumber"];
+                                if (nApp != "" && docNo != "") {
+                                    return "<a title='Edit' href='@Url.Action("Edit", "ApprovalEscalation")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>";
+                                }
+                                else {
+                                    return "<a title='Edit' href='@Url.Action("Edit", "ApprovalEscalation")/" + id + "' class='btn btn-primary disabled btn-xs'><i class='fa fa-edit'></i></a>";
+                                }
+                            }
+                        },
+                        { "mData": "LastModifiedDate", "bVisible": false }
+                    ],
+                });
+            });
+
+            var htmlTemp = '<div class="dataTables_wrapper row">';
+            var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+            var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+            $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+            htmlTemp += fakePagination + '</div>';
+            $('.table-responsive').append(htmlTemp);
+            $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+            $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+            $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+        });
+
+        // Searching
+        $('#btnSatus').on('click', function (e) {
+            e.preventDefault();
+
+            $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+        });
+
+
+    </script>
+}
+

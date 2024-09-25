@@ -1,0 +1,486 @@
+﻿@model Dsf.Olss.Models.SalesCalculationViewModel
+
+@{
+    ViewBag.Title = "Detail Refinance Calculation";
+}
+    @if (Model.IsSubmitted == true && Model.IsDraft == false && Model.IsValid == false)
+    {
+       <label class="label label-info label-lg pull-right">submitted</label>
+    }
+    
+    @if (Model.IsSubmitted == false && Model.IsDraft == true && Model.IsValid == false)
+    {
+        <label class="label label-default label-lg pull-right">draft</label>
+    }
+
+    @if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == true)
+    {
+        <label class="label label-success label-lg pull-right">valid</label>
+    }
+    <a href="@Url.Action("Index", "SalesCalculation")" class=" btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+    <hr />
+    <div class="panel label-panel">
+        <div class="row" style="padding-bottom:10px;">
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreateBy)</div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreateDate))</div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+                <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+            </div>
+        </div>
+    </div>
+
+    <section class="panel">
+        <div class="panel-body">
+            <form role="form">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Refinance Calc. Number</label>
+                            <p class="form-control-static">@(Model.COSNumber ?? "-")</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Customer Name / Buyer</label>
+                            <p class="form-control-static">@(Model.CustomerName ?? "-")</p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Agreement Basic Information</header>
+        <div class="panel-body">
+            <form class="form">
+
+                <div class="row">
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Agreement Number Reff.</label>
+                            <p class="form-control-static">@(Model.ContractNumberReff ?? "-")</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Customer Name Reff.</label>
+                            <p class="form-control-static">@(Model.CustomerName ?? "-")</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Maintenance Type</label>
+                            <p class="form-control-static">
+                                @if (Model.MaintenanceType == "1" )
+                                {
+                                    @("Full Maintenance");
+                                }
+                                else if(Model.MaintenanceType == "2")
+                                {
+                                    @("Limited");
+                                }
+                                else if (Model.MaintenanceType == "3")
+                                {
+                                    @("Customer Service Desk");
+                                }
+                                else
+                                {
+                                    @("Non Maintenance")
+                                }
+                            </p>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Monthly Mileage</label>
+                            <p class="form-control-static text-right">@(Model.MonthlyMileage ?? 0)</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Expected Mileage</label>
+                            <p class="form-control-static text-right">@(Model.ExpectedMileage ?? 0)</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Expiration Date (mm/dd/yyyy)</label>
+                            <p class="form-control-static">@(Model.ExpirationDate.HasValue ? String.Format("{0:MM/dd/yyyy}", Model.ExpirationDate) : "-")</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Purchase Requirement After Lease</label>
+                            <p class="form-control-static">
+                                @if(Model.PurchaseAfterLease){
+                                    @("Yes");
+                                }
+                                else{
+                                    @("No");
+                                }
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Residual Value</label>
+                            <div class="input-group">
+                                <span class="input-group-addon bg-white-only" style="border:none">Rp</span>
+                                <p class="form-control-static text-right">@(Model.ResidualValueAmount.HasValue ? String.Format("{0:N0}", Model.ResidualValueAmount) : "-")</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Product Basic Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Registration Code</label>
+                        <p class="form-control-static">@(Model.ProductCode ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Code</label>
+                        <p class="form-control-static">@(Model.BrandCode ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        <p class="form-control-static">@(Model.ModelName ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        <p class="form-control-static">@(Model.Transmission ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        <p class="form-control-static">@(Model.ProductType ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        <p class="form-control-static">@(Model.BrandName ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Type</label>
+                        <p class="form-control-static">@(Model.ModelType ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        <p class="form-control-static">@(Model.FuelType ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <p class="form-control-static">@(Model.ProductCategory1 ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Code</label>
+                        <p class="form-control-static">@(Model.ModelCode ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Year (yyyy/mm)</label>
+                        <p class="form-control-static">@(Model.ModelYear.HasValue ? string.Format("{0:yyyy/MM}", Model.ModelYear) : "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Displacement (CC)</label>
+                        <p class="form-control-static text-right">@(Model.DisPlacement ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Maximum Loading Capacity</label>
+                        <p class="form-control-static text-right">@(Model.MaxLoadingCapacity ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Riding Capacity</label>
+                        <p class="form-control-static text-right">@(Model.RidingCapacity ?? 0)</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number Plat Color</label>
+                        <p class="form-control-static">@(Model.NumberPlatColor ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Registration Date (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@(Model.RegistrationDate.HasValue ? string.Format("{0:MM/dd/yyyy}", Model.RegistrationDate) : "-")</p>
+                        @Html.ValidationMessageFor(o => o.RegistrationDate)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Usage</label>
+                        <p class="form-control-static">@(Model.Usage ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Location</label>
+                        <p class="form-control-static">@(Model.Location ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Engine Number</label>
+                        <p class="form-control-static">@(Model.EngineNumber ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Police Number</label>
+                        <p class="form-control-static">@(Model.PoliceNumber ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Special Options</label>
+                        <p class="form-control-static">@(Model.SpecialOptions ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Calculation</header>
+        <table class="table table-striped table-input m-b-none text-sm">
+            <tbody>
+                <tr>
+                    <td class="font-bold" width="400px">
+                        Sales Price
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">
+                                    @(Model.ActualResidualValue.HasValue ? String.Format("{0:N0}", Model.ActualResidualValue) : "0")
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="font-bold" width="400px">
+                        Unit Quantity
+                    </td>
+                    <td>
+                        <p class="form-control-static allownumericwithdecimal">
+                            @(Model.UnitQuantity.HasValue ? String.Format("{0:N0}", Model.UnitQuantity) : "0")
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="font-bold" width="400px">
+                        Comission
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">
+                                @(Model.Comission.HasValue ? String.Format("{0:N0}", Model.Comission) : "0")
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="400px">
+                        <p class="form-control-static">@(Model.COSOtherExpense ?? "-")</p>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">@string.Format("{0:N0}", Model.COSOtherExpenseValue)</p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="400px">
+                        <p class="form-control-static">@(Model.COSOtherExpense1 ?? "-")</p>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">@string.Format("{0:N0}", Model.COSOtherExpenseValue1)</p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="400px">
+                        <p class="form-control-static">@(Model.COSOtherExpense2 ?? "-")</p>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">@string.Format("{0:N0}", Model.COSOtherExpenseValue2)</p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="400px">
+                        <p class="form-control-static">@(Model.COSOtherExpense3 ?? "-")</p>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">@string.Format("{0:N0}", Model.COSOtherExpenseValue3)</p>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="400px" class="font-bold">
+                        Net Sales
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <p class="form-control-static allownumericwithdecimal">
+                                @(Model.TotalAmount.HasValue ? String.Format("{0:N0}", Model.TotalAmount) : "0")
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Profits</header>
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <table class="table table-stripped table-input">
+                    <tbody>
+                        <tr>
+                            <td class="font-bold">Profit Amount</td>
+                            <td>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp</span>
+                                    <p class="form-control-static allownumericwithdecimal">
+                                        @(Model.ProfitAmount.HasValue ? String.Format("{0:N0}", Model.ProfitAmount) : "0")
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-footer bg-light lter">
+
+            @using (Html.BeginForm())
+            {
+                @Html.HiddenFor(o => o.IdCalculationOfSales)
+                @Html.HiddenFor(o => o.ConnId)
+                @StateButton.CalculationStateButton("detail", Model.IsDraft, Model.IsValid, Model.IsSubmitted)
+            }
+        </div>
+    </section>
+
+    @section Scripts{
+        <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+        <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+        <script src="~/signalr/hubs"></script>
+
+        <script>
+            var SalesCalculationHub = $.connection.SalesCalculation;
+            var SalesQuotationHub = $.connection.SalesQuotation;
+            var confirm = false;
+            SalesCalculationHub.client.OnStatusLock = function (id) {
+                if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                    confirm = true;
+                    bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                        location.reload();
+                        confirm = false;
+                    });
+                }
+            };
+
+            SalesQuotationHub.client.OnStatusValidateCalcLock = function (id) {
+                if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                    confirm = true;
+                    bootbox.alert("Status has been validate by other user, you will be reloaded ..", function () {
+                        location.reload();
+                        confirm = false;
+                    });
+                }
+            };
+
+            SalesQuotationHub.client.OnStatusInvalidateCalcLock = function (id) {
+                if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                    confirm = true;
+                    bootbox.alert("Status has been validate by other user, you will be reloaded ..", function () {
+                        location.reload();
+                        confirm = false;
+                    });
+                }
+            };
+
+            SalesCalculationHub.client.OnSaveLock = function (id) {
+                if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                    confirm = true;
+                    bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                        if (result != false) {
+                            location.reload();
+                            confirm = false;
+                        }
+                    });
+                }
+            };
+
+            $.connection.hub.start().done(function () {
+                var myClientId = $.connection.hub.id;
+                $('#ConnId').val(myClientId);
+            });
+            
+        </script>
+    }
+

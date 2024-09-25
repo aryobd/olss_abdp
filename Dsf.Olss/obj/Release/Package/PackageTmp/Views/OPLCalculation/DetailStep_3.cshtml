@@ -1,0 +1,420 @@
+﻿@model Dsf.Olss.Models.OPLCMaintenanceViewModel
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    ViewBag.Title = "Calculation of Operating Lease - Step 3";
+}
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 3, remark, x => @Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>  
+@Html.HiddenFor(o => o.ConnId)
+<!-- Input Basic Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Maintenance Basic Information</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Brand Code</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.ProductBrandCode)</p>
+                </div>
+                <div class="form-group">
+                    <label>Product Type</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.ProductType)</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Monthly Mileage (Km)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.MonthlyMileage)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Brand Name</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.BrandName)</p>
+                </div>
+                <div class="form-group">
+                    <label>Product Category</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.ProductCategoryName)</p>
+                </div>
+
+
+                <div class="form-group">
+                    <label>Usage</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.UsageName)</p>
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Model Name</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.ModelName)</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Model Year (yyyy/mm) </label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.ModelYear)</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Lease Period (Months)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.LeasePeriod)</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Input Basic Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Maintenance Condition & Cost</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Maintenance Type</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.MaintenanceTypeName)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Periodic Maintenance</label>
+                    @*<input type="checkbox" name="periodic_maintenance" /><label> &nbsp; Periodic Maintenance</label>*@
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PeriodicMaintenanceKm)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Oil Exchange</label>
+                    @*<input type="checkbox" name="oil_exchange" /><label> &nbsp; Oil Exchange</label>*@
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PeriodicOilExchange)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Exchange of Oil and Fats</label>
+                    @*<input type="checkbox" name="oil_exchange" /><label>&nbsp; Exchange of Oil and Fats</label>*@
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PeriodicOilFats)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.PeriodicMaintenanceAmount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label>Irregular Maintenance</label>
+                    @*<input type="checkbox" name="irregular_maintenance" /><label>&nbsp; Irregular Maintenance</label>*@
+                    <p class="form-control-static">@Html.DisplayFor(o => o.IrregularMaintenance)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3">
+            </div>
+
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.IrregularMaintenanceAmount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label>Battery</label>
+                    @*<input type="checkbox" name="battery" /><label>&nbsp; Battery</label>*@
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BateryKm)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.BateryAmount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label>Tire</label>
+                    @*<input type="checkbox" name="tire" /><label>&nbsp; Tire</label>*@
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.TireKm)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.TireAmount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label>Maintenance of Special OP Parts</label>
+                    @*<input type="checkbox" name="maintenance_op_parts" /><label>&nbsp; Maintenance of Special OP Parts</label>*@
+                    <p class="form-control-static">@Html.DisplayFor(o => o.SpecialParts)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.SpecialPartsAmount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+
+                <div class="form-group">
+                    <label>CSD</label>
+                    @*<input type="checkbox" name="csd" /><label>&nbsp; CSD</label>*@
+                    <p class="form-control-static">@Html.DisplayFor(o => o.CSD)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.CSDAmount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+
+                <div class="form-group">
+                    <label>Maintenance of Others (1)</label>
+                    @*<input type="checkbox" name="others_1" /><label>&nbsp; Maintenance of Others (1)</label>*@
+                    <p class="form-control-static">@Html.DisplayFor(o => o.MaintenanceOther1)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MaintenanceOther1Amount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="form-group">
+                    <label>Maintenance of Others (2)</label>
+                    @*<input type="checkbox" name="others_2" /><label>&nbsp; Maintenance of Others (2)</label>*@
+                    <p class="form-control-static">@Html.DisplayFor(o => o.MaintenanceOther2)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MaintenanceOther2Amount)</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line line-dashed line-xs pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+
+                <div class="form-group">
+                    <label>Maintenance of Others (3)</label>
+                    @*<input type="checkbox" name="others_3" /><label>&nbsp; Maintenance of Others (3)</label>*@
+                    <p class="form-control-static">@Html.DisplayFor(o => o.MaintenanceOther3)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3"></div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label style="visibility:hidden">This label is hidden</label>
+                    <div class="input-group">
+                        <span class="input-group-addon lbl">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MaintenanceOther3Amount)</p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="line pull-in"></div>
+
+        <div class="row">
+            <div class="col-lg-9 col-md-9"></div>
+            <div class="col-lg-3 col-md-3">
+                <label>Total Maintenance Cost</label>
+                <div class="input-group">
+                    <span class="input-group-addon lbl">Rp</span>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.TotalMaintenanceAmount)</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="panel-footer bg-light lter">
+        <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+        @if (System.Convert.ToInt32(Model.OPLRemarks) > 3)
+        {
+            <a href="@Url.RouteUrl("OPLCalculationDetail", new { Controller = "OPLCalculation", Action = "Detail", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+        }
+        else
+        {
+            <a class="btn btn-primary" onclick="NoNext();">Next Step <i class="fa fa-chevron-right"></i></a>
+        }
+    </div>
+</section>
+
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        function NoNext() {
+            bootbox.alert("there's no recorded data for next step..");
+        }
+
+        var OPLCalculationHub = $.connection.OPLCalculation;
+        var confirm = false;
+        OPLCalculationHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks' && !confirm) {
+                confirm = true;
+                bootbox.alert("Data has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        OPLCalculationHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

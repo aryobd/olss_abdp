@@ -1,0 +1,1 @@
+﻿--Select 'Customer' as tablename, 'Febry Yansyah' as footername

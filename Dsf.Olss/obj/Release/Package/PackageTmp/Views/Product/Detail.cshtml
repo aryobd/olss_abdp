@@ -1,0 +1,241 @@
+﻿@model Dsf.Olss.Data.Entities.Product
+@{
+    ViewBag.Title = "Product Detail";
+}
+@StatusLabel.Create(Model.IsDraft, Model.IsSubmit, Model.IsActive)
+<a href="@Url.Action("Index", "Product")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr />
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(o => o.ConnId)
+    @Html.HiddenFor(o => o.IdProduct)
+    @Html.HiddenFor(o => o.IsActive)
+    @Html.HiddenFor(o => o.IsDeleted)
+    @Html.HiddenFor(o => o.IsSubmit)
+    @Html.HiddenFor(o => o.IsDraft)
+<!-- Basic Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Product Basic Information</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Product Regristation Code</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.ProductCode) ? Model.ProductCode : "-")</p>
+                </div>
+
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Product Type</label>
+                    <p class="form-control-static"> @(!string.IsNullOrEmpty(Model.ProductType.ProductType1) ? Model.ProductType.ProductType1 : "-")</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+
+                <div class="form-group">
+                    <label>Product Category</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.ProductCategory.ProductCategory1) ? Model.ProductCategory.ProductCategory1 : "-")</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Model Code</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.ModelCode) ? Model.ModelCode : "-")</p>
+                </div>
+  
+                <div class="form-group">
+                    <label>Model Year (yyyy/mm)</label>
+                    <p class="form-control-static">@(Model.ModelYear.HasValue ? String.Format("{0:yyyy/MM}", Model.ModelYear) : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Transmission</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.Transmission) ? Model.Transmission : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Riding Capacity (person)</label>
+                    <p class="form-control-static">@(Model.RidingCapacity.HasValue ? Model.RidingCapacity.ToString() : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Gross Weight of Vehicle (ton)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.GrossVehicleWeight) ? Model.GrossVehicleWeight : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Height</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.Height) ? Model.Height : "-")</p>
+                </div>
+
+            </div>
+            <div class="col-lg-4 col-md-4">
+
+                <div class="form-group">
+                    <label>Brand Code</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.BrandCode) ? Model.BrandCode : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Model Name</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.ModelName) ? Model.ModelName : "-")</p>
+                </div>
+               
+
+                <div class="form-group">
+                    <label>Maximum Loading Capacity (ton)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.MaxLoadingCapacity) ? Model.MaxLoadingCapacity : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Length</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.Length) ? Model.Length : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Wheelbase</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.WheelBase) ?  Model.WheelBase : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Engine Model</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.EngineModel) ? Model.EngineModel : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Width</label>
+                    <p class="form-control-static"> @(!string.IsNullOrEmpty(Model.Width) ? Model.Width : "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                
+                <div class="form-group">
+                    <label>Brand Name</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.BrandName) ? Model.BrandName : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Model Type</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.ModelType) ? Model.ModelType : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Diplacement (cc)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.DisPlacement) ? Model.DisPlacement : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Grade</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.Grade) ? Model.Grade : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Fuel Type</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.FuelType) ? Model.FuelType : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Weight of Vehicle (ton)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.VehicleWeight) ? Model.VehicleWeight : "-")</p>
+                </div>
+           
+
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- Maintenance and other Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Maintenance and Other Information</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>STNK Renewal Cycle (year)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.SNTKRenewalCycle) ? Model.SNTKRenewalCycle : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Battery Size</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.BaterySize) ? Model.BaterySize : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Tire Size (Rear)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.RearTireSize) ? Model.RearTireSize : "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>KIR Renewal Cycle (month)</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.KIRRenewalCycle) ? Model.KIRRenewalCycle : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Number of Tire</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.NumberOfTire) ? Model.NumberOfTire : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Rate Class of Maintenance</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.MaintenanceRateClass) ? Model.MaintenanceRateClass : "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Number of Battery</label>
+                    <p class="form-control-static">@(Model.NumberOfBattery.HasValue ?  Model.NumberOfBattery.ToString() : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Tire Size (Front)</label>
+                    <p class="form-control-static"> @(!string.IsNullOrEmpty(Model.FrontTireSize) ? Model.FrontTireSize : "-")</p>
+                </div>
+                <div class="form-group">
+                    <label>Rate Class of Insurance</label>
+                    <p class="form-control-static">@(!string.IsNullOrEmpty(Model.InsuranceRateClass) ? Model.InsuranceRateClass : "-")</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="panel-footer bg-light lter">
+        @StateButton.Create("detail", Model.IsDraft, Model.IsSubmit, Model.IsActive)
+    </div>
+</section>
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var productHub = $.connection.Product;
+        var confirm = false;
+        productHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdProduct' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                    confirm = false;
+                });
+            }
+        };
+
+        productHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdProduct' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "Product")';
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

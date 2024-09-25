@@ -1,0 +1,435 @@
+﻿@model Dsf.Olss.Models.OPLCMaintenanceCashflowViewModel
+@using System.Web.UI.WebControls;
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<style type="text/css">
+    body {
+        color: black;
+    }
+</style>
+
+@{
+    var remark = Convert.ToInt32(Model.OPLRemarks);
+    var step = 3;
+    var isNoMaintenance = Model.MaintenanceTypeName.Equals("Non Maintenance");
+    ViewBag.Title = "Calculation of Operating Lease - Step 3";
+    var success = ViewBag.Success ?? TempData["Success"];
+    var error = ViewBag.Error ?? TempData["Error"];
+}
+@Message.Display(success, error)
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 3, remark, x => @Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@if (isNoMaintenance)
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Info</header>
+        <div class="panel-body">
+            <p class="h6 text-center">You choose no maintenance for this calculation. You can continue to next step or you can change the value of maintenance type on step 1</p>
+        </div>
+        <div class="panel-footer bg-light lter">
+            <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+            <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+        </div>
+    </section>
+}
+else
+{
+    using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Maintenance", @data_validate = "parsley" }))
+    {
+        @Html.HiddenFor(o => o.ConnId)
+        @Html.HiddenFor(o => o.IdOPLCalculation)
+        @Html.HiddenFor(o => o.OPLRemarks)
+        @Html.HiddenFor(o => o.ProductCode)
+        @Html.HiddenFor(o => o.IdMaintenanceCalculation)
+        @Html.HiddenFor(o => o.MaintenanceConditionTypeName)
+        @Html.HiddenFor(o => o.IsDsf)
+          <!-- Input Basic Information -->
+        <section class="panel">
+            <header class="panel-heading font-bold">Maintenance Basic Information</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Brand Code</label>
+                            @Html.TextBoxFor(o => o.ProductBrandCode, null, new { @class = "form-control", @placeholder = "Brand Code", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            @Html.TextBoxFor(o => o.ProductType, null, new { @class = "form-control", @placeholder = "Product Type", @readonly = "readonly" })
+                        </div>
+
+                        <div class="form-group">
+                            <label>Monthly Mileage (Km)</label>
+                            @Html.TextBoxFor(o => o.MonthlyMileage, null, new { @class = "form-control numbersOnly", @placeholder = "Monthly Mileage" })
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Brand Name</label>
+                            @Html.TextBoxFor(o => o.BrandName, null, new { @class = "form-control", @placeholder = "Brand Name", @readonly = "readonly" })
+
+                        </div>
+                        <div class="form-group">
+                            <label>Product Category</label>
+                            @Html.TextBoxFor(o => o.ProductCategoryName, null, new { @class = "form-control", @placeholder = "Product Category", @readonly = "readonly" })
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Usage</label>
+                            @Html.TextBoxFor(o => o.UsageName, null, new { @class = "form-control", @placeholder = "usage", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Model Name</label>
+                            @Html.TextBoxFor(o => o.ModelName, null, new { @class = "form-control", @placeholder = "Model Name", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group">
+                            <label>Model Year (yyyy/mm) </label>
+                            @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new { @class = "form-control", @placeholder = "Model Year (yyyy/mm)", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group">
+                            <label>Lease Period (Months)</label>
+                            @Html.TextBoxFor(o => o.LeasePeriod, null, new { @class = "form-control numbersOnly", @placeholder = "Lease Period (Months)", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+          <!-- Input Basic Information -->
+        <section class="panel">
+            <header class="panel-heading font-bold">Maintenance Condition & Cost</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Maintenance Type</label>
+                            @Html.TextBoxFor(o => o.MaintenanceTypeName, null, new {@class = "form-control", @placeholder = "Maintenance Type", @readonly = "readonly"})
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Maintenance Condition Type</label>
+                            @Html.DropDownListFor(o => o.MaintenanceConditionType, ViewBag.MaintenanceConditionType as SelectList, new { @class = "form-control", @tabindex = "12" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Maintenance Calculation Number</label>
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.MaintenanceCalculationNo, null, new {@class = "form-control", @placeholder = "Maintenance Calculation Number", @readonly = "true"})
+                                <span class="input-group-btn">
+                                    <button id="btnLoadMaintenance" class="btn btn-white" data-toggle="modal" data-target="#maintenanceCalculationModal" type="button" onclick="LoadMaintenanceCalculation()">...</button>
+                                    <button class="btn btn-danger" data-toggle="modal" type="button" onclick="ClearMaintenanceCalculationNo()">X</button>
+                                </span>
+                            </div><!-- /input-group -->
+                            @Html.ValidationMessageFor(o => o.MaintenanceCalculationNo)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>CSD Maintenance Fee Handle By Third Party (Monthly)</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.CsdMaintenanceFeeHandByTpPerMonth, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "CSD Maintenance Fee Handle By Third Party", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Full Maintenance Fee Handle By Third Party (Monthly)</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.FullMaintenanceFeeHandByTp, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Full Maintenance Fee Handle By Third Party", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Ratio Compensation VAT IN CSD / Full Maintenance (%)</label>
+                            @Html.TextBoxFor(o => o.RatioCompVatCsdOrFullMtHandByTp, null, new { @class = "form-control percentOnly", @placeholder = "Ratio Comp. VAT IN CSD / Full Maintenance handle by Third Party (%)", @data_maxlength = "22" })
+                            @Html.ValidationMessageFor(o => o.RatioCompVatCsdOrFullMtHandByTp)
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <br>
+            <div class="panel-footer bg-light lter">
+                @if (remark < step)
+                {
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                    <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                }
+                else
+                {
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+                    {
+                        if (Model.IsDraft)
+                        {
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                        }
+                        else if (Model.IsSubmitted)
+                        {
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                        }
+                    }
+                    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+                    {
+                        if (Model.IsDraft)
+                        {
+
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                        }
+                    }
+                    @Html.HiddenFor(o => o.IsValid)
+                    @Html.HiddenFor(o => o.IsSubmitted)
+                    @Html.HiddenFor(o => o.IsDraft)
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+                }
+            </div>
+        </section>
+
+    }
+
+    Html.RenderPartial("ModalPopUp");
+
+    @section Scripts{
+
+        <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+        <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+        <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+        <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+        <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+        <script src="~/signalr/hubs"></script>
+        <script src="@Url.Content("~/Content/js/Common.js")"></script>
+        <script>
+            var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+            var confirm = false;
+            OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+                if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks' && !confirm) {
+                    confirm = true;
+                    bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function(result) {
+                        if (result != false) {
+                            location.href = location.href;
+                        }
+                        confirm = false;
+                    });
+                }
+            };
+
+            OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+                if (id == '@Model.IdOPLCalculation' && !confirm) {
+                    confirm = true;
+                    bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function() {
+                        window.location.href = '@Url.Action("Index", "OPLCalculationCashflow")';
+                    });
+                }
+            };
+
+            $.connection.hub.start().done(function() {
+                var myClientId = $.connection.hub.id;
+                $('#ConnId').val(myClientId);
+            });
+
+            function ClearMaintenanceCalculationNo() {
+                $('#MaintenanceCalculationNo').val('');
+                $('#IdMaintenanceCalculation').val(null);
+                MaintenanceConditionTypeEvent();
+            }
+
+            var loadMaintenanceCalculationCount = 0;
+
+            function LoadMaintenanceCalculation() {
+                // datatable
+                var oTable = null;
+                $('#maintenanceCalculation-list').each(function() {
+                    oTable = $(this).dataTable({
+                        "bServerSide": true,
+                        "bProcessing": true,
+                        "aaSorting": [[0, "desc"]],
+                        "sScrollXInner": "200%",
+                        "bRetrieve": true,
+                        "bDestroy": true,
+                        "bCache": false,
+                        "bStateSave": false,
+                        "sAjaxSource": "@Url.Action("MaintenanceCalculationDataTable", "OPLCalculationCashflow")",
+                        "fnServerParams": function(aoData) {
+                            aoData.push(
+                                { "name": "productCode", "value": $("#ProductCode").val() },
+                                { "name": "isDsf", "value": $("#IsDsf").val() }
+                            );
+                        },
+                        "cache": false,
+                        "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                        "sPaginationType": "full_numbers",
+                        "aoColumns": [
+                            { "mData": "MaintenanceCalculationNo" },
+                            { "mData": "Workshop" },
+                            { "mData": "Location" },
+                            { "mData": "ProductCode" },
+                            { "mData": "ModelName" },
+                            { "mData": "MonthlyMileage" },
+                            {
+                                "mData": "IdMaintenanceCalculation",
+                                "bVisible": false
+                            }
+                        ],
+                        "iDisplayLength": 5,
+                        "bLengthChange": false
+                    });
+                });
+                if (window.loadMaintenanceCalculationCount == 1) {
+                    oTable.fnFilter('');
+                }
+                window.loadMaintenanceCalculationCount = 1;
+
+                $("#maintenanceCalculation-list tbody").delegate("tr", "click", function() {
+
+                    var data = oTable.fnGetData(this);
+                    if (data != null) {
+                        $("#IdMaintenanceCalculation").val(data.IdMaintenanceCalculation);
+                        $("#MaintenanceCalculationNo").val(data.MaintenanceCalculationNo);
+                        $("#CsdMaintenanceFeeHandByTpPerMonth").val('');
+                        $("#CsdMaintenanceFeeHandByTpPerMonth").prop("readonly", true);
+                        $("#FullMaintenanceFeeHandByTp").val('');
+                        $("#FullMaintenanceFeeHandByTp").prop("readonly", true);
+                        $("#MonthlyMileage").val(data.MonthlyMileage); 
+                    } else {
+                        $("#IdMaintenanceCalculation").val(null);
+                        $("#MaintenanceCalculationNo").val('');
+                    }
+
+                    $('#maintenanceCalculationModal').modal('hide');
+                    $("#maintenanceCalculation-list tbody").undelegate("tr", "click");
+                });
+            };
+
+            function MaintenanceConditionTypeEvent() {
+                if ($("#MaintenanceConditionTypeName").val() == "CSD Maintenance Fee Handle By Third Party") {
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").prop("readonly", false);
+                    $("#FullMaintenanceFeeHandByTp").val('');
+                    $("#FullMaintenanceFeeHandByTp").prop("readonly", true);
+                    $("#IsDsf").val(false);
+                    $("#MonthlyMileage").prop("readonly", false);
+                }
+                if ($("#MaintenanceConditionTypeName").val() == "Full Maintenance Fee Handle By Third Party") {
+                    $("#FullMaintenanceFeeHandByTp").prop("readonly", false);
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").val('');
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").prop("readonly", true);
+                    $("#IsDsf").val(false);
+                    $("#MonthlyMileage").prop("readonly", false);
+                }
+                if ($("#MaintenanceConditionTypeName").val() == "CSD Maintenance Fee Handle By DSF") {
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").val('');
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").prop("readonly", true);
+                    $("#FullMaintenanceFeeHandByTp").val('');
+                    $("#FullMaintenanceFeeHandByTp").prop("readonly", true);
+                    $("#IsDsf").val(true);
+                    $("#MonthlyMileage").prop("readonly", true);
+                }
+                if ($("#MaintenanceConditionTypeName").val() == "Full Maintenance Fee Handle By DSF") {
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").val('');
+                    $("#CsdMaintenanceFeeHandByTpPerMonth").prop("readonly", true);
+                    $("#FullMaintenanceFeeHandByTp").val('');
+                    $("#FullMaintenanceFeeHandByTp").prop("readonly", true);
+                    $("#IsDsf").val(true);
+                    $("#MonthlyMileage").prop("readonly", true);
+                }
+            }
+
+            $(document).ready(function () {
+                $('#CsdMaintenanceFeeHandByTpPerMonth').change(function () {
+                    if ($('#CsdMaintenanceFeeHandByTpPerMonth').val() !="") {
+                        $("#MaintenanceCalculationNo").val('');
+                    }
+                });
+                $('#FullMaintenanceFeeHandByTp').change(function () {
+                    if ($('#FullMaintenanceFeeHandByTp').val() != "") {
+                        $("#MaintenanceCalculationNo").val('');
+                    }
+                });
+
+                $("#MaintenanceConditionTypeName").val($('option:selected', $("select#MaintenanceConditionType")).text());
+                $("select#MaintenanceConditionType").change(function () {
+                    $("#MaintenanceCalculationNo").val('');
+                    $("#MaintenanceConditionTypeName").val($('option:selected', $(this)).text());
+                    MaintenanceConditionTypeEvent();
+                });
+                MaintenanceConditionTypeEvent();
+                $("input[type=text].income_count").on('keydown', currenciesOnly)
+                    .on('blur', function() { $(this).formatCurrency(); });
+
+                $(".currenciesOnly").on('keydown', currenciesOnly)
+                .on('blur', function () { $(this).formatCurrency(); });
+                $(".numbersOnly").on('keydown', numbersOnly);
+                $(".decimalsOnly").on('keydown', decimalsOnly);
+                $(".percentOnly").on('keydown', percentOnly);
+
+                $('.percentOnly').on('keydown keyup', function (e) {
+                    if ($(this).val() > 100
+                        && e.keyCode != 46 // delete
+                        && e.keyCode != 8 // backspace
+                       ) {
+                        e.preventDefault();
+                        $(this).val(0);
+                    }
+                });
+
+                if ($('#RatioCompVatCsdOrFullMtHandByTp').val('')) $('#RatioCompVatCsdOrFullMtHandByTp').val('100');
+            });
+
+
+        </script>
+
+        <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    }
+}

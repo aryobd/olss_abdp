@@ -1,0 +1,433 @@
+﻿@model Dsf.Olss.Models.MaintenancePaymentApprovalViewModel
+@{
+    ViewBag.Title = "Maintenance Payment Approval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*@StatusLabel.Create(Model.MaintenancePaymentApproval.IsDraft, Model.MaintenancePaymentApproval.IsSubmit, Model.MaintenancePaymentApproval.IsActive)*@
+<a href="@Url.Action("Index", "MaintenancePaymentApproval")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(o => o.IdTb_MTN_Payment_Approval)
+    @Html.HiddenFor(o => o.AgreementNumber)
+    <!-- Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Payment Approval Number</label>
+                        <p class="form-control-static" id="PaymentApprovalNumber">@(Model.PaymentApprovalNumber ?? "-")</p>
+                        @Html.HiddenFor(o => o.IdTb_MTN_Payment_Approval);
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier Name</label>
+                        <p class="form-control-static">@(Model.SupplierName.ToString() ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Approval Level 1</label>
+                        <p class="form-control-static">@(Model.ApprovalLevel1 ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Approval Level 2</label>
+                        <p class="form-control-static">@(Model.ApprovalLevel2 ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Approval Level 3</label>
+                        <p class="form-control-static">@(Model.ApprovalLevel3 ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="panel scrollable">
+        <header class="panel-heading font-bold">Maintenance Payment Approval </header>
+        <div style="overflow:auto">
+            <div class="table-responsive">
+                <table id="term-table" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                <div class="header-grid-short">Work Order Number</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Invoice Number</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Police Number</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Customer</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Agreement Number</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Object Lease</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Maintenance Category</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Services</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">Sparepart</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">PPn</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">PPh</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">Stamp</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Other</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Total</div>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                        @{
+    int i = 0;
+    var categoryId = new List<int>();
+                        }
+                        @foreach (var calculationdetails in Model.lstMaintenancePaymentApprovalDetailViewModel)
+                        {
+
+                            <tr class="rowTerm" id="row_@i" class="">
+
+                                <td>
+                                    <label id="WorkOrderNum_@i">@calculationdetails.WorkOrderNumber</label>
+                                </td>
+                                <td>
+                                    <label id="InvoiceNumber_@i">@calculationdetails.InvoiceNumber</label>
+                                </td>
+                                <td>
+                                    <label id="PoliceNumber_@i">@calculationdetails.PoliceNumber</label>
+                                </td>
+                                <td>
+                                    <label id="CustomerName_@i">@calculationdetails.CustomerName</label>
+                                </td>
+                                <td>
+                                    <label id="AgreementNumber_@i">@calculationdetails.AgreementNumber</label>
+                                </td>
+                                <td>
+                                    <label id="ObjLease_@i">@calculationdetails.ObjectLease</label>
+                                </td>
+                                <td>
+                                    <label id="ItemValueName_@i">@calculationdetails.MaintenanceCategory</label>
+                                </td>
+
+                                <td id="td_Services" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.Services)</td>
+                                <td id="td_SparePart" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.SparePart)</td>
+                                <td id="td_PPn" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.Ppn)</td>
+                                <td id="td_PPh" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.Pph)</td>
+                                <td id="td_Stamp" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.Stamp)</td>
+                                <td id="td_Other" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.Others)</td>
+                                <td id="td_Total" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetails.Total)</td>
+
+
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <div class="header-grid-short">
+                                    Total
+                                </div>
+                            </td>
+                            <td style="text-align:right">
+
+
+                                @string.Format("{0:N0}", Model.Total_Payment_Expense)
+
+
+                            </td>
+
+
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </div>
+
+
+
+
+        <footer class="panel-footer"></footer>
+
+    </section>
+
+
+    <div class="panel-footer bg-light lter">
+        @{
+    if (Model.IdTb_Opl_Status == 2 || Model.IdTb_Opl_Status == 35)
+    {
+        <section class="panel scrollable">
+            <header class="panel-heading font-bold">Maintenance Payment Approval Attachment</header>
+            <div style="overflow:auto">
+                <div class="table-responsive">
+                    <table id="attachment-table" class="table table-striped m-b-none display nowrap">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="header-grid-short">Id</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">File Name</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">File Path</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Created By</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Created Date</div>
+                                </th>
+
+                                <th>
+                                    <div class="header-grid-short">Action</div>
+                                </th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody role="alert" aria-live="polite" aria-relevant="all">
+                            @{
+                                int a = 0;
+                                int idPaymentApproval = 0;        
+                            }
+
+
+                            @foreach (var Attachments in Model.lstMaintenancePaymentApprovalAttachment)
+                            {
+                                <tr class="rowTerm">
+                                    <td>
+                                        <label id="Id_@a">@Attachments.IdTb_MTN_Payment_Approval_Attachment</label>
+                                    </td>
+                                    <td>
+                                        <label id="FileName_@a">@Attachments.FileName</label>
+                                    </td>
+                                    <td>
+                                        <label id="FilePath_@a">@Attachments.FilePath</label>
+                                    </td>
+                                    <td>
+                                        <label id="FilePath_@a">@Attachments.CreatedBy</label>
+                                    </td>
+                                    <td>
+                                        <label id="FilePath_@a">@Attachments.CreatedDate</label>
+                                    </td>
+                                    <td>
+                                        <a title='Download File' href='@Url.Action("DownloadFile", "MaintenancePaymentApproval")/@Attachments.IdTb_MTN_Payment_Approval_Attachment' class='btn btn-info btn-xs'><i class='fa fa-edit'></i></a> 
+
+                                    </td>
+
+                                </tr>
+                                a++;
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+
+
+            <footer class="panel-footer"></footer>
+
+        </section>
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <input type="file" id="FileUpload1" />
+                    </div>
+                    <div class="form-group">
+                        <input type="button" id="btnUpload" value="Upload Files" />
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <button id="btnPaid" class="btn btn-info" type="button" onclick="Paid()" tabindex="14">Paid</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+    }
+        }
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+
+    <script src="~/signalr/hubs"></script>
+    <script>
+    var MaintenancePaymentApprovalHub = $.connection.MaintenancePaymentApproval;
+    var confirm = false;
+    MaintenancePaymentApprovalHub.client.OnSaveLock = function (id) {
+        if (id == '@Model.IdTb_MTN_Payment_Approval' && !confirm) {
+            confirm = true;
+            bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                if (result != false) {
+                    location.reload();
+                }
+                confirm = false;
+            });
+        }
+    };
+
+    MaintenancePaymentApprovalHub.client.OnStatusLock = function (id) {
+        if (id == '@Model.IdTb_MTN_Payment_Approval' && !confirm) {
+            confirm = true;
+            bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                window.location.href = '@Url.Action("Index", "MaintenancePaymentApproval")';
+            });
+        }
+    };
+
+    $.connection.hub.start().done(function () {
+        var myClientId = $.connection.hub.id;
+        $('#ConnId').val(myClientId);
+    });
+
+
+
+    function Paid() {
+        var strPaymentApprovalID = document.getElementById("IdTb_MTN_Payment_Approval").value;
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '@Url.Action("Paid", "MaintenancePaymentApproval")',
+            data: { strIdTb_MTN_Payment_Approval: strPaymentApprovalID },
+            success: function (Data) {
+                var PaymentApprovalNumber = Data.PaymentApprovalNumber;
+                var Success = Data.Success;
+                window.location.href = "@Url.Action("Index", "MaintenancePaymentApproval")";
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        };
+
+
+        $('#btnUpload').click(function () {
+
+            // Checking whether FormData is available in browser
+            var strPaymentApprovalID = document.getElementById("IdTb_MTN_Payment_Approval").value;
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#FileUpload1").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object
+                fileData.append('StrPaymentApprovalID', strPaymentApprovalID);
+                $.ajax({
+                    url:  '@Url.Action("UploadFiles", "MaintenancePaymentApproval")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (result) {
+                        window.location.href = "@Url.Action("Index", "MaintenancePaymentApproval")";
+                },
+                error: function (err) {
+                    alert(err.statusText);
+
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    });
+
+
+
+
+
+    </script>
+}

@@ -1,0 +1,632 @@
+﻿@model Dsf.Olss.Models.OPLBillpayViewModel
+@{
+
+    ViewBag.Title = "Billing Payment History";
+    //decimal[] depreciate = Model.DepreciationRate;
+}
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+@if (Model.IdOPLAgreement == 0)
+{
+    <a id="open-agreement" href="@Url.Action("Index", "OPLAgreement")" class="btn btn-default btn-sm">Open Agreement Information Inquiry</a>
+}
+else
+{
+    <a id="open-agreement" href="@Url.Action("Detail", "OPLAgreement", new { id = Model.IdOPLAgreement})" class="btn btn-default btn-sm">Open Agreement Information Inquiry</a>
+}
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<!-- Audit Trail -->
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div id="CreateBy" style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div>
+            <div id="CreateDate" style="float: left; padding-left: 15px;">
+                @if (Model != null)
+                {
+                    @(Model.CreatedDate.Equals(DateTime.MinValue) ? "-" : string.Format("{0:MM/dd/yyyy}", Model.CreatedDate))
+                }
+
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div id="LastModifiedBy" style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div id="LastModified" style="float: left; padding-left: 15px;">
+                @if (Model != null)
+                {
+                    @(Model.LastModified.Equals(DateTime.MinValue) ? "-" : string.Format("{0:MM/dd/yyyy}", Model.LastModified))
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contract Information -->
+@Html.HiddenFor(o => o.IdOPLBillpayHistory)
+@Html.HiddenFor(o => o.IdOPLAgreement)
+<section class="panel">
+    <header class="panel-heading">Contract Information</header>
+    <div class="panel-body">
+        <div class="row">
+            <!-- Agreement Number -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Agreement Number</label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(o => o.AgreementNumber, new { @class = "form-control", @placeholder = "Agreement Number", @readonly = "readonly" })
+                        @*<input id="AgreementNumber" type="text" class="form-control" placeholder="Agreement Number" readonly="readonly">*@
+                        <span class="input-group-btn">
+                            <button class="btn btn-white" data-toggle="modal" data-target="#agrData" onclick="LoadAgreement()" type="button">...</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Previous Agreement Number</label>
+                    @Html.TextBoxFor(o => o.AgreementNumberReff, new { @class = "form-control", @placeholder = "Previous Agreement Number", @readonly = "readonly" })
+                    @*<input id="AgreementNumberReff" type="text" readonly="readonly" class="form-control" placeholder="Previous Agreement Number">*@
+                </div>
+            </div>
+
+            <!-- Agreement Date -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Agreement Date (mm/dd/yyyy)</label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(o => o.AgreementDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Agreement Date (mm/dd/yyyy)", @readonly = "readonly" })
+                        @*   <input id="AgreementDate" type="text" class="form-control" readonly="readonly" placeholder="Agreement Date (mm/dd/yyyy)">*@
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Billing and Payment History -->
+<section class="panel">
+    <header class="panel-heading">Billing and Payment History</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Name</label>
+                    @Html.TextBoxFor(o => o.PICFullName, new { @class = "form-control", @placeholder = "Marketing Officer PIC Name", @readonly = "readonly" })
+                    @*<input id="PICFullName" type="text" class="form-control" readonly="readonly" placeholder="Marketing Officer PIC Name">*@
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Position</label>
+                    @Html.TextBoxFor(o => o.PICPositionName, new { @class = "form-control", @placeholder = "Marketing Officer PIC Position", @readonly = "readonly" })
+                    @*     <input id="PICPositionName" type="text" class="form-control" readonly="readonly" placeholder="Marketing Officer PIC Position">*@
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Phone</label>
+                    @Html.TextBoxFor(o => o.PICTelephone, new { @class = "form-control", @placeholder = "Marketing Officer PIC Phone", @readonly = "readonly" })
+                    @*    <input id="PICTelephone" type="text" class="form-control" readonly="readonly" placeholder="Marketing Officer PIC Phone">*@
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Email</label>
+                    @Html.TextBoxFor(o => o.PICEmailAddress, new { @class = "form-control", @placeholder = "Marketing Officer PIC Email", @readonly = "readonly" })
+                    @*  <input id="PICEmailAddress" type="text" class="form-control" readonly="readonly" placeholder="Marketing Officer PIC Email">*@
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    @Html.TextBoxFor(o => o.CustomerName, new { @class = "form-control", @placeholder = "Customer Name", @readonly = "readonly" })
+                    @* <input id="CustomerName" type="text" class="form-control" readonly="readonly" placeholder="Customer Name">*@
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Product Brand Name</label>
+                    @Html.TextBoxFor(o => o.ProductBrandName, new { @class = "form-control", @placeholder = "Product Brand Name", @readonly = "readonly" })
+                    @* <input id="ProductBrandName" type="text" class="form-control" readonly="readonly" placeholder="Product Brand Name">*@
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Product Model Name</label>
+                    @Html.TextBoxFor(o => o.ProductModelName, new { @class = "form-control", @placeholder = "Product Modal Name", @readonly = "readonly" })
+                    @* <input id="ProductModelName" type="text" class="form-control" readonly="readonly" placeholder="Product Modal Name">*@
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Model Year(yyyy/mm)</label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new { @class = "form-control", @placeholder = "Model Year", @readonly = "readonly" })
+                        @*   <input id="ModelYear" type="text" class="form-control" readonly="readonly" placeholder="Model Year">*@
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Lease Category</label>
+                    @Html.TextBoxFor(o => o.LeaseCategory, new { @class = "form-control", @placeholder = "Lease Category", @readonly = "readonly" })
+                    @* <input id="LeaseCategory" type="text" class="form-control" readonly="readonly" placeholder="Lease Category">*@
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Maintenance Type</label>
+                    @Html.TextBoxFor(o => o.MaintenanceType, new { @class = "form-control", @placeholder = "Maintenance Type", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Insurance</label>
+                    @Html.TextBoxFor(o => o.Insurance, new { @class = "form-control", @placeholder = "Insurance", @readonly = "readonly" })
+                    @*  <input id="Insurance" type="text" class="form-control" readonly="readonly" placeholder="Insurance">*@
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Purchase Required</label>
+                    @Html.TextBoxFor(o => o.PurchaseAfterLease, new { @class = "form-control", @placeholder = "Purchase Required", @readonly = "readonly" })
+                    @*    <input type="text" class="form-control" placeholder="Purchase Required">*@
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- Contract Start Date -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Contract Start Date (mm/dd/yyyy)</label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(o => o.StartPeriodDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Contract Start Date", @readonly = "readonly" })
+                        @*  <input id="StartPeriodDate" type="text" class="form-control" readonly="readonly" placeholder="Contract Start Date">*@
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contract Start Date -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Contract Expired Date (mm/dd/yyyy)</label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(o => o.EndPeriodDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Contract Expired Date", @readonly = "readonly" })
+                        @*  <input id="EndPeriodDate" type="text" class="form-control" readonly="readonly" placeholder="Contract Expired Date">*@
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Lease Period (Months)</label>
+                    @Html.TextBoxFor(o => o.LeasePeriod, new { @class = "form-control", @placeholder = "Lease Period (Months)", @readonly = "readonly" })
+                    @*<input id="LeasePeriod" type="text" class="form-control" readonly="readonly" placeholder="Lease Period (Months)">*@
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Usage</label>
+                    @Html.TextBoxFor(o => o.Usage, new { @class = "form-control", @placeholder = "Usage", @readonly = "readonly" })
+                    @* <input id="Usage" type="text" class="form-control" readonly="readonly" placeholder="Usage">*@
+                </div>
+            </div>
+        </div>
+        <div class="line line-dashed"></div>
+        <div class="row">
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Expectation Collection Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.ExpectationCollectionAmount, new { @class = "form-control", @placeholder = "ExpectationCollectionAmount", @readonly = "readonly" })
+                        @* <input id="ExpectationCollectionAmount" type="text" class="form-control text-right" placeholder="Expectation Collection Amount" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Billing Total</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.BillingTotal, new { @class = "form-control  text-right", @placeholder = "Billing Total", @readonly = "readonly" })
+                        @*  <input id="BillingTotal" type="text" class="form-control text-right" placeholder="Billing Total" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Breakdown Total</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.BreakdownTotal, new { @class = "form-control  text-right", @placeholder = "Collection Amount", @readonly = "readonly" })
+                        @*<input id="CollectionAmount" type="text" class="form-control text-right" placeholder="Collection Amount" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Collection Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.CollectionAmount, new { @class = "form-control  text-right", @placeholder = "Collection Amount", @readonly = "readonly" })
+                        @*<input id="CollectionAmount" type="text" class="form-control text-right" placeholder="Collection Amount" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Overdue Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.OverdueAmount, new { @class = "form-control text-right", @placeholder = "Overdue Amount", @readonly = "readonly" })
+                        @* <input id="OverdueAmount" type="text" class="form-control text-right" placeholder="Overdue Amount" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Overdue PPN - PPh</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.OverduePPNPPH, new { @class = "form-control text-right", @placeholder = "Overdue Amount", @readonly = "readonly" })
+                        @* <input id="OverdueAmount" type="text" class="form-control text-right" placeholder="Overdue Amount" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Expectation Penalty Coll Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.ExpectationPenaltyCollAmount, new { @class = "form-control  text-right", @placeholder = "Billing Total", @readonly = "readonly" })
+                        @*  <input id="BillingTotal" type="text" class="form-control text-right" placeholder="Billing Total" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Penalty Collection Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.PenaltyCollectionAmount, new { @class = "form-control  text-right", @placeholder = "Billing Total", @readonly = "readonly" })
+                        @*  <input id="BillingTotal" type="text" class="form-control text-right" placeholder="Billing Total" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Overdue Penalty Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">Rp</span>
+                        @Html.TextBoxFor(o => o.OverduePenaltyAmount, new { @class = "form-control  text-right", @placeholder = "Billing Total", @readonly = "readonly" })
+                        @*  <input id="BillingTotal" type="text" class="form-control text-right" placeholder="Billing Total" readonly="readonly">*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="line line-dashed"></div>
+    <div id="billpaydatatable" style="display:none">
+        @* <hr />*@
+        @*<header class="panel-heading">
+                <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+            </header>*@
+        <div class="table-responsive">
+           @* @Html.ActionLink("Add", "Add", new { @id = "_param" }, new { @class = "link btn btn-default btn-sm", @style = "position: absolute; margin-left: 20px;" })*@
+            <a href="#" class="link btn btn-default btn-sm" style="position: absolute; margin-left: 20px;">Add</a>
+            <table id="billpay-list" class="table table-striped m-b-none" data-ride="datatables">
+
+                <thead>
+                    <tr>
+                        <th>Payment Schedule</th>
+                        <th>Invoice Issue Date</th>
+                        <th>Billing Amount</th>
+                        <th>Break Down</th>
+                        <th>Collection Billing Amount</th>
+                        <th>VAT (10%)</th>
+                        <th>PPH (2%)</th>
+                        <th>Collection Date</th>
+                        <th>Collection Amount</th>
+                        <th>Overdue (Days)</th>
+                        <th>Penalty Amount</th>
+                        <th>Penalty Collection Date</th>
+                        <th>Penalty Collection Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts
+{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var OPLBillpayHub = $.connection.OPLBillpay;
+        var confirm = false;
+        var url = '@Url.Action("MainScreen", "OPLBillpay")';
+        var urlDetail = '@Url.Action("Detail", "OPLBillpay")';
+        OPLBillpayHub.client.OnSaveLock = function (id, iddetail) {
+            if ($("#IdOPLBillpayHistory").val() != 0 && id == $("#IdOPLBillpayHistory").val() && !confirm)
+                confirm = true;
+            bootbox.alert("Data has been changes by other user page will be reloaded", function () {
+                LoadBillPayDetailList();
+                confirm = false;
+                //window.location.href = url + "/" + id;
+            });
+        };
+
+
+        OPLBillpayHub.client.OnStatusLock = function (id, iddetail) {
+            if ($("#IdOPLBillpayHistory").val() != 0 && id == $("#IdOPLBillpayHistory").val() && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user page will be reloaded", function () {
+                    LoadBillPayDetailList();
+                    confirm = false;
+                });
+            }
+        };
+        $.connection.hub.start();
+        var url = '@Url.Action("Add", "OPLBillpay")';
+        var IdAgreement = 0;
+        var getUrl = '@Url.Action("GetBillpay", "OPLBillpay")';
+        function LoadAgreement() {
+            var oTable = null;
+            oTable = $('#agr-list').dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "aaSorting": [[1, "desc"]],
+                "sAjaxSource": "@Url.Action("AgreementModalDataTable", "OPLBillpay")",
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                {
+                    "mData": "IdOPLAgreement",
+                    "bVisible": false,
+                },
+                { "mData": "AgreementNumber" },
+                { "mData": "AgreementDate" },
+                { "mData": "CustomerName" },
+                { "mData": "BrandName" },
+                { "mData": "ModelName" },
+                { "mData": "ExpiredDate" },
+                {
+                    "mData": "PICFullName",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "PICPositionName",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "PICEmailAddress",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "PICTelephone",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "StartPeriodDate",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "Usage",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "Insurance",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "LeaseCategory",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "MaintenanceType",
+                    "bVisible": false,
+                },
+                {
+                    "mData": "ModelYear",
+                    "bVisible": false,
+                },
+
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+            });
+
+
+
+            $("#agrData tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+
+                $("#IdOPLAgreement").val(data.IdOPLAgreement);
+                $("#AgreementNumber").val(data.AgreementNumber);
+                $("#PreviousAgreementNumber").val(data.AgreementNumberReff);
+                $("#AgreementDate").val(data.AgreementDate);
+                $("#PICFullName").val(data.PICFullName);
+                $("#PICPositionName").val(data.PICPositionName);
+                $("#PICTelephone").val(data.PICTelephone);
+                $("#PICPositionName").val(data.PICPositionName);
+                $("#PICEmailAddress").val(data.PICEmailAddress);
+                $("#ProductBrandName").val(data.BrandName);
+                $("#CustomerName").val(data.CustomerName);
+                $("#ProductModelName").val(data.ModelName);
+                $("#StartPeriodDate").val(data.StartPeriodDate);
+                $("#EndPeriodDate").val(data.ExpiredDate);
+                $("#Usage").val(data.Usage);
+                $("#Insurance").val(data.Insurance);
+                $("#LeaseCategory").val(data.LeaseCategory);
+                $('#MaintenanceType').val(data.MaintenanceType);
+                $('#LeasePeriod').val(data.LeasePeriod);
+                $('#Usage').val(data.Usage);
+                $("#ModelYear").val(data.ModelYear);
+                $("#PurchaseAfterLease").val(data.PurchaseAfterLease);
+                $('#open-agreement').replaceWith('<a id="open-agreement" href="@Url.Action("Detail", "OPLAgreement")/' + data.IdOPLAgreement + '" class="btn btn-default btn-sm">Open Details Agreement</a>');
+                $("#CreateDate").text(data.CreateDate);
+                $("#CreateBy").text(data.CreateBy);
+                $("#LastModified").text(data.LastModified);
+                $("#LastModifiedBy").text(data.LastModifiedBy);
+                $('#agrData').modal('hide');
+                LoadBillPayDetailList();
+
+
+                $("#agrData tbody").undelegate("tr", "click");
+
+            });
+            oTable.fnDraw();
+        };
+
+
+        function LoadBillPayDetailList() {
+            $('div#billpaydatatable').show();
+            $.ajax({
+                url: getUrl,
+                dataType: "json",
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ id: $("#IdOPLAgreement").val() }),
+                async: true,
+                processData: false,
+                cache: false,
+                success: function (data) {
+                    $('#ExpectationCollectionAmount').val(data.ExpectationCollectionAmount)
+                    $('#CollectionAmount').val(data.TotalCollection)
+                    $('#OverdueAmount').val(data.OverdueAmount)
+                    $('#BillingTotal').val(data.Total)
+                    $("#CreatedBy").html(data.CreateBy);
+                    $("#CreatedDate").html(data.CreateDate);
+                    $("#LastModified").html(data.LastModified);
+                    $("#LastModifiedBy").html(data.LastModifiedBy);
+                    $("#IdOPLBillpayHistory").val(data.idOPLBillpay);
+                    $(".link").attr('href', url + "/" + data.idOPLBillpay );
+                    $("#BreakdownTotal").val(data.BreakDawnAmount);
+                    $("#ExpectationPenaltyCollAmount").val(data.ExpectationPenaltyCollAmount);
+                    $("#PenaltyCollectionAmount").val(data.PenaltyCollectionAmount);
+                    $("#OverduePenaltyAmount").val(data.OverduePenaltyAmount);
+                    $("#OverduePPNPPH").val(data.OverduePPNPPH);
+                },
+                error: function (xhr) {
+                    alert('Error on retrieving data');
+                }
+            })
+            // LoadBillPayDetailList(IdAgreement);
+            obpTable = null;
+            var obpTable = $('#billpay-list').dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "sAjaxSource": "@Url.Action("AjaxHandler", "OPLBillpay")",
+                "fnServerParams": function (aoData) {
+                    aoData.push({ "name": "IdOPLAgreement", "value": $("#IdOPLAgreement").val() });
+                },
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    { "mData": "PaymentSchedule" },
+                    { "mData": "InvoiceIssueDate" },
+                    { "mData": "BillAmount" },
+                    { "mData": "BreakDawnAmount" },
+                    { "mData": "CollectionBillingAmount" },
+                    { "mData": "VATAmount" },
+                    { "mData": "PPHAmount" },
+                    { "mData": "CollectionDate" },
+                    { "mData": "CollectionAmount" },
+                    { "mData": "OverdueDays" },
+                    { "mData": "PenaltyAmount" },
+                    { "mData": "PenaltyCollectionDate" },
+                    { "mData": "PenaltyCollectionAmount" },
+                    {
+                        "mData": "Remarks",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function (oObj) {
+                            var Idbillpaydetail = oObj.aData["IdOPLBillpayHistoryDetails"];
+                            var IdBillpay = oObj.aData["IdOPLBillpayHistory"];
+                            if (Idbillpaydetail != null)
+                                return "<a title='Detail' href='" + urlDetail + "/" + Idbillpaydetail + "/" + IdBillpay + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp";
+                            else
+                                return "";
+                        }
+                    },
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+            });
+            obpTable.fnDraw();
+        };
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-success pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;" ><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Success!</b> ' + message + '</div>');
+        }
+
+        bootstrap_alert.error = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Failed!</b> ' + message + '</div>');
+        }
+
+        $(document).ready(function () {
+            if ($("#IdOPLAgreement").val() != 0) {
+                LoadBillPayDetailList();
+                //bootstrap_alert.success("The data has been successfully updated");
+            }
+        });
+
+
+    </script>
+}

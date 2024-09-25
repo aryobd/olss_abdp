@@ -1,0 +1,706 @@
+﻿@model Dsf.Olss.Models.OPLServiceHistoryViewModel
+@using System.Web.UI.WebControls
+
+@{
+    ViewBag.Title = "Service History Inquiry";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@*<label class="label label-info label-lg pull-right">submitted</label>*@
+<a id="open-agreement" href="@Url.Action("Index", "OPLAgreement")" class="btn btn-default btn-sm">Open Agreement Information Inquiry</a>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<hr>
+
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div id="CreateBy" style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div>
+            <div id="CreateDate" style="float: left; padding-left: 15px;">
+                @if (Model != null)
+                {
+                    @(Model.CreateDate.Equals(DateTime.MinValue) ? "-" : string.Format("{0:MM/dd/yyyy}", Model.CreateDate))                    
+                }
+                
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div id="LastModifiedBy" style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div id="LastModified" style="float: left; padding-left: 15px;">
+                @if (Model!=null)
+                {
+                    @(Model.LastModified.Equals(DateTime.MinValue) ? "-" : string.Format("{0:MM/dd/yyyy}", Model.LastModified))
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @data_validate = "parsley" }))
+{
+
+    <!-- Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Agreement Information</header>
+        <div class="panel-body">
+            @Html.Hidden("IdOPLAgreement", (object)ViewBag.IdOPLAgreement)
+            @Html.Hidden("IdUObjLease", (object)ViewBag.IdUObjLease)
+            @Html.HiddenFor(o => o.TerminateDate)
+            <div class="row">
+
+                <!-- Quotation Number -->
+                <div class="col-lg-4">
+                    <div class="form-group">
+
+                        <label>Agreement Number</label>
+                        <div class="input-group">
+                            @Html.TextBox("AgreementNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Agreement Number" })
+                            @Html.ValidationMessageFor(o => o.AgreementNumber)
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#agrData" onclick="LoadAgreement()" type="button">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div>
+                </div>
+
+                <!-- Quotation Number -->
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Previous Agreement Number</label>
+                        @Html.TextBox("PreviousAgreementNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Previous Agreement Number" })
+                        @Html.ValidationMessageFor(o => o.PreviousAgreementNumber)
+                    </div>
+                </div>
+
+                <!-- Agreement Date -->
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Agreement Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o=>o.AgreementDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @readonly = "readonly", @placeholder = "Agreement Date (mm/dd/yyyy)" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.AgreementDate)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Record Inquiry -->
+    <section class="panel">
+        <header class="panel-heading">Service Record History</header>
+        <div class="panel-body">
+            <div class="row">
+
+                <!-- Police Number / Invoice Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Police Number / Invoice Number</label>
+                        <div class="input-group">
+                            @Html.TextBox("IdentityPoliceNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Police Number / Invoice Number" })
+                            <span class="input-group-btn">
+                                <button id="btnLoadObj" class="btn btn-white" data-toggle="modal" data-target="#ojlData" disabled="disabled" onclick="LoadObjectLease()" type="button">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.IdentityPoliceNumber)
+                    </div>
+                </div>
+
+                <!-- Engine Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Engine Number</label>
+                        @Html.TextBox("EngineNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Engine Number" })
+                        @Html.ValidationMessageFor(o => o.EngineNumber)
+                    </div>
+                </div>
+
+                <!-- Marketing Officer PIC Name -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Marketing Officer PIC Name</label>
+                        @Html.TextBox("SalesPICName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Name" })
+                        @Html.ValidationMessageFor(o => o.SalesPICName)
+                    </div>
+                </div>
+
+                <!-- Sales PIC Position -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Marketing Officer PIC Position</label>
+                        @Html.TextBox("SalesPICPosition", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Position" })
+                        @Html.ValidationMessageFor(o => o.SalesPICPosition)
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <!-- Marketing Officer PIC Phone -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Marketing Officer PIC Phone</label>
+                        @Html.TextBox("SalesPICPhone", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Phone" })
+                        @Html.ValidationMessageFor(o => o.SalesPICPhone)
+                    </div>
+                </div>
+
+                <!-- Marketing Officer PIC Email -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Marketing Officer PIC Email</label>
+                        @Html.TextBox("SalesPICEmail", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Email" })
+                        @Html.ValidationMessageFor(o => o.SalesPICEmail)
+                    </div>
+                </div>
+
+                <!-- Customer Name -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        @Html.TextBox("CustomerName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Customer Name" })
+                        @Html.ValidationMessageFor(o => o.CustomerName)
+                    </div>
+                </div>
+
+                <!-- Product Brand Name -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        @Html.TextBox("BrandName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Product Brand Name" })
+                        @Html.ValidationMessageFor(o => o.BrandName)
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <!-- Product Model Name -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        @Html.TextBox("ModelName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Product Model Name" })
+                        @Html.ValidationMessageFor(o => o.ModelName)
+                    </div>
+                </div>
+
+                <!-- Agreement Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Model Year (yyyy/MM)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ModelYear, null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Model Year (yyyy/MM)" })
+                            @Html.ValidationMessageFor(o => o.ModelYear)
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Lease Category</label>
+                        @Html.TextBoxFor(o => o.LeaseCategoryName, null, new { @class = "form-control", @placeholder = "Lease Category", @readonly = "readonly" })
+                    </div>
+                    @Html.ValidationMessageFor(o => o.LeaseCategory)
+                </div>
+
+                <!-- Maintenance Type -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Maintenance Type</label>
+                        @Html.TextBoxFor(o => o.MaintenanceTypeName, null, new { @class = "form-control", @placeholder = "Maintenance Type", @readonly = "readonly" })
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+
+                <!-- Insurance -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance</label>
+                        @Html.TextBoxFor(o => o.IsInsuranceName, null, new { @class = "form-control", @placeholder = "Insurance", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <!-- Purchase Required -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Purchase Required</label>
+                        @Html.TextBoxFor(o => o.PurchaseRequired, null, new { @class = "form-control", @placeholder = "Purchase Required", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <!-- Contract Start Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Start Date Usage Unit (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ContractStartDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Start Date Usage Unit (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>End  Date Usage Unit (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ContractExpiredDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "End Date Usage Unit (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Lease Period (Months) -->
+            <div class="row">
+                <!-- Lease Period (Month) -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Lease Period (Months)</label>
+                        @Html.TextBoxFor(o => o.LeasePeriod, null, new { @class = "form-control numbersOnly", @placeholder = "Lease Period (Months)", @readonly = "readonly", @data_maxlength = "32" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Usage</label>
+                        @Html.TextBoxFor(o => o.Usage, null, new { @class = "form-control", @placeholder = "Usage", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="line line-dashed pull-in"></div>
+            <div class="row" id="headersum" style="display:none">
+                <div class="col-lg-3">
+                    <a href="#" id="btnAdd" class="btn btn-default btn-sm">Add</a>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Maintenance Budget</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.MaintenanceBudget, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Maintenance Budget", @readonly = "readonly"})
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Maintenance Disbursement</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.MaintenanceDisbursement, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Maintenance Disbursement", @readonly = "readonly" })
+                        </div>
+                        @Html.ValidationMessageFor(o => o.MaintenanceDisbursement)
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Digestibility</label>
+                        @*<div class="input-group">*@
+                            @Html.TextBoxFor(o => o.Digestibility, "{0:N0}", new { @class = "form-control numbersOnly", @placeholder = "Digestibility", @readonly = "readonly" })
+                            @*<span class="input-group-addon">%</span>*@
+                        @*</div>*@
+                        @Html.ValidationMessageFor(o => o.Digestibility)
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="servicedatetable" style="display:none">
+            <hr />
+            <div class="tab-pane">
+                <div class="table-responsive">
+                    <table id="osh-list" class="table table-striped m-b-none">
+                        <thead>
+                            <tr>
+                                <th>Service Date</th>
+                                <th>Actual Mileage</th>
+                                <th>Maintenance Item</th>
+                                <th>Payment Expenses</th>
+                                <th>Workshop</th>
+                                <th>Workshop Address</th>
+                                <th width="5%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="alert_placeholder"></div>
+
+
+        <footer class="panel-footer bg-light lter"></footer>
+    </section>
+    <input type="hidden" id="connId"/>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+@{Html.RenderPartial("ModalPopUpObjectLease");}
+@{Html.RenderPartial("DeleteServiceConfirmation");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        
+        var OPLServiceHistoryHub = $.connection.OPLServiceHistory;
+        OPLServiceHistoryHub.client.OnAddLock = function (id) {
+            if (parseInt($("#IdUObjLease").val()) === id) {
+                LoadServiceHistory();
+            }
+        };
+
+        OPLServiceHistoryHub.client.OnSaveForIndexLock = function (id) {
+            if (parseInt($("#IdUObjLease").val()) === id) {
+                LoadServiceHistory();
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#connId').val(myClientId);
+        });
+        $(document).ready(function () {
+            $(".currenciesOnly").on('keydown', currenciesOnly)
+                .on('blur', function () { $(this).formatCurrency(); });
+            $(".decimalsOnly").on('keydown', decimalsOnly);
+            $(".numbersOnly").on('keydown', numbersOnly);
+
+            if ($('#IdOPLAgreement').val() != "none") {
+                $('#open-agreement').replaceWith('<a id="open-agreement" href="@Url.Action("Detail", "Agreement")/' + $('#IdOPLAgreement').val() + '" class="btn btn-default btn-sm">Open Details Agreement</a>');
+                $("#IdOPLAgreement").val($('#IdOPLAgreement').val());
+                $("#TerminateDate").val($('#TerminateDate').val());
+            }
+
+            if (($('#TerminateDate').val() == null) || ($('#TerminateDate').val() == '')) {
+                $('#btnAdd').attr('href', '@Url.Action("Add", "OPLServiceHistory")/' + $("#IdUObjLease").val());
+            } else {
+                $('#btnAdd').attr('disabled', 'disabled');
+            }
+
+            if ($('#IdUObjLease').val() != "none") {
+                $('#btnLoadObj').prop('disabled', false);
+                LoadServiceHistory();                
+            }
+
+        });
+
+        function LoadAgreement() {
+            var oTable = null;
+            oTable = $('#agr-list').dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "aaSorting": [[1, "desc"]],
+                "sAjaxSource": "@Url.Action("AgreementModalDataTable", "OPLServiceHistory")",
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    {
+                        "mData": "IdOPLAgreement",
+                        "bVisible": false
+                    },
+                    { "mData": "AgreementNumber" },
+                    { "mData": "AgreementDate" },
+                    { "mData": "CustomerName" },
+                    { "mData": "BrandName" },
+                    { "mData": "ModelName" }
+                    //{ "mData": "ExpiredDate" }
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+            });
+            oTable.fnDraw();
+
+
+            $("#agrData tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                if (data != null) {
+                    if ((data.IdOPLAgreement != null)||(data.IdOPLAgreement != undefined)) {
+                        $('#open-agreement').replaceWith('<a id="open-agreement" href="@Url.Action("Detail", "OPLAgreement")/' +data.IdOPLAgreement+'" class="btn btn-default btn-sm">Open Details Agreement</a>');
+                    }
+                    $("#IdOPLAgreement").val(data.IdOPLAgreement);
+                    $("#TerminateDate").val(data.TerminateDate);
+                    $("#AgreementNumber").val(data.AgreementNumber);
+                    $("#PreviousAgreementNumber").val(data.AgreementNumberReff);
+                    $("#AgreementDate").val(data.AgreementDate);
+                    $("#CreateDate").text(data.CreateDate);
+                    $("#CreateBy").text(data.CreateBy);
+                    $("#LastModified").text(data.LastModified);
+                    $("#LastModifiedBy").text(data.LastModifiedBy);
+
+
+                    $('#agrData').modal('hide');
+                    $('#btnLoadObj').prop('disabled', false);
+                    ResetForm();
+                } else {
+                    $('#btnLoadObj').prop('disabled', true);
+                }
+
+                $("#agrData tbody").undelegate("tr", "click");
+
+            });
+        };
+
+        function ResetForm() {
+            $("#IdentityPoliceNumber").val("");
+            $("#IdUObjLease").val("");
+            $("#EngineNumber").val("");
+            $("#SalesPICName").val("");
+            $("#SalesPICPosition").val("");
+            $("#SalesPICPhone").val("");
+            $("#SalesPICEmail").val("");
+            $("#CustomerName").val("");
+            $("#ModelName").val("");
+            $("#ModelYear").val("");
+            $("#BrandName").val("");
+            $("#LeaseCategoryName").val("");
+
+            $("#MaintenanceTypeName").val("");
+            $("#IsInsuranceName").val("");
+            $("#PurchaseRequired").val("");
+            $("#ContractStartDate").val("");
+            $("#ContractExpiredDate").val("");
+            $("#LeasePeriod").val("");
+            $("#Usage").val("");
+
+
+            $('div#servicedatetable').hide();
+            $('div#headersum').hide();
+
+        }
+
+        function LoadObjectLease() {
+            var objTable = null;
+           
+            objTable = $('#obj-list').dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "aaSorting": [[1, "desc"]],
+                "sAjaxSource": "@Url.Action("ObjectLeaseModalDataTable", "OPLServiceHistory")",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "idOplAgreement", "value": $("#IdOPLAgreement").val() }
+                    );
+                },
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    { "mData": "IdentityPoliceNumber" },
+                    { "mData": "EngineNumber" },
+                    { "mData": "Carroserrie" },
+                    { "mData": "BrandName" }
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+            });
+            objTable.fnDraw();
+
+            
+
+
+            $("#ojlData tbody").delegate("tr", "click", function () {
+
+                var data = objTable.fnGetData(this);
+                if (data != null) {
+                    $("#IdentityPoliceNumber").val(data.IdentityPoliceNumber);
+                    $("#IdUObjLease").val(data.IdUObjLease);
+                    $("#EngineNumber").val(data.EngineNumber);
+                    $("#SalesPICName").val(data.SalesPICName);
+                    $("#SalesPICPosition").val(data.SalesPICPosition);
+                    $("#SalesPICPhone").val(data.SalesPICPhone);
+                    $("#SalesPICEmail").val(data.SalesPICEmail);
+                    $("#CustomerName").val(data.CustomerName);
+                    $("#ModelName").val(data.ModelName);
+                    $("#ModelYear").val(data.ModelYear);
+                    $("#BrandName").val(data.BrandName);
+                    $("#LeaseCategoryName").val(data.LeaseCategoryName);
+
+                    $("#MaintenanceTypeName").val(data.MaintenanceTypeName);
+                    if (data.Insurance) {
+                        $("#IsInsuranceName").val("Yes");
+                    } else {
+                        $("#IsInsuranceName").val("No");
+                    }
+                    if (data.PurchaseRequired) {
+                        $("#PurchaseRequired").val("Yes");
+                    } else {
+                        $("#PurchaseRequired").val("No");
+                    }
+                    $("#ContractStartDate").val(data.ContractStartDate);
+                    $("#ContractExpiredDate").val(data.ContractExpiredDate);
+                    $("#LeasePeriod").val(data.LeasePeriod);
+                    $("#Usage").val(data.Usage);
+                    if (($('#TerminateDate').val() == null) || ($('#TerminateDate').val() == '')) {
+                        $('#btnAdd').attr('href', '@Url.Action("Add", "OPLServiceHistory")/' + $("#IdUObjLease").val());
+                    } else {
+                        $('#btnAdd').attr('disabled', 'disabled');
+                    }
+
+                    LoadServiceHistory();
+                }
+
+                $("#ojlData tbody").undelegate("tr", "click");
+            });
+        };
+
+        function LoadServiceHistory() {
+            $('#ojlData').modal('hide');
+            $('div#servicedatetable').show();
+            $('div#headersum').show();
+            var GetServiceHistorySumUrl = '@Url.Action("GetServiceHistorySum", "OPLServiceHistory")';
+            $.ajax({
+                type: "GET",
+                url: GetServiceHistorySumUrl,
+                cache: false,
+                data: {
+                    idUObjLease: $("#IdUObjLease").val()
+                },
+                success: function (data) {
+                    $("#MaintenanceBudget").val(data.MaintenanceBudget);
+                    $("#MaintenanceBudget").formatCurrency();
+                    $("#MaintenanceDisbursement").val(data.MaintenanceDisbursement);
+                    $("#MaintenanceDisbursement").formatCurrency();
+                    $("#Digestibility").val(data.Digestibility);
+                }
+            });
+
+            var oshTable = null;
+            oshTable = $('#osh-list').dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "aaSorting": [[0, "asc"]],
+                "sAjaxSource": "@Url.Action("ServiceHistoryRecordList", "OPLServiceHistory")",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "idUObjLease", "value": $("#IdUObjLease").val() }
+                    );
+                },
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    //{
+                    //    "mData": "ServiceDate",
+                    //       "fnRender": function (aObj) {
+                    //           var date = new Date(parseInt(aObj.aData["ServiceDate"].substr(6)));
+                    //           var modeldate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                    //           return modeldate;
+                    //       }
+                    //},
+                    { "mData": "ServiceDate" },
+                    {
+                        "mData": "MonthlyMileage",
+                        "fnRender": function (aObj) {
+                            if (aObj.aData["MonthlyMileage"] != null) {
+                                return "<div class='text-right'>" + aObj.aData["MonthlyMileage"] + "</div>";
+                            }
+                            return null;
+                        }
+                    },
+                    { "mData": "MaintenanceItem" },
+                    {
+                        "mData": "PaymentExpense",
+                        "fnRender": function (aObj) {
+                            if (aObj.aData["PaymentExpense"] != null) {
+                                return "<div class='text-right'>" + aObj.aData["PaymentExpense"] + "</div>";
+                            }
+                            return null;
+                        }
+                    },
+                    { "mData": "SuplierName" },
+                    { "mData": "SupplierAddress" },
+                    {
+                        "mData": "IdOPLServiceHistory",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "sClass": "datatables_action",
+                        "fnRender": function (oObj) {
+                            var Id = oObj.aData["IdOPLServiceHistory"];
+                            if (($('#TerminateDate').val() == null) || ($('#TerminateDate').val() == '')) {
+                                return "<a title='Detail' href='@Url.Action("Detail", "OPLServiceHistory")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Delete' data-toggle='modal' onclick='ShowDeleteServiceConfirmation(this)' href='#' id='" + Id + "' class='btn btn-danger btn-xs'><i class='fa fa-times'></i></a>" 
+                            } else {
+                                return "<a title='Detail' href='@Url.Action("Detail", "OPLServiceHistory")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Delete' data-toggle='modal' disabled='disabled' href='#' id='" + Id + "' class='btn btn-danger btn-xs'><i class='fa fa-times'></i></a>" 
+                            }
+                        }
+                    }
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+            });
+            oshTable.fnDraw();
+        }
+
+        function ShowDeleteServiceConfirmation(a) {
+            var history_date_label = $(a).closest('tr').find('td:first').text();
+            var id = a.id;
+            $('#history_service_label').text(history_date_label);
+            $('#IdOPLSHistoryServicesToDelete').val(id);
+            $('#deleteServiceHistoryConfirmation').modal('show');
+        }
+
+        function DeleteServiceHistory(id) {
+            var getUrlDeleteServiceHistory = '@Url.Action("DeleteServiceHistory", "OPLServiceHistory")';
+            var t = $('#osh-list').dataTable();
+            $.ajax({
+                type: "POST",
+                url: getUrlDeleteServiceHistory,
+                cache: false,
+                data: {
+                    id: id,
+                    connId: $('#ConnId').val()
+                },
+                success: function (data) {
+                    $('#deleteServiceHistoryConfirmation').modal('hide');
+                    LoadServiceHistory();//t.fnDraw();
+                    bootstrap_alert.success("The data has been successfully deleted");
+                }
+            });
+        }
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-success pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;" ><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Success!</b> ' + message + '</div>');
+        }
+
+        bootstrap_alert.error = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Failed!</b> ' + message + '</div>');
+        }
+    </script>
+<script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+}

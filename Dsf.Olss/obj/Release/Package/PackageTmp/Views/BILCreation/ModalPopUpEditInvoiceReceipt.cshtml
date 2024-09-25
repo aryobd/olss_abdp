@@ -1,0 +1,58 @@
+﻿@using System.Web.UI.WebControls
+@model Dsf.Olss.Models.BILInvoiceReceiptViewModel
+
+<form enctype="multipart/form-data" id="form_inputInvoiceReceipt">
+    <div class="modal-body">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Invoice No</label>
+                        <div>
+                            <input id="InvoiceNoInstalment" class="form-control" type="text" value="@Model.InvoiceNoInstalment">
+
+                            @Html.HiddenFor(a => a.IdTb_BIL_InvoiceReceipt)
+                            @Html.HiddenFor(a => a.PayScheduleDetailId)
+
+                        </div>
+                        <span id='spval_InvoiceNoInstalment' class='field-validation-error' style='display: none;'>Invoice No is required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Kwitansi No</label>
+                        <div>
+                            <input id="ReceiptNoInstalment" class="form-control" type="text" value="@Model.ReceiptNoInstalment">
+                        </div>
+                        <span id='spval_ReceiptNoInstalment' class='field-validation-error' style='display: none;'>Kwitansi No is required</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Invoice Date</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control  datepicker-input" name="InvoiceIssueDate" id="InvoiceIssueDate" value="@(Model.InvoiceIssueDate.HasValue ? Model.InvoiceIssueDate.Value.ToString("MM/dd/yyyy") : "")">
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        <span id='spval_InvoiceIssueDate' class='field-validation-error' style='display: none;'>Invoice Date is required</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="modal-footer">
+                    <input type="button" name="updateMaintenanceSchedule" value="Save" class="btn btn-info" onclick="UpdateInvoiceReceiptValidation()" />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </form>

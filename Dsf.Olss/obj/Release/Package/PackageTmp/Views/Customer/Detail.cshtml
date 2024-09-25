@@ -1,0 +1,505 @@
+﻿@model Dsf.Olss.Models.CustomerViewModel
+@{
+    ViewBag.Title = "Customer Detail ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@StatusLabel.Create(Model.Customer.IsDraft, Model.Customer.IsSubmit, Model.Customer.IsActive)
+<a href="@Url.Action("Index", "Customer")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.Customer.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.Customer.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.Customer.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.Customer.LastModified))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(o => o.ConnId)
+    @Html.HiddenFor(o => o.Customer.IdCustomer)
+    @Html.HiddenFor(o => o.Customer.IsActive)
+    @Html.HiddenFor(o => o.Customer.IsDeleted)
+    @Html.HiddenFor(o => o.Customer.IsSubmit)
+    @Html.HiddenFor(o => o.Customer.IsDraft)
+    <!-- Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Customer Code</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerCode ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <p class="form-control-static">@(Model.Customer.Address ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerName ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Telephone</label>
+                        <p class="form-control-static">@(Model.Customer.Telephone ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Internal Rating</label>
+                        <p class="form-control-static">@(Model.Customer.InternalRating.HasValue ? Model.Customer.InternalRating.ToString() : "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Economy Sector</label>
+                        <p class="form-control-static">@(Model.Customer.BusinessEconomySector ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!-- Corporate Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Corporate Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Date of Establishment</label>
+                        <p class="form-control-static">@(Model.Customer.DateOfEstablishment.HasValue ? string.Format("{0:MM/dd/yyyy}", Model.Customer.DateOfEstablishment) : "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Capital</label>
+                        <p class="form-control-static">@(@Model.Customer.Capital ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Number of Employees</label>
+                        <p class="form-control-static text-right">@(Model.Customer.EmployeeNumber ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Number of Branch</label>
+                        <p class="form-control-static">@(Model.Customer.BranchNumber.HasValue ? Model.Customer.BranchNumber.ToString() : "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Go Public Company</label>
+                        <p class="form-control-static">@(Model.Customer.GoPublicCompany.Equals(true) ? "Yes" : "No")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>NPWP</label>
+                        <p class="form-control-static">@(Model.Customer.NPWP)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>NPWP Address</label>
+                        <p class="form-control-static">@(Model.Customer.NPWPAddress)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Bank 1</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.Bank).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 1</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.ShareHolder).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier 1</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.MainVendor).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 1</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.MainCustomer).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Representative Director 1</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.RepresentativeDirector).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Bank 2</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.Bank).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 2</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.ShareHolder).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier 2</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.MainVendor).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 2</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.MainCustomer).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Representative Director 2</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.RepresentativeDirector).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Bank 3</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.Bank).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 3</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.ShareHolder).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier 3</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.MainVendor).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 3</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.MainCustomer).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Representative Director 3</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.RepresentativeDirector).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Financial Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Fiscal Year 1</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.FiscalYear).ElementAtOrDefault(0).HasValue ? string.Format("{0:G0}", Model.Customer.CustomerDetailInfoes.Select(o => o.FiscalYear).ElementAtOrDefault(0)) : "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Fiscal Year 2</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.FiscalYear).ElementAtOrDefault(1).HasValue ? string.Format("{0:G0}", Model.Customer.CustomerDetailInfoes.Select(o => o.FiscalYear).ElementAtOrDefault(1)) : "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Fiscal Year 3</label>
+                        <p class="form-control-static">@(Model.Customer.CustomerDetailInfoes.Select(o => o.FiscalYear).ElementAtOrDefault(2).HasValue ? string.Format("{0:G0}", Model.Customer.CustomerDetailInfoes.Select(o => o.FiscalYear).ElementAtOrDefault(2)) : "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Sales Profit 1</label>
+                        <p class="form-control-static"><span>@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfitCurrency).ElementAtOrDefault(0) == 39 ? "$" : "Rp.")</span> <span class="pull-right">@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfit).ElementAtOrDefault(0).HasValue ? string.Format("{0:N0}", Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfit).ElementAtOrDefault(0)) : "-")</span> </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Sales Profit 2</label>
+                        <p class="form-control-static"><span>@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfitCurrency).ElementAtOrDefault(0) == 39 ? "$" : "Rp.")</span> <span class="pull-right">@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfit).ElementAtOrDefault(1).HasValue ? string.Format("{0:N0}", Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfit).ElementAtOrDefault(1)) : "-")</span> </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Sales Profit 3</label>
+                        <p class="form-control-static"><span>@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfitCurrency).ElementAtOrDefault(0) == 39 ? "$" : "Rp.")</span> <span class="pull-right">@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfit).ElementAtOrDefault(2).HasValue ? string.Format("{0:N0}", Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfit).ElementAtOrDefault(2)) : "-")</span> </p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Net Profit 1</label>
+                        <p class="form-control-static"><span>@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfitCurrency).ElementAtOrDefault(0) == 39 ? "$" : "Rp.")</span> <span class="pull-right">@(Model.Customer.CustomerDetailInfoes.Select(o => o.NetProfit).ElementAtOrDefault(0).HasValue ? string.Format("{0:N0}", Model.Customer.CustomerDetailInfoes.Select(o => o.NetProfit).ElementAtOrDefault(0)) : "-")</span> </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Net Profit 2</label>
+                        <p class="form-control-static"><span>@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfitCurrency).ElementAtOrDefault(0) == 39 ? "$" : "Rp.")</span> <span class="pull-right">@(Model.Customer.CustomerDetailInfoes.Select(o => o.NetProfit).ElementAtOrDefault(1).HasValue ? string.Format("{0:N0}", Model.Customer.CustomerDetailInfoes.Select(o => o.NetProfit).ElementAtOrDefault(1)) : "-")</span> </p>
+                    </div>
+                    <div class="form-group">
+                        <label>Net Profit 3</label>
+                        <p class="form-control-static"><span>@(Model.Customer.CustomerDetailInfoes.Select(o => o.SalesProfitCurrency).ElementAtOrDefault(0) == 39 ? "$" : "Rp.")</span> <span class="pull-right">@(Model.Customer.CustomerDetailInfoes.Select(o => o.NetProfit).ElementAtOrDefault(2).HasValue ? string.Format("{0:N0}", Model.Customer.CustomerDetailInfoes.Select(o => o.NetProfit).ElementAtOrDefault(2)) : "-")</span> </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading text-right bg-light">
+            <ul class="nav nav-tabs pull-left">
+                <li class="active font-bold"><a href="#messages-2" data-toggle="tab">Credit Information</a></li>
+                <li class="font-bold"><a href="#profile-2" data-toggle="tab">Owned Product Information</a></li>
+                <li class="font-bold"><a href="#profile-3" data-toggle="tab">Detail of DSF Contract Unit</a></li>
+            </ul>
+            <span class="hidden-sm" style="visibility:hidden">Left tab</span>
+        </header>
+        <div class="panel-body" style="padding:0px !important;">
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="messages-2" style="padding:15px">
+
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label>Maximum Credit Line</label>
+                                <p class="form-control-static"><span>Rp.</span> <span class="pull-right">@(string.Format("{0:N0}", System.Convert.ToDecimal(Model.Customer.MaxCreditLine)) ?? "-")</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label>Total Credit Balance (Group as a whole)</label>
+                                <p class="form-control-static"><span>Rp.</span> <span class="pull-right">@(Model.Customer.TCBalanceGroup.HasValue ? string.Format("{0:N0}", Model.Customer.TCBalanceGroup) : "-")</span></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Over Due Amount</label>
+                                <p class="form-control-static"><span>Rp.</span> <span class="pull-right">@(Model.Customer.OverdueAmount.HasValue ? string.Format("{0:N0}", Model.Customer.OverdueAmount) : "-")</span></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="form-group">
+                                <label>Total Credit Balance (Single)</label>
+                                <p class="form-control-static"><span>Rp.</span> <span class="pull-right">@(Model.Customer.TCBalanceSingle.HasValue ? string.Format("{0:N0}", Model.Customer.TCBalanceSingle) : "-")</span></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Number of Over due (Latest One Year)</label>
+                                <p class="form-control-static">@(Model.Customer.OverdueNumber.HasValue ? string.Format("{0:N0}", Model.Customer.OverdueNumber) : "-")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="profile-2">
+                    <table class="table table-striped m-b-none text-sm" style="margin:0px">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer Owned Unit</th>
+                                <th>DSF Contract Unit</th>
+                                <th>Potential Unit</th>
+                                <th>Information Acquisition Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold">
+                                    Number of Vehicle Unit
+                                </td>
+                                <td>
+                                    @(Model.Customer.CustomerVehicleUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.DSFVehicleUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.PotentialVehicleUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.IADVehicleUnit.HasValue ? string.Format("{0:MM/dd/yyyy}", Model.Customer.IADVehicleUnit) : "-")
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    Number of Forklift Unit
+                                </td>
+                                <td>
+                                    @(Model.Customer.CustomerForkliftUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.DSFForkliftUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.PotentialForkliftUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.IADForkliftUnit.HasValue ? string.Format("{0:MM/dd/yyyy}", Model.Customer.IADForkliftUnit) : "-")
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    Number of HE Unit
+                                </td>
+                                <td>
+                                    @(Model.Customer.CustomerHEUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.DSFHEUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.PotentialHEUnit ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.IADHEUnit.HasValue ? string.Format("{0:MM/dd/yyyy}", Model.Customer.IADHEUnit) : "-")
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="profile-3">
+                    <table class="table table-striped m-b-none text-sm">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">#</th>
+                                <th colspan="3" class="text-center">Operating Lease</th>
+                                <th rowspan="2">Finance Lease</th>
+                            </tr>
+                            <tr>
+                                <th>Non-Maintenance</th>
+                                <th>Maintenance</th>
+                                <th>CSD</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold">
+                                    LCV
+                                </td>
+                                <td>
+                                    @(Model.Customer.LCVNonMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.LCVMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.LCVCSD ?? "-")
+                                </td>
+                                <td>
+                                    <span>Rp.</span> <span class="pull-right">@(string.Format("{0:N0}", System.Convert.ToDecimal(Model.Customer.LCVFinanceLease)) ?? "-")</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    CV
+                                </td>
+                                <td>
+                                    @(Model.Customer.CVNonMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.CVMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.CVCSD ?? "-")
+                                </td>
+                                <td>
+                                    <span>Rp.</span> <span class="pull-right">@(string.Format("{0:N0}", System.Convert.ToDecimal(Model.Customer.CVFinanceLease)) ?? "-")</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    PC
+                                </td>
+                                <td>
+                                    @(Model.Customer.PCNonMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.PCMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.PCCSD ?? "-")
+                                </td>
+                                <td>
+                                    <span>Rp.</span> <span class="pull-right">@(string.Format("{0:N0}", System.Convert.ToDecimal(Model.Customer.PCFinanceLease)) ?? "-")</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    Forklift
+                                </td>
+                                <td>
+                                    @(Model.Customer.ForkliftNonMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.ForkliftMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.ForkliftCSD ?? "-")
+                                </td>
+                                <td>
+                                    <span>Rp.</span> <span class="pull-right">@(string.Format("{0:N0}", System.Convert.ToDecimal(Model.Customer.ForkliftFinanceLease)) ?? "-")</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">
+                                    HE
+                                </td>
+                                <td>
+                                    @(Model.Customer.HENonMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.HEMaintenance ?? "-")
+                                </td>
+                                <td>
+                                    @(Model.Customer.HECSD ?? "-")
+                                </td>
+                                <td>
+                                    <span>Rp.</span> <span class="pull-right">@(string.Format("{0:N0}", System.Convert.ToDecimal(Model.Customer.HEFinanceLease)) ?? "-")</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer bg-light lter">
+            @StateButton.Create("detail", Model.Customer.IsDraft, Model.Customer.IsSubmit, Model.Customer.IsActive)
+            @*@StateButton.Create("detail", @Model.Customer.Status)*@
+
+        </div>
+    </section>
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var customerHub = $.connection.Customer;
+        var confirm = false;
+        customerHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.Customer.IdCustomer' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                    confirm = false;
+                });
+            }
+        };
+
+        customerHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.Customer.IdCustomer' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "Customer")';
+                });
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

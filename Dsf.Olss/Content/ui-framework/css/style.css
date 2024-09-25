@@ -1,0 +1,121 @@
+.mandatory{
+  background-color: #FDEEF4;
+}
+
+div.mandatory .select2-choices{
+    background-color: #FDEEF4;
+}
+
+.radioPositionCenter {
+  display: block;
+  margin-left: 70px;
+  margin-top: 6px;
+}
+
+.table-input td.font-padding{
+  font-weight: 700;
+  padding: 7px 30px !important;
+}
+
+.table-input td.font-padding-no-bold {
+    padding: 7px 30px !important;
+}
+
+.DocumentItem
+{
+	border:1px solid black;
+	padding:0;
+	height:200px;
+}
+
+.label-closed {
+  background-color: #000033;
+}
+
+.label-revisioned{
+  background-color: #CC99CC;
+}
+
+.padding{
+	padding-top : 10px;
+	padding-right : 10px;
+}
+
+.padding-left{
+	padding-top : 10px;
+	padding-left : 53px;
+}
+
+.position-center{
+	padding-bottom : 20px;
+	
+}
+
+/*datatable header grid*/
+.header-grid-very-short{
+    width: 50px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-short{
+    width: 100px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-medium{
+    width: 150px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-long{
+    width: 270px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-very-long{
+    width: 300px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-date{
+    width: 90px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-name{
+    width: 200px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-action{
+    width: 100px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-status{
+    width: 80px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+.header-grid-identity{
+    width: 150px; 
+    text-align: center; 
+    vertical-align: bottom; 
+}
+
+/*End datatable header grid*/
+
+/*Start customize table container*/
+#cvs-list_wrapper {
+    overflow: auto;
+    height: 375px;
+}

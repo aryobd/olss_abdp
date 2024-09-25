@@ -1,0 +1,9 @@
+﻿
+@{
+    ViewBag.Title = "Memo Replacement Unit";
+}
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+<hr />
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<hr />
+@Html.Partial("ReportViewer")

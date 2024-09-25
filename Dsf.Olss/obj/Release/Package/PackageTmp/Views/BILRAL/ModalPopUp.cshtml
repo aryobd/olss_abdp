@@ -1,0 +1,51 @@
+﻿<!-- Modal -->
+<div class="modal fade" id="objectListModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Object List</h4>
+            </div>
+            <div class="modal-body">
+                <table id="object-list" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><input id="select-all-object" type="checkbox" name="chkbox" style="width: 15px;"></th>
+                            <th>Object Type</th>
+                            <th>Police Number</th>
+                            <th>Year</th>
+                            <th>Colour</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button id="select-object" type="button" class="btn btn-primary" data-dismiss="modal">Select</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<p style="font-size:medium;"><span class="msgModal"></span> Confirmation</p>
+				<h4 class="modal-title"></h4>
+			</div>
+			<div class="panel-footer bg-light lter modal-body">
+				<p>Are you sure you want to <span class="confirmationMessage"></span>?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="confirmModal" class="btn">Yes</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+			</div>
+		</div>
+
+	</div>
+</div>

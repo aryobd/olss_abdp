@@ -1,0 +1,296 @@
+﻿@model Dsf.Olss.Models.BILPayScheduleViewModel
+@{
+    ViewBag.Title = "Maintenance Payment Approval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*@StatusLabel.Create(Model.MaintenancePaymentApproval.IsDraft, Model.MaintenancePaymentApproval.IsSubmit, Model.MaintenancePaymentApproval.IsActive)*@
+<a href="@Url.Action("Index", "MGTIntegrationPaySchdl")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(o => o.IdTb_BIL_PaySchedule)
+    @Html.HiddenFor(o => o.IdOPLAgreement)
+
+    <!-- Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Agreement Number</label>
+                        <p class="form-control-static" id="AgreementNumber">@(Model.AgreementNumber ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Billing Total</label>
+                        <p class="form-control-static">@(Model.BillingTotal.ToString() ?? "0")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Collection Amount </label>
+                        <p class="form-control-static">@(Model.CollectionAmt.ToString() ?? "0")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Expectation Collection Amount</label>
+                        <p class="form-control-static">@(Model.ExpectationCollAmt ?? 0)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Overdue Amount</label>
+                        <p class="form-control-static">@(Model.OverdueAmt.ToString())</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="panel scrollable">
+        <header class="panel-heading font-bold">Maintenance Payment Approval </header>
+        <div style="overflow:auto">
+            <div class="table-responsive">
+                <table id="term-table" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                <div class="header-grid-short">Id</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Payment Schedule</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Billing Amount</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Expectation Collection Amount</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Collection Amount</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Penalty Amount</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Overdue Days</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Overdue Amount</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">VAT Amount</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">PPH Amount</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">Start Period</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">End Period</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">Maintenance Amount</div>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                        @{
+    int i = 0;
+    var categoryId = new List<int>();
+                        }
+                        @foreach (var calculationdetails in Model.lstBilPayScheduleDetailViewModel)
+                        {
+
+                            <tr class="rowTerm" id="row_@i" class="">
+
+                                <td>
+                                    <label id="IdTb_BIL_PaySchedule_@i">@calculationdetails.IdTb_BIL_PayScheduleDtl</label>
+                                </td>
+                                <td>
+                                    <label id="PaymentSchedule_@i">@calculationdetails.PaymentSchedule</label>
+                                </td>
+                                <td>
+                                    <label id="PaymentSchedule_@i">@calculationdetails.BillingAmt</label>
+                                </td>
+                                <td>
+                                    <label id="ExpectationCollectionAmount_@i">@calculationdetails.ExpectationCollectionAmount</label>
+                                </td>
+                                <td>
+                                    <label id="CollectionAmt_@i">@calculationdetails.CollectionAmt</label>
+                                </td>
+                                <td>
+                                    <label id="PenaltyAmt_@i">@calculationdetails.PenaltyAmt</label>
+                                </td>
+                                <td>
+                                    <label id="OverdueDays_@i">@calculationdetails.OverdueDays</label>
+                                </td>
+
+                                <td>
+                                    <label id="OverdueAmt_@i">@calculationdetails.OverdueAmt</label>
+                                </td>
+
+                                <td>
+                                    <label id="VATAmt_@i">@calculationdetails.VATAmt</label>
+                                </td>
+                                <td>
+                                    <label id="PPHAmt_@i">@calculationdetails.PPHAmt</label>
+                                </td>
+                                <td>
+                                    <label id="StartPeriod_@i">@calculationdetails.StartPeriod</label>
+                                </td>
+                                <td>
+                                    <label id="EndPeriod_@i">@calculationdetails.EndPeriod</label>
+                                </td>
+                                <td>
+                                    <label id="MaintenanceAmt_@i">@calculationdetails.MaintenanceAmt</label>
+                                </td>
+                                
+
+                                
+
+                            </tr>
+                            i++;
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+
+
+
+        <footer class="panel-footer"></footer>
+
+    </section>
+
+
+    <div class="panel-footer bg-light lter">
+        
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+
+    <script src="~/signalr/hubs"></script>
+    <script>
+    var MaintenancePaymentApprovalHub = $.connection.MaintenancePaymentApproval;
+    var confirm = false;
+    
+
+    $.connection.hub.start().done(function () {
+        var myClientId = $.connection.hub.id;
+        $('#ConnId').val(myClientId);
+    });
+
+
+
+    function Paid() {
+        var strPaymentApprovalID = document.getElementById("IdTb_MTN_Payment_Approval").value;
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: '@Url.Action("Paid", "MaintenancePaymentApproval")',
+            data: { strIdTb_MTN_Payment_Approval: strPaymentApprovalID },
+            success: function (Data) {
+                var PaymentApprovalNumber = Data.PaymentApprovalNumber;
+                var Success = Data.Success;
+                window.location.href = "@Url.Action("Index", "MaintenancePaymentApproval")";
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        };
+
+
+        $('#btnUpload').click(function () {
+
+            // Checking whether FormData is available in browser
+            var strPaymentApprovalID = document.getElementById("IdTb_MTN_Payment_Approval").value;
+
+            if (window.FormData !== undefined) {
+
+                var fileUpload = $("#FileUpload1").get(0);
+                var files = fileUpload.files;
+
+                // Create FormData object
+                var fileData = new FormData();
+                // Looping over all files and add it to FormData object
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                // Adding one more key to FormData object
+                fileData.append('StrPaymentApprovalID', strPaymentApprovalID);
+                $.ajax({
+                    url:  '@Url.Action("UploadFiles", "MaintenancePaymentApproval")',
+                    type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fileData,
+                    success: function (result) {
+                        window.location.href = "@Url.Action("Index", "MaintenancePaymentApproval")";
+                },
+                error: function (err) {
+                    alert(err.statusText);
+
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    });
+
+
+
+
+
+    </script>
+}

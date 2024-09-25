@@ -1,0 +1,398 @@
+﻿@model Dsf.Olss.Models.OPLQuotationViewModel
+@{
+    ViewBag.Title = "Operating Lease Quotation Detail";
+}
+<a href="@Url.Action("Index", "OPLQuotation")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsSubmitted == true && Model.IsDraft == false && Model.IsValid == false)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == true && Model.IsValid == false)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == false)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+<section class="panel">
+    <div class="panel-body">
+        <form role="form">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>OPL Calculation Number</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.OPLCalculationNumber)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                        <div class="form-group">
+                            <label>OPL Proposal Number</label>
+                            <p class="form-control-static">@Html.DisplayFor(o => o.OPLProposalNumber)</p>
+                        </div>
+                    </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>OPL Quotation Number</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.OPLQuotationNumber)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Customer Code</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.CustomerCode)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.CustomerName)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>OPL Quotation Date (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.OPLQuotationDate)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Start Period Plan (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.StartPeriodPlan)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>End Period Plan (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.EndPeriodPlan)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Lease Period Plan (Months)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.LeasePeriodPlan)</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Valid Until (mm/dd/yyyy)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Validuntil)</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Basic Information (Product)</header>
+    <div class="panel-body">
+        <form role="form">
+
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Registration Code</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProductCode)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Code</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProductBrandCode)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ModelName)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Transmission)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProductType)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.BrandName)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Type</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ModelType)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.FuelType)</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ProductCategoryName)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Product Model Code</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ModelCode)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Year (yyyy/mm)</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.ModelYear)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Displacement (CC)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.Displacement)</p>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading">Maintenance Additional Information</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <span style="float: left; padding-right: 7px;">
+                        @Html.CheckBoxFor(x => x.IsRegMtn, new { @class = "form-control", @style = "width: 16px; height: 16px; margin: 0px;", @readonly = "true", @disabled="disabled" })
+                    </span>
+                    <span><label>Regular Maintenance</label></span>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <span style="float: left; padding-right: 7px;">
+                        @Html.CheckBoxFor(x => x.IsSparePart, new { @class = "form-control", @style = "width: 16px; height: 16px; margin: 0px;", @readonly = "true", @disabled = "disabled" })
+                    </span>
+                    <span><label>Spare Parts</label></span>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <span style="float: left; padding-right: 7px;">
+                        @Html.CheckBoxFor(x => x.IsOilChange, new { @class = "form-control", @style = "width: 16px; height: 16px; margin: 0px;", @readonly = "true", @disabled = "disabled" })
+                    </span>
+                    <span><label>Oil change</label></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <span style="float: left;padding-right: 7px;">
+                        @Html.CheckBoxFor(x => x.IsRepBatt, new { @class = "form-control", @style = "width: 16px; height: 16px; margin: 0px;", @readonly = "true", @disabled = "disabled" })
+                    </span>
+                    <span><label>Replacement Battery</label></span>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <span style="float: left;padding-right: 7px;">
+                        @Html.CheckBoxFor(x => x.IsRepTire, new { @class = "form-control", @style = "width: 16px; height: 16px; margin: 0px;", @readonly = "true", @disabled = "disabled" })
+                    </span>
+                    <span><label>Replacement Tires</label></span>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <span style="float: left; padding-right: 7px;">
+                        @Html.CheckBoxFor(x => x.IsCustService, new { @class = "form-control", @style = "width: 16px; height: 16px; margin: 0px;", @readonly = "true", @disabled = "disabled" })
+                    </span>
+                    <span><label>Customer Service</label></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Maintenance Other 1</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.MtnOther1)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Maintenance Other 2</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.MtnOther2)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading">Quotation Information</header>
+    <div class="panel-body">
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Monthly Installment</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.MonthlyRents)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Down Payment</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DownPayment)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Pre-Paid Month Rent</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PrepaidMonthsRent)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Tax Amount</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.Tax)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Expected Delivery Date (mm/dd/yyyy)</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.ExpectedDeliveryDate)</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Delivery Place</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.DeliveryPlace)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label>Additional Items</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.AdditionalItems)</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label>Others</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.AddEtc)</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label>Remarks</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.Remarks)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-footer  bg-light lter">
+        @using (Html.BeginForm())
+        {
+            @Html.HiddenFor(o => o.IdOPLQuotation)
+            @Html.HiddenFor(o => o.ConnId)
+            @StateButton.QuotationStateButton("detail", Model.IsDraft, Model.IsValid, Model.IsSubmitted)
+        }
+    
+    </div>
+</section>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var OPLQuotationHub = $.connection.OPLQuotation;
+        var confirm = false;
+        OPLQuotationHub.client.OnStatusValidateLock = function (id) {
+            if (id == '@Model.IdOPLQuotation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been validate by other user, you will be reloaded ..", function () {
+                    location.reload();
+                    confirm = false;
+                });
+            }
+        };
+
+        OPLQuotationHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLQuotation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    location.reload();
+                    confirm = false;
+                });
+            }
+        };
+
+        OPLQuotationHub.client.OnStatusInvalidateLock = function (id) {
+            if (id == '@Model.IdOPLQuotation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been validate by other user, you will be reloaded ..", function () {
+                    location.reload();
+                    confirm = false;
+                });
+            }
+        };
+
+        OPLQuotationHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdOPLQuotation' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                        confirm = false;
+                    }
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

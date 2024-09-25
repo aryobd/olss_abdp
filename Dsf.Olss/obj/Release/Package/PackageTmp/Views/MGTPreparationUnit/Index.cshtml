@@ -1,0 +1,555 @@
+﻿@model Dsf.Olss.Models.MGTUnitPreparation
+@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "Monitoring Unit Preparation";
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+    ViewBag.Success = TempData["Success"];
+    ViewBag.Error = TempData["Error"];
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("Index", "MGTPreparationUnit", FormMethod.Post))
+{
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <!--
+                    <header class="panel-heading font-bold">
+                      Dynamic Searching
+                      <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+                    </header> -->
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label>Search Criteria</label>
+                        <div class="form-group">
+                            <select id="ddlSearchCriteria" class="form-control"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label>Parameter</label>
+                        <div class="form-group">
+                            <input id="txtSearch" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label id="lblStartDate">Start BAST Plan Date</label>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label id="lblEndDate">End BAST Plan Date</label>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label></label>
+                        <div class="form-group">
+                            <input id="btnSearch" class="btn btn-primary right-side" type="submit" value="Search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="panel">
+
+
+            <div class="col-log-2">
+                <header class="panel-heading font-bold">
+                    <ul class="nav nav-tabs pull-left bg-light">
+                        <li class="active"><a href="#outstanding45" data-toggle="tab">Outstanding 45</a></li>
+                        <li><a href="#outstanding20" data-toggle="tab">Outstanding 20</a></li>
+                        <li><a href="#outstanding3" data-toggle="tab">Outstanding 3</a></li>
+                        <li><a href="#actual" data-toggle="tab">Actual</a></li>
+                    </ul>
+                    <span class="hidden-sm" style="visibility:hidden">Left tab</span>
+                </header>
+                <div class="panel-body" style="padding:0px !important;">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="outstanding45">
+                            <section class="panel" style="border: none; margin: 0px;">
+                                <div class="panel-body" style="padding: 15px 0;">
+                                    <div class="DocumentList outstanding45_DocList">
+                                        <div class="table-responsive outstanding45_responsive">
+                                            <table id="outstanding45-list" class="table table-striped m-b-none display nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                        <th width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                        <th width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-short">PO Number</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">PO Creation Date</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">PO Approved Date</div></th>
+                                                        <th width="10%"><div style="width: 200px;" class="header-grid-short">Supplier Name</div></th>
+                                                        <th width="30%"><div style="width: 200px;" class="header-grid-long">Unit Description</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-short">Unit Status</div></th>
+                                                        <th width="13%"><div style="width: 100%;" class="header-grid-very-short">Qty</div></th>
+                                                        <th width="13%"><div style="width: 100%;" class="header-grid-very-short">View History</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-very-short">Select</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-medium">Progress Status</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-long">Remark</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-medium">Unit Readiness</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">Update Date</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">BAST Plan</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">BAST Actual</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-action">Generate BAST</div></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="outstanding20">
+                            <section class="panel" style="border:none; margin: 0px;">
+                                <div class="panel-body" style="padding: 15px 0;">
+                                    <div class="DocumentList outstanding20_DocList">
+                                        <div class="table-responsive outstanding20_responsive">
+                                            <table id="outstanding20-list" class="table table-striped m-b-none display nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                        <th width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                        <th width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-short">PO Number</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">PO Creation Date</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">PO Approved Date</div></th>
+                                                        <th width="10%"><div style="width: 200px;" class="header-grid-short">Supplier Name</div></th>
+                                                        <th width="30%"><div style="width: 200px;" class="header-grid-long">Unit Description</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-short">Unit Status</div></th>
+                                                        <th width="13%"><div style="width: 100%;" class="header-grid-very-short">Qty</div></th>
+                                                        <th width="13%"><div style="width: 100%;" class="header-grid-very-short">View History</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-very-short">Select</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-medium">Progress Status</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-long">Remark</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-medium">Unit Readiness</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">Update Date</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">BAST Plan</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">BAST Actual</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-action">Generate BAST</div></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="outstanding3">
+                            <section class="panel" style="border:none; margin: 0px;">
+                                <div class="panel-body" style="padding: 15px 0;">
+                                    <div class="DocumentList outstanding3_DocList">
+                                        <div class="table-responsive outstanding3_responsive">
+                                            <table id="outstanding3-list" class="table table-striped m-b-none display nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                        <th width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                        <th width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-short">PO Number</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">PO Creation Date</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">PO Approved Date</div></th>
+                                                        <th width="10%"><div style="width: 200px;" class="header-grid-short">Supplier Name</div></th>
+                                                        <th width="30%"><div style="width: 200px;" class="header-grid-long">Unit Description</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-short">Unit Status</div></th>
+                                                        <th width="13%"><div style="width: 100%;" class="header-grid-very-short">Qty</div></th>
+                                                        <th width="13%"><div style="width: 100%;" class="header-grid-very-short">View History</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-very-short">Select</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-medium">Progress Status</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-long">Remark</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-medium">Unit Readiness</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">Update Date</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">BAST Plan</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-date">BAST Actual</div></th>
+                                                        <th width="10%"><div style="width: 100%;" class="header-grid-action">Generate BAST</div></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="actual">
+                            <section class="panel" style="border:none; margin: 0px;">
+                                <div class="panel-body" style="padding: 15px 0;">
+                                    <div class="DocumentList actual_DocList">
+                                        <div class="table-responsive actual_responsive">
+                                            <table id="actual-list" class="table table-striped m-b-none display nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="1000px">DSF Office</th>
+                                                        <th width="10%"><div style="width:150px">Agreement Number</div></th>
+                                                        <th width="10%"><div style="width:100px">Customer Name</div></th>
+                                                        <th width="10%">PO Number</th>
+                                                        <th width="10%">PO Creation Date</th>
+                                                        <th width="10%">PO Approved Date</th>
+                                                        <th width="10%">Supplier Name</th>
+                                                        <th width="30%"><div style="width:150px">Unit Description</div></th>
+                                                        <th width="10%">Unit Status</th>
+                                                        <th width="13%">Qty</th>
+                                                        <th width="13%">View History</th>
+                                                        <th width="10%"><div style="width:110px">Progress Status</div></th>
+                                                        <th width="10%">Remark</th>
+                                                        <th width="10%"><div style="width:100px">Unit Readiness</div></th>
+                                                        <th width="10%">Update Date</th>
+                                                        <th width="10%">BAST Plan</th>
+                                                        <th width="10%">BAST Actual</th>
+                                                        <th width="10%">Generate BAST</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            @*<section class="panel" id="panelBtn">
+                                    <footer class="panel-footer bg-light lter">
+                                        <div id='loadingmessage' style='display: none'>
+                                            <img src='@Url.Content(ImgUrl)' />
+                                        </div>
+                                        <input type="hidden" id="submitButtonText" />
+                                        <input id="btnPrintAll" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+                                    </footer>
+                                </section>*@
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="panel" id="panelBtn">
+            <footer class="panel-footer bg-light lter">
+                <div id='loadingmessage2' style='display: none'>
+                    <img src='@Url.Content(ImgUrl)' />
+                </div>
+                <input type="hidden" id="submitButtonText" />
+                <input id="btnSave" name="statusButton" class="btn btn-info" type="submit" value="Save">
+                <input id="btnPrintAll2" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+            </footer>
+        </section>
+    </div>
+}
+
+@{Html.RenderPartial("ModalPopUpForIndex");}
+
+@section Scripts{
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/PreparationUnitActual.js")"></script>
+    <script src="@Url.Content("~/Content/js/PreparationUnitOutstanding.js")"></script>
+
+    <script>
+        // Global variable for CustomerVisitSurvey.js
+        var serverRoot = '@Url.Content("~")';
+        var iCount = -1;
+        var iActiveTabIndex = 0;
+        var sComplete = @UnitReadiness.Complete;
+
+        $('#confirmModal').click(function (e) { // S0113435
+            $(this).prop('disabled', true);
+        });
+
+        function LoadProgressHistory(index) {
+            var ObjectName = (iActiveTabIndex == 0) ? "oOutstanding45" : (iActiveTabIndex == 1) ? "oOutstanding20" : (iActiveTabIndex == 2) ? "oOutstanding3" : "oActual";
+            var TabId = (iActiveTabIndex == 0) ? "outstanding45" : (iActiveTabIndex == 1) ? "outstanding20" : (iActiveTabIndex == 2) ? "outstanding3" : "actual";
+            if (typeof (window[ObjectName]) != "undefined") {
+                var dataParent = window[ObjectName].fnGetData(index);
+                $("#valDSFOffice").html(dataParent.DsfOffice);
+                $("#valAgreementNumber").html(dataParent.AgreementNumber);
+                $("#valCustomerName").html(dataParent.CustomerName);
+                $("#valPONumber").html(dataParent.PONumber);
+                $("#valPOCreationDate").html(dataParent.POCreationDate);
+                $("#valPOApprovedDate").html(dataParent.POApprovedDate);
+                $("#valSupplierName").html(dataParent.SupplierName);
+                $("#valUnitDescription").html(dataParent.UnitDescription);
+                $("#valUnitStatus").html(dataParent.UnitStatus);
+                $("#valQty").html(dataParent.Qty);
+
+                var config = {
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "bRetrieve": true,
+                    "sScrollY": 200,
+                    "sAjaxSource": serverRoot + "MGTPreparationUnit/PrepHistoryListDataTable/?id=" + dataParent.IdTb_MGT_UnitPrep,
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "bAutoWidth": false,
+                    "aoColumns": [
+                        { "mData": "UpdateDate" },
+                        { "mData": "ProgressStatus" },
+                        { "mData": "Remark" },
+                        { "mData": "UnitReadiness" },
+                        { "mData": "LastModifiedBy" }
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0,
+                            "error": handleAjaxError,
+                            "global": false
+                        });
+                    },
+                    "fnDrawCallback": function (oSettings) {
+                        $("#history-list").find("thead").css("display", "none");
+                        $("#history-list_wrapper").find(".dataTables_scrollHeadInner").css("padding-right", "0px");
+                        if ($("#history-list").find("tbody").width() > 0) {
+                            $("#history-list_wrapper").find(".dataTables_scrollHeadInner").css("width", $("#history-list").find("tbody").width() + "px");
+                            $("#history-list_wrapper").find(".dataTables_scrollHeadInner").find("table").css("width", $("#history-list").find("tbody").width() + "px");
+                        }
+                    }
+                };
+
+                if ($.fn.dataTable.fnIsDataTable(document.getElementById("history-list"))) {
+                    $("#history-list").dataTable().fnClearTable();
+                    $("#history-list").dataTable().fnDestroy();
+                    $('#history-list').dataTable(config).fnDraw();
+                } else {
+                    $('#history-list').dataTable(config).fnDraw();
+                }
+            }
+        }
+
+        // handling SearchCriteria
+        function PopulateAndClearSerchCriteria() {
+            var $select = $("#ddlSearchCriteria");
+            var jSONOptionOutstanding = {
+                "1": "DSF Office",
+                "2": "Agreement No",
+                "3": "Customer Name",
+                "4": "PO Number",
+                "5": "Supplier Name",
+                "6": "Unit Description",
+                "7": "Unit Status",
+                "8": "Qty",
+                "9": "Progress Status",
+                "10": "Remark",
+                "11": "Unit Readiness",
+            };
+            $select.empty();
+            $.each(jSONOptionOutstanding, function (key, value) {
+                $select.append('<option value=' + key + '>' + value + '</option>');
+            });
+            $("#txtSearch").val(null);
+            $("#txtStartDate").val(null);
+            $("#txtEndDate").val(null);
+        }
+
+        $(document).ready(function () {
+            iActiveTabIndex = 0;
+            TabChangedEvent();
+        });
+
+        //handling Change Tab
+        $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+            //$("#panelBtn").show();
+            switch ($(this).html()) {
+                case "Outstanding 45":
+                    iActiveTabIndex = 0;
+                    break;
+                case "Outstanding 20":
+                    iActiveTabIndex = 1;
+                    break;
+                case "Outstanding 3":
+                    iActiveTabIndex = 2;
+                    break;
+                case "Actual":
+                    iActiveTabIndex = 3;
+                    break;
+            }
+            TabChangedEvent();
+        });
+
+        //handling TabChanged Event
+        function TabChangedEvent() {
+            var ObjectName = (iActiveTabIndex == 0) ? "oOutstanding45" : (iActiveTabIndex == 1) ? "oOutstanding20" : (iActiveTabIndex == 2) ? "oOutstanding3" : "oActual";
+            var TabId = (iActiveTabIndex == 0) ? "outstanding45" : (iActiveTabIndex == 1) ? "outstanding20" : (iActiveTabIndex == 2) ? "outstanding3" : "actual";
+            switch (iActiveTabIndex) {
+                case 0:
+                case 1:
+                case 2:
+                    IsActual(false);
+                    if (typeof (window[ObjectName]) != "undefined")
+                        $("#" + TabId + "-list").dataTable().fnDraw();
+                    else
+                        PopulateOutstanding(ObjectName, TabId);
+                    break;
+                case 3:
+                    IsActual(true);
+                    if (typeof (window[ObjectName]) != "undefined")
+                        $("#" + TabId + "-list").dataTable().fnDraw();
+                    else
+                        PopulateActualTable();
+                    //$("#panelBtn").hide();
+                    break;
+            }
+        }
+
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            }
+            else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+
+        //PrintReport
+        $('.buttonprint').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessage2').show();
+            $('#btnPrintAll2').hide();
+            $('#btnSave').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReport", "MGTPreparationUnit")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate ,'iActiveTabIndex':iActiveTabIndex}),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                global: false,
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        switch (iActiveTabIndex) {
+                            case 0:
+                            case 1:
+                            case 2:
+                                window.location = "./Base/Download?fileName=" + response + "&rptType=" + 4;
+                                break;
+                            default:
+                                window.location = "./Base/Download?fileName=" + response + "&rptType=" + 10;
+                                break;
+                        }
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessage2').hide();
+                    $('#btnPrintAll2').show();
+                    $('#btnSave').show();
+                    if (iActiveTabIndex == 3)
+                        $('#btnSave').hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessage2').hide();
+                    $('#btnPrintAll2').show();
+                    $('#btnSave').show();
+                    if (iActiveTabIndex == 3)
+                        $('#btnSave').hide();
+                }
+            });
+        });
+
+        // Searching
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+                switch (iActiveTabIndex) {
+                    case 0: //Outstanding 45
+                        $('#outstanding45-list').dataTable().fnDraw();
+                        break;
+                    case 1: //Outstanding 20
+                        $('#outstanding20-list').dataTable().fnDraw();
+                        break;
+                    case 2: //Outstanding 3
+                        $('#outstanding3-list').dataTable().fnDraw();
+                        break;
+                    case 3: //Actual
+                        $('#actual-list').dataTable().fnDraw();
+                        break;
+                }
+            }
+        });
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+    </script>
+}

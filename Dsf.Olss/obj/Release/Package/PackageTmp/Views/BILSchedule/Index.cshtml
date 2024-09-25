@@ -1,0 +1,584 @@
+﻿@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "Monitor Schedule";
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+    Session["backURL"] = "BILSchedule";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">DSF Office</option>
+                            <option value="2">Customer Group</option>
+                            <option value="3">Customer Name</option>
+                            <option value="4">Agreement Number</option>
+                            <option value="5">Total Billing Amount</option>
+                            <option value="6">Total Billing Maintenance</option>
+                            <option value="7">Total Breakdown</option>
+                            <option value="8">Last Modified By</option>
+                            <option value="9">Mail Status</option>
+                            <option value="10">Invoice Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label id="lblStartDate">Start Billing Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label id="lblEndDate">End Biliing Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSearch" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="panel">
+        <div class="col-log-2">
+            <header class="panel-heading font-bold">
+                <ul class="nav nav-tabs pull-left bg-light">
+                    <li class="active"><a href="#tabendcontract" data-toggle="tab">End Contract</a></li>
+                    <li><a href="#tab7days" data-toggle="tab">7 Days</a></li>
+                    <li style="background: #fefdd4; "><a href="#tab5days" data-toggle="tab">5 Days</a></li>
+                    <li style="background: #fefdd4; "><a href="#tab1days" data-toggle="tab">1 Days</a></li>
+                    <li style="background: #fefdd4; "><a href="#tabduedate" data-toggle="tab">Due Date</a></li>
+                    <li><a href="#taball" data-toggle="tab">All</a></li>
+                </ul>
+                <span class="hidden-sm" style="visibility:hidden">Left tab</span>
+            </header>
+            <div class="panel-body" style="padding:0px !important;">
+                <div class="tab-content">
+
+                    <div class="tab-pane fade active in" id="tabendcontract">
+                        <section class="panel" style="border:none; margin: 0px;">
+                            <div class="panel-body" style="padding: 15px 0px;">
+                                <div class="DocumentList tabendcontract_DocList">
+                                    <div class="table-responsive tabendcontract_responsive">
+                                        <table id="tabendcontract-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100px;" class="header-grid-long">Customer Group</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Agreement Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Invoice Issue Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Period</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Usage Unit Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Billing Amount<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Billing Maintenance</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Breakdown<br />(Rp)</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Last Modified By</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Last Modified Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Invoice Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-action">Action</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="10%"><div style="width: 150px;" class="header-grid-long">Total (Rp)</div></th>
+                                                    <th width="10%" style="border-right: 1px solid #e0e4e8;"><div style="width: 100%;" class="header-grid-action">Detail</div></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab7days">
+                        <section class="panel" style="border: none; margin: 0px;">
+                            <div class="panel-body" style="padding: 15px 0px;">
+                                <div class="DocumentList tab7days_DocList">
+                                    <div class="table-responsive tab7days_responsive">
+                                        <table id="tab7days-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100px;" class="header-grid-long">Customer Group</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Agreement Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Invoice Issue Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Period</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Usage Unit Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Billing Amount<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Billing Maintenance</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Breakdown<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Promise to Pay Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Last Modified By</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Last Modified Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Mail Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Invoice Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-action">Action</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="10%"><div style="width: 150px;" class="header-grid-long">Total (Rp)</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-action">Detail</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-date">Previous</div></th>
+                                                    <th width="10%" style="border-right: 1px solid #e0e4e8;"><div style="width: 100%;" class="header-grid-date">Current</div></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab5days">
+                        <section class="panel" style="border:none; margin: 0px;">
+                            <div class="panel-body" style="padding: 15px 0px;">
+                                <div class="DocumentList tab5days_DocList">
+                                    <div class="table-responsive tab5days_responsive">
+                                        <table id="tab5days-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100px;" class="header-grid-long">Customer Group</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Agreement Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Invoice Issue Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Period</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Usage Unit Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Billing Amount<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Billing Maintenance</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Breakdown<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Promise to Pay Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Last Modified By</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Last Modified Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Mail Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Invoice Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-action">Action</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="10%"><div style="width: 150px;" class="header-grid-long">Total (Rp)</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-action">Detail</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-date">Previous</div></th>
+                                                    <th width="10%" style="border-right: 1px solid #e0e4e8;"><div style="width: 100%;" class="header-grid-date">Current</div></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="tab1days">
+                        <section class="panel" style="border:none; margin: 0px;">
+                            <div class="panel-body" style="padding: 15px 0px;">
+                                <div class="DocumentList tab1days_DocList">
+                                    <div class="table-responsive tab1days_responsive">
+                                        <table id="tab1days-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100px;" class="header-grid-long">Customer Group</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Agreement Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Invoice Issue Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Period</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Usage Unit Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Billing Amount<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Billing Maintenance</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Breakdown<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Promise to Pay Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Last Modified By</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Last Modified Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Mail Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Invoice Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-action">Action</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="10%"><div style="width: 150px;" class="header-grid-long">Total (Rp)</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-action">Detail</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-date">Previous</div></th>
+                                                    <th width="10%" style="border-right: 1px solid #e0e4e8;"><div style="width: 100%;" class="header-grid-date">Current</div></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="tabduedate">
+                        <section class="panel" style="border:none; margin: 0px;">
+                            <div class="panel-body" style="padding: 15px 0px;">
+                                <div class="DocumentList tabduedate_DocList">
+                                    <div class="table-responsive tabduedate_responsive">
+                                        <table id="tabduedate-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100px;" class="header-grid-long">Customer Group</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Agreement Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Invoice Issue Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Period</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Usage Unit Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Billing Amount<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Billing Maintenance</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Breakdown<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Promise to Pay Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Last Modified By</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Last Modified Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Mail Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Invoice Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-action">Action</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="10%"><div style="width: 150px;" class="header-grid-long">Total (Rp)</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-action">Detail</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-date">Previous</div></th>
+                                                    <th width="10%" style="border-right: 1px solid #e0e4e8;"><div style="width: 100%;" class="header-grid-date">Current</div></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="tab-pane fade" id="taball">
+                        <section class="panel" style="border:none; margin: 0px;">
+                            <div class="panel-body" style="padding: 15px 0px;">
+                                <div class="DocumentList taball_DocList">
+                                    <div class="table-responsive taball_responsive">
+                                        <table id="taball-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2" width="1000px"><div style="width: 100%;" class="header-grid-very-short">DSF Office</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100px;" class="header-grid-long">Customer Group</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 200px;" class="header-grid-medium">Customer Name</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Agreement Number</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Agreement Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Invoice Issue Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Period</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">End Usage Unit Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Billing Amount<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Billing Maintenance</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 150px;" class="header-grid-long">Total Breakdown<br />(Rp)</div></th>
+                                                    <th colspan="2" width="10%"><div style="width: 100%;" class="header-grid-medium">Promise to Pay Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Last Modified By</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-date">Last Modified Date</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Mail Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-short">Invoice Status</div></th>
+                                                    <th rowspan="2" width="10%"><div style="width: 100%;" class="header-grid-action">Action</div></th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="10%"><div style="width: 150px;" class="header-grid-long">Total (Rp)</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-action">Detail</div></th>
+                                                    <th width="10%"><div style="width: 100%;" class="header-grid-date">Previous</div></th>
+                                                    <th width="10%" style="border-right: 1px solid #e0e4e8;"><div style="width: 100%;" class="header-grid-date">Current</div></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel" id="panelBtn">
+        <footer class="panel-footer bg-light lter">
+            <div id='loadingmessage' style='display: none'>
+                <img src='@Url.Content(ImgUrl)' />
+            </div>
+            <input type="hidden" id="submitButtonText" />
+            <input id="btnPrintAll" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+        </footer>
+    </section>
+</div>
+
+@{
+    Html.RenderPartial("ModalPopUp");
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/BILSchedule.js")"></script>
+
+    <script>
+        var serverRoot = '@Url.Content("~")';
+        var iActiveTabIndex = 5;
+        var tableDetailMaintenance;
+        var picTitleCode = '@JobTitles.AD';
+        var StatusStopBilling = "@StatusCode.StopBilling";
+
+        $(document).ready(function () {
+            iActiveTabIndex = 5;
+            TabChangedEvent();
+        });
+
+        checkDate = function() {
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Searching
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+            if (checkDate() === false) {
+                switch (iActiveTabIndex) {
+                    case 0: //7 Days
+                        $('#tab7days-list').dataTable().fnDraw();
+                        break;
+                    case 1: //5 Days
+                        $('#tab5days-list').dataTable().fnDraw();
+                        break;
+                    case 2: //1 Days
+                        $('#tab1days-list').dataTable().fnDraw();
+                        break;
+                    case 3: //Due Date
+                        $('#tabduedate-list').dataTable().fnDraw();
+                        break;
+                    case 4: //All
+                        $('#taball-list').dataTable().fnDraw();
+                        break;
+                    case 5: //End Contract
+                        $('#tabendcontract-list').dataTable().fnDraw();
+                        break;
+                }
+            }
+        });
+
+        //handling Change Tab
+        $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+	        //Clear search criteria
+        	$("#txtSearch").val(null);
+        	$("#txtStartDate").val(null);
+        	$("#txtEndDate").val(null);
+	        
+            switch ($(this).html()) {
+                case "7 Days":
+                	iActiveTabIndex = 0;
+                	if (typeof $("option[value='9']").val() == 'undefined')
+                		$("#ddlSearchCriteria > option[value='8']").after('<option value="9">Mail Status</option>');
+                    break;
+            	case "5 Days":
+            		if (typeof $("option[value='9']").val() == 'undefined')
+            			$("#ddlSearchCriteria > option[value='8']").after('<option value="9">Mail Status</option>');
+                    iActiveTabIndex = 1;
+                    break;
+                case "1 Days":
+                	iActiveTabIndex = 2;
+                	if (typeof $("option[value='9']").val() == 'undefined')
+                		$("#ddlSearchCriteria > option[value='8']").after('<option value="9">Mail Status</option>');
+                    break;
+                case "Due Date":
+                	iActiveTabIndex = 3;
+                	if (typeof $("option[value='9']").val() == 'undefined')
+                		$("#ddlSearchCriteria > option[value='8']").after('<option value="9">Mail Status</option>');
+                    break;
+                case "All":
+                	iActiveTabIndex = 4;
+                	if (typeof $("option[value='9']").val() == 'undefined')
+                		$("#ddlSearchCriteria > option[value='8']").after('<option value="9">Mail Status</option>');
+                    break;
+                case "End Contract":
+                	iActiveTabIndex = 5;
+                	$("option[value='9']").remove();
+                    break;
+            }
+            TabChangedEvent();
+        });
+
+        //handling TabChanged Event
+        function TabChangedEvent() {
+            $("#txtSearch").val(null);
+            $("#txtStartDate").val(null);
+            $("#txtEndDate").val(null);
+            var ObjectName = "", TabId = "";
+            switch (iActiveTabIndex) {
+                case 0: //7 Days
+                    ObjectName = "t7Days";
+                    TabId = "tab7days";
+                    break;
+                case 1: //5 Days
+                    ObjectName = "t5Days";
+                    TabId = "tab5days";
+                    break;
+                case 2: //1 Days
+                    ObjectName = "t1Days";
+                    TabId = "tab1days";
+                    break;
+                case 3: //Due Date
+                    ObjectName = "tDueDate";
+                    TabId = "tabduedate";
+                    break;
+                case 4: //All
+                    ObjectName = "tAll";
+                    TabId = "taball";
+                    break;
+                case 5: //End Contract
+                    ObjectName = "tEndContract";
+                    TabId = "tabendcontract";
+                    break;
+            }
+            if (iActiveTabIndex == 5) {
+                if (typeof (window[ObjectName]) != "undefined")
+                    $("#" + TabId + "-list").dataTable().fnDraw();
+                else
+                    PopulateEndContract(ObjectName, TabId);
+            }
+            else {
+                if (typeof (window[ObjectName]) != "undefined")
+                    $("#" + TabId + "-list").dataTable().fnDraw();
+                else
+                    PopulateSchedule(ObjectName, TabId);
+            }
+        }
+        //PrintReport
+        $('.buttonprint').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessage').show();
+            $('#btnPrintAll').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReport", "BILSchedule")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate, 'iActiveTabIndex': iActiveTabIndex }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                global: false,
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "./Base/Download?fileName=" + response + "&rptType=" + 14;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                }
+            });
+        });
+
+        RenderLabelStatus = function (status) {
+            var retElement = "";
+            switch (status) {
+                case "@StatusCode.Submitted":
+                    retElement = "<span class='label label-info'>" + status + "</span>";
+                    break;
+                case "@StatusCode.Approve":
+                case "@StatusCode.Escalated":
+                    retElement = "<span class='label label-primary'>" + status + "</span>";
+                    break;
+                case "@StatusCode.NotRecommended":
+                case "@StatusCode.Terminated":
+                case "@StatusCode.Inactive":
+                case "@StatusCode.Reject":
+                    retElement = "<span class='label label-danger'>" + status + "</span>";
+                    break;
+                case "@StatusCode.Active":
+                case "@StatusCode.Check":
+                case "@StatusCode.Recommended":
+                case "@StatusCode.Open":
+                case "@StatusCode.InitialCreation":
+                case "@StatusCode.SignByCustomer":
+                    retElement = "<span class='label label-success'>" + status + "</span>";
+                    break;
+                case "@StatusCode.Revise":
+                    retElement = "<span class='label label-revise'>" + status + "</span>";
+                    break;
+                case "@StatusCode.Closed":
+                case "@StatusCode.CloseByTerminationIncomplete":
+                case "@StatusCode.CloseByTerminationComplete":
+                case "@StatusCode.CloseByRescheduleIncomplete":
+                case "@StatusCode.CloseByRescheduleComplete":
+                case "@StatusCode.CloseByNovationIncomplete":
+                case "@StatusCode.CloseByNovationComplete":
+                    retElement = "<span class='label label-default' style='background-color: rgb(23, 22, 22); !important;'>" + status + "</span>";
+                    break;
+                default:
+                    retElement = "<span class='label label-default'>" + status + "</span>";
+                    break;
+            }
+            return retElement;
+        }
+        
+
+    </script>
+}

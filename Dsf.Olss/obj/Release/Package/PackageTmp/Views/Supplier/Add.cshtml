@@ -1,0 +1,311 @@
+﻿@model Dsf.Olss.Models.SupplierViewModel
+@using System.Web.UI.WebControls;
+@{
+    ViewBag.Title = "Add New Supplier";
+}
+
+<a href="@Url.Action("Index", "Supplier")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr />
+@using (Html.BeginForm("Add", "Supplier", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Basic Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Supplier Code</label>
+                        @Html.TextBoxFor(o => o.ConnId, null, new { @type = "hidden" })
+                        @Html.TextBoxFor(o => o.Supplier.SupplierCode, null, new {@class = "form-control", @placeholder = "Supplier Code",@data_maxlength = "50", @data_required = "true", @tabindex = "1"})
+                        @Html.ValidationMessageFor(o => o.Supplier.SupplierCode)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Supplier Category</label>
+                        @Html.DropDownList("Supplier.IdSupplierCategory", Dsf.Olss.Controllers.SupplierController.GetSupplierCategory(), new {@class = "form-control", @data_required = "true", @tabindex = "2"})
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="catgeoryText" class="form-group">
+                        <label>Other Category</label>
+                        @Html.TextBoxFor(o => o.Supplier.SupplierCategory, new {@class = "form-control", @placeholder = "Supplier Category", @data_required = "false", @data_maxlength = "200", @tabindex = "3"})
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Main Supplier Code</label>
+                        @Html.TextBoxFor(o => o.Supplier.MainSupplierCode, null, new { @class = "form-control", @placeholder = "Main Supplier Code", @data_required = "true", @data_maxlength = "100", @tabindex = "4" })
+                        @Html.ValidationMessageFor(o => o.Supplier.MainSupplierCode)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Name</label>
+                        @Html.TextBoxFor(o => o.Supplier.SupplierName, null, new { @class = "form-control", @placeholder = "Supplier Name", @data_required = "true", @data_maxlength = "100", @tabindex = "5" })
+                        @Html.ValidationMessageFor(o => o.Supplier.SupplierName)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Supplier Group</label>
+                        @Html.DropDownList("Supplier.SupplierGroupCode", Dsf.Olss.Controllers.SupplierController.GetSupplierGroup(), new {@class = "form-control", @data_required = "true", @tabindex = "6"})
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Address</label>
+                        @Html.TextBoxFor(o => o.Supplier.Address, null, new { @class = "form-control", @placeholder = "Supplier Address", @data_required = "true", @tabindex = "7", @data_maxlength = "1000" })
+                        @Html.ValidationMessageFor(o => o.Supplier.Address)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Telephone</label>
+                        @Html.TextBoxFor(o => o.Supplier.Telephone, null, new { @class = "form-control", @placeholder = "Phone Number", @data_required = "true", @data_maxlength = "50", @tabindex = "8" })
+                        @Html.ValidationMessageFor(o => o.Supplier.Telephone)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Business Economy Sector</label>
+                        @Html.DropDownListFor(o => o.Supplier.idCustomerBusinessSector, (List<SelectListItem>)ViewBag.BusinessEconomySector, new { @class = "form-control", @data_required = "true", @tabindex = "9" })
+                        @Html.ValidationMessageFor(o => o.Supplier.BusinessEconomySector)
+                        @Html.HiddenFor(o => o.Supplier.BusinessEconomySector)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Corporate Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Corporate Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Date of Establishment</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.Supplier.EstablishmentDate, null, new { @class = "form-control datepicker-input", @placeholder = "Date of Establishment", data_date_format = "mm/dd/yyyy", @tabindex = "9" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div> 
+                        @Html.ValidationMessageFor(o => o.Supplier.EstablishmentDate)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Capital</label>
+                        @Html.TextBoxFor(o => o.Supplier.Capital, null, new { @class = "form-control", @placeholder = "Capital", @data_maxlength = "100", @tabindex = "10" })
+                        @Html.ValidationMessageFor(o => o.Supplier.Capital)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number of Employees</label>
+                        @Html.TextBoxFor(o => o.Supplier.NumberOfEmployee, null, new { @class = "form-control", @placeholder = "Number of Employees", @data_maxlength = "100", @tabindex = "11" })
+                        @Html.ValidationMessageFor(o => o.Supplier.NumberOfEmployee)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number of Branch</label>
+                        @Html.TextBoxFor(o => o.Supplier.NumberOfBranch, null, new { @class = "form-control allownumericonly", @placeholder = "Number of Branch ", @data_maxlength = "100", @tabindex = "12" })
+                        @Html.ValidationMessageFor(o => o.Supplier.NumberOfBranch)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Go Public Company</label>
+                        @{
+                                var listItems = new List<ListItem>
+                                {
+                                      new ListItem { Text = "Yes", Value = "1" },
+                                      new ListItem { Text = "No", Value = "0" }
+                                };
+                        }
+                        @Html.DropDownListFor(o => o.Supplier.GoPublicCompany, new SelectList(listItems, "Value", "Text"), new { @class = "form-control", @tabindex = "13" })
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label style="visibility:hidden">this is hidden</label>
+                        <input class="form-control" placeholder="Bank 3" type="text" style="visibility:hidden">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>Bank 1</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo1.BankName, null, new { @class = "form-control", @placeholder = "Bank 1", @data_maxlength = "100", @tabindex = "14" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo1.BankName)
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 1</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo1.ShareHolder, null, new { @class = "form-control", @placeholder = "Shareholder 1", @data_maxlength = "100", @tabindex = "17" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo1.ShareHolder)
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 1</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo1.MainCustomer, null, new { @class = "form-control", @placeholder = "Main Customer 1", @data_maxlength = "100", @tabindex = "20" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo1.MainCustomer)
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+
+
+                    <div class="form-group">
+                        <label>Bank 2</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo2.BankName, null, new { @class = "form-control", @placeholder = "Bank 2", @data_maxlength = "100", @tabindex = "15" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo2.BankName)
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 2</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo2.ShareHolder, null, new { @class = "form-control", @placeholder = "Shareholder 2", @data_maxlength = "100", @tabindex = "18" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo2.ShareHolder)
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 2</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo2.MainCustomer, null, new { @class = "form-control", @placeholder = "Main Customer 2", @data_maxlength = "100", @tabindex = "21" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo2.MainCustomer)
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+
+
+                    <div class="form-group">
+                        <label>Bank 3</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo3.BankName, null, new { @class = "form-control", @placeholder = "Bank 3", @data_maxlength = "100", @tabindex = "16" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo3.BankName)
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 3</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo3.ShareHolder, null, new { @class = "form-control", @placeholder = "Shareholder 3", @data_maxlength = "100", @tabindex = "19" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo3.ShareHolder)
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 3</label>
+                        @Html.TextBoxFor(o => o.SupplierCorporateInfo3.MainCustomer, null, new { @class = "form-control", @placeholder = "Main Customer 3", @data_maxlength = "100", @tabindex = "22" })
+                        @Html.ValidationMessageFor(o => o.SupplierCorporateInfo3.MainCustomer)
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- Credit Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Payment Information</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Bank Account 1</label>
+                        @Html.TextBoxFor(o => o.SupplierPaymentInfo.BankAccount, null, new { @class = "form-control", @placeholder = "Bank Account 1", @data_maxlength = "100", @tabindex = "23" })
+                        @Html.ValidationMessageFor(o => o.SupplierPaymentInfo.BankAccount)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Branch Name</label>
+                        @Html.TextBoxFor(o => o.SupplierPaymentInfo.BranchName, null, new { @class = "form-control", @placeholder = "Branch Name", @data_maxlength = "100", @tabindex = "24" })
+                        @Html.ValidationMessageFor(o => o.SupplierPaymentInfo.BranchName)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Bank Account Number</label>
+                        @Html.TextBoxFor(o => o.SupplierPaymentInfo.BankAccountNumber, null, new { @class = "form-control", @placeholder = "Bank Account Number", @data_maxlength = "100", @tabindex = "25" })
+                        @Html.ValidationMessageFor(o => o.SupplierPaymentInfo.BankAccountNumber)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Name Account Holder</label>
+                        @Html.TextBoxFor(o => o.SupplierPaymentInfo.NameAccountHolder, null, new { @class = "form-control", @placeholder = "Name Account Holder", @data_maxlength = "100", @tabindex = "26" })
+                        @Html.ValidationMessageFor(o => o.SupplierPaymentInfo.NameAccountHolder)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="panel-footer bg-light lter">
+            @StateButton.Create("add")
+        </div>
+    </section>
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script type="text/javascript">
+        $('.datepicker-input').datepicker({
+            format: 'mm/dd/yyyy',
+            minViewMode: 0,
+            startView: 0,
+            endDate: '12/31/9999',
+            startDate: '01/01/1753'
+        });
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+
+        $(document).ready(function () {
+            $('#Supplier_BusinessEconomySector').val($('option:selected', $('select#Supplier_idCustomerBusinessSector')).text());
+            $("select#Supplier_idCustomerBusinessSector").change(function () {
+                $('#Supplier_BusinessEconomySector').val($('option:selected', $(this)).text());
+            });
+
+            $("input[name*='statusButton']").attr('tabindex', 27);
+            $("input[name='Supplier.SupplierCategory']").val($("#Supplier_IdSupplierCategory option:selected").text());
+            $("#catgeoryText").hide();
+            $("#Supplier_IdSupplierCategory").change(function () {
+                if ($(this).val() == "4") {
+                    $("#catgeoryText").show();
+                    $("input[name='Supplier.SupplierCategory']").val(null);
+                    $("input[name='Supplier.SupplierCategory']").attr('data-required', true);
+                    
+                    
+                } else {
+                    $("#catgeoryText").hide();
+                    $("input[name='Supplier.SupplierCategory']").val($("#Supplier_IdSupplierCategory option:selected").text());
+                    $("input[name='Supplier.SupplierCategory']").attr('data-required', false);
+
+                }
+            });
+            
+        });
+    </script>
+}

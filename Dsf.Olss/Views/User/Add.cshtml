@@ -1,0 +1,56 @@
+﻿@model Dsf.Olss.Data.Entities.User
+
+@{
+    ViewBag.Title = "Add New User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a href="@Url.Action("Index", "User")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+
+@using (Html.BeginForm("Add", "User", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading">Add New User</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Username</label>
+                        @Html.TextBoxFor(modelItem => Model.UserName, new { @class = "form-control", @data_required = "true", @placeholder = "Username", @data_parsley_maxlength = "50" })
+                        @Html.ValidationMessageFor(modelItem => Model.UserName)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Role</label>
+                        @Html.DropDownList("IdRole" , (List<SelectListItem>)ViewBag.Role, new { @class = "form-control", @data_required = "true" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                @*<div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Password</label>
+                        @Html.Password("Password", null, new { @class="form-control", @placeholder="Password"})
+                    </div>
+                </div>*@
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        @Html.TextBox("Remarks", null, new { @class = "form-control", @placeholder = "Remarks", @data_parsley_maxlength = "200" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer bg-light lter">
+            @StateButton.Create("add")
+        </footer>
+    </section>
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+}

@@ -1,0 +1,108 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+@using System.Web.UI.WebControls;
+@using Dsf.Lib.Constant
+
+@{
+    ViewBag.Title = "Add Report Approval";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+    var jsID = Guid.NewGuid().ToString();
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+<a href="@Url.Action("IndexReportApproval", "DISAssetSelling")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br /><br />
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("AddReportApproval", "DISAssetSelling", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            <div>CABANG: @Model.MemoWithoutReports.First().Branch</div>
+        </header>
+        <div class="table-responsive">
+            <table id="assetpayment-list" class="table table-bordered table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th width="3%">No</th>
+                        <th width="12%">Memo Number</th>
+                        <th width="15%">Agreement Number</th>
+                        <th width="12%">Asset Code</th>
+                        <th width="13%">Engine Number</th>
+                        <th width="15%">Chassis Number</th>
+                        <th style="text-align:right" width="10%">Net Received</th>
+                        <th width="10%">Payment Date</th>
+                        <th width="10%">Created Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.MemoWithoutReports != null)
+                    {
+                        decimal totalNetReceive = 0;
+
+                        for (int i = 0; i < Model.MemoWithoutReports.Count; i++)
+                        {
+                            totalNetReceive += Model.MemoWithoutReports[i].NetReceived.Value;
+
+                            <tr>
+                                <td class="text-center v-middle"><label>@(i + 1)</label></td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].MemoNumber, new { @class = "form-control text-left", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                    @Html.HiddenFor(o => Model.MemoWithoutReports[i].IdTb_DIS_AssetSelling, new { @class = "form-control" })
+                                    @Html.HiddenFor(o => Model.MemoWithoutReports[i].IdTb_DIS_AssetSellingDetail_Item, new { @class = "form-control" })
+                                    @Html.HiddenFor(o => Model.MemoWithoutReports[i].DisposalNumber, new { @class = "form-control" })
+                                    @Html.HiddenFor(o => Model.MemoWithoutReports[i].IdTb_DIS_Agreement, new { @class = "form-control" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].AgreementNumber, new { @class = "form-control text-left", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].AssetCode, new { @class = "form-control text-left", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].EngineNumber, new { @class = "form-control text-left", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].ChassisNumber, new { @class = "form-control text-left", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].NetReceived, "{0:N0}", new { @class = "form-control text-right currency netReceived", @style = "background-color:lightyellow", @onkeyup = "counTotalNetReceive()" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control text-center", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].MemoCreatedDate, "{0:dd MMM yyyy}", new { @class = "form-control text-center", @readonly = "readonly", @style = "background-color:AppWorkspace" })
+                                </td>
+                            </tr>
+                            if (i == Model.MemoWithoutReports.Count - 1)
+                            {
+                                <tr>
+                                    <td colspan="6">
+                                        <label class="form-control no-border text-right">Total</label>
+                                    </td>
+                                    <td>
+                                        <input class="form-control text-right font-bold currency" id="totalNetReceived" placeholder=@string.Format("{0:N0}", totalNetReceive) style="background-color: lightyellow" readonly />
+                                    </td>
+                                    <td colspan="2" width="20%"></td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <footer class="panel-footer bg-light lter">
+            <div class="form-group">
+                @StateButton.DisposalStateButton("draft")
+            </div>
+        </footer>
+    </section>
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/DISAssetSelling.js?" + jsID)"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.maskedinput.js")"></script>
+    <script src='@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")'></script>
+}

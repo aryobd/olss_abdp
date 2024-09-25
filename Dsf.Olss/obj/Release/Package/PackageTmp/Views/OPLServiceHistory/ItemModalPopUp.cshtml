@@ -1,0 +1,64 @@
+﻿<div class="modal fade" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title"><strong id="itemModalLabel">Add Implementation Item</strong></h5>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm" class="form-horizontal" method="post" >
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Implementation Item</label>
+                        <div class="col-sm-8">
+                            <input tabindex="1" class="form-control" data-val="true" id="ImplementationItems" name="ImplementationItems" data-maxlength="100" placeholder="Implementation Item" type="text">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Labor Cost Amount</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                <input tabindex="2"  id="LaborCostAmount" data-required="true" data-maxlength="18" data-val="true" name="LaborCostAmount" placeholder="Labor Cost Amount" class="form-control currenciesOnly parsley-validated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">PPn</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                <input tabindex="3" id="ItemPPnTax" data-required="true" data-maxlength="18" data-val="true" name="ItemPPnTax" placeholder="PPn" class="form-control currenciesOnly parsley-validated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">PPh</label>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                <input tabindex="4" id="ItemPPhTax" data-required="true" data-maxlength="18" data-val="true" name="ItemPPhTax" placeholder="PPh" class="form-control currenciesOnly parsley-validated">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Remarks</label>
+                        <div class="col-sm-8">
+                            <input tabindex="5" id="ItemRemarks" data-val="true" type="text" data-maxlength="200" placeholder="Remarks" class="form-control parsley-validated">
+                            <input id="IdOPLSHistoryItems" type="hidden" />
+                            <input id="IdOPLServiceHistory" type="hidden" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button tabindex="6"  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button tabindex="7"  id="itemSubmitId" type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>

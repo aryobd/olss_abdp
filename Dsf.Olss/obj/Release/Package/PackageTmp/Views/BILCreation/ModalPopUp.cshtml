@@ -1,0 +1,84 @@
+	<!-- Modal Delivery Pop Up -->
+<div class="modal fade" id="deliveryInvoice">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Delivery Invoice Document</h4>
+			</div>
+			<div class="modal-body">
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label>Invoice Number</label>
+								<input id="InvoiceNumber" class="form-control" type="text" disabled="disabled">
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label>Delivery Date</label>
+								<div class="input-group date">
+									<input id="DeliveryDate" name="DeliveryDate" class="form-control mandatory dateappend" type="text">
+									<span class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="form-group">
+								<label>Delivery By</label>
+								<select id="DropdownCourier" name="DeliveryBy" class="form-control mandatory" onchange="courierValidation()">
+									<option value="Internal Courier" selected>Internal Courier</option>
+									<option value="Courier Agent">Courier Agent</option>
+								</select>
+							</div>
+						</div>
+						<div id="mydiv">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label>Receipt Number</label>
+									<input id="ReceiptNumber" name="ReceiptNumber" class="form-control mandatory">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<a href="#" id="btnPrint" class="btn btn-info" onclick="inputValidation(); showConfirmationPopUp();">Save Changes</a>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<p style="font-size:medium;"><span class="msgModal"></span> Confirmation</p>
+				<h4 class="modal-title"></h4>
+			</div>
+			<div class="panel-footer bg-light lter modal-body">
+				<p>Are you sure you want to <span class="confirmationMessage"></span>?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="confirmModal" class="btn">Yes</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+			</div>
+		</div>
+
+	</div>
+</div>

@@ -1,0 +1,106 @@
+﻿@model Dsf.Olss.Models.SystemSettings.SysNumberingFormatViewModels
+
+@{
+    ViewBag.Title = "Create System Numbering Format";
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/select2/select2.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/select2-bootstrap.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+}
+
+<a title="" class="btn btn-white" href="@Url.Action("Index", "SysNumberingFormat")" data-original-title=" "><i class=" fa fa-chevron-left"></i> Back</a>
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("Create", "SysNumberingFormat", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <section class="panel">
+        <header class="panel-heading font-bold">System Numbering Format</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    @Html.ValidationSummary(true)
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Module</label></div>
+                        <div class="col-lg-6">
+                            @Html.DropDownListFor(model => model.IdTb_OPL_Module, ViewBag.Modules as List<SelectListItem>, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(model => model.IdTb_OPL_Module)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Document Code</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.DocumentCode, null, new { @class = "form-control", @name = "Document Code" })
+                            @Html.ValidationMessageFor(model => model.DocumentCode)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Document Name</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.DocumentName, null, new { @class = "form-control", @name = "Document Name" })
+                            @Html.ValidationMessageFor(model => model.DocumentName)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Max Digit</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.MaxDigit, null, new { @class = "form-control", @name = "Max Digit" })
+                            @Html.ValidationMessageFor(model => model.MaxDigit)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Other Code</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.OtherCode, null, new {@class = "form-control", @name = "Other Code"})
+                            @Html.ValidationMessageFor(model => model.OtherCode)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Year</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(model => model.Year, null, new { @class = "form-control", @name = "Year" })
+                            @Html.ValidationMessageFor(model => model.Year)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        </footer>
+    </section>
+}

@@ -1,0 +1,364 @@
+﻿@using Dsf.Lib.Constant
+@model Dsf.Olss.Models.BILWarningLetterViewModel
+
+@{
+    ViewBag.Title = "Edit Warning Letter";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+<a href="@Url.Action("Index","BILWarningLetter")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+@using (Html.BeginForm("Edit", "BILWarningLetter", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <section class="panel">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.AgreementNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AgreementNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.AgreementPeriod)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AgreementPeriod, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.WarningLetterNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.WarningLetterNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.UnitTypeLease)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.UnitTypeLease, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.AuthorizedPerson)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AuthorizedPerson, new { @class = "form-control mandatory" })
+                            @Html.ValidationMessageFor(x => x.AuthorizedPerson)
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.Position)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.Position, new { @class = "form-control mandatory" })
+                            @Html.ValidationMessageFor(x => x.Position)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3"><label>Due Date Payment</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group date">
+                                @Html.TextBoxFor(o => o.ValidDate, "{0:" + localeDateFormat + "}", new { @class = "form-control datepicker-input mandatory" })
+                                <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.ValidDate)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <header class="panel-heading">
+                    <button class="btn btn-primary" type="button" style="margin-left:15px;" id="additem" onclick="AddRow()">Add Item</button>
+                </header>
+                <div class="responsive">
+                    <table class="table table-striped m-b-none text-sm" id="warningletterdtl">
+                        <thead>
+                            <tr>
+                                <th width="15%">Invoice Number</th>
+                                <th width="15%">Usage Period</th>
+                                <th width="15%" class="text-right">Lease Amount</th>
+                                <th width="10%" class="text-right">PPN</th>
+                                <th width="15%" class="text-right">Lease + PPN</th>
+                                <th width="15%" class="text-right">Penalty Amount</th>
+                                <th width="10%">Due Date</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.WarningLetterDtl.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="input-group">
+                                            @Html.TextBoxFor(x => x.WarningLetterDtl[i].InvoiceNo, new { @class = "form-control mandatory InvoiceNo" })
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-white" data-toggle="modal" data-target="#invoiceReceiptModal" type="button" onclick="LoadData(this)" tabindex="1">...</button>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(x => x.WarningLetterDtl[i].InvoiceNo)
+                                    </td>
+                                    <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].UsagePeriod, new { @class = "form-control UsagePeriod", @readonly = "readonly" })</td>
+                                    <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].LeaseAmount, "{0:n0}", new { @class = "form-control LeaseAmount", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].PPN, "{0:n0}", new { @class = "form-control PPN", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].LeasePPN, "{0:n0}", new { @class = "form-control LeasePPN", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].PenaltyAmount, "{0:n0}", new { @class = "form-control PenaltyAmount", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].DueDate, new { @class = "form-control DueDate", @readonly = "readonly" })</td>
+                                    <td style="text-align: center;">
+                                        @Html.HiddenFor(x => x.WarningLetterDtl[i].IdTb_BIL_WarningLetterDtl, new { @class = "IdTb_BIL_WarningLetterDtl" })
+                                        @Html.HiddenFor(x => x.WarningLetterDtl[i].StartPeriod, new { @class = "StartPeriod" })
+                                        @Html.HiddenFor(x => x.WarningLetterDtl[i].EndPeriod, new { @class = "EndPeriod" })
+                                        @Html.HiddenFor(x => x.WarningLetterDtl[i].InvoiceNo, new { @class = "InvoiceNoHidden" })
+                                        <button class='btn btn-danger deleterow' type='button' style="height: 30px;" onclick="DeleteRow(this)">-</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer bg-light lter">
+            @Html.HiddenFor(x => x.IdTb_BIL_WarningLetter)
+            @Html.HiddenFor(x => x.IdTb_BIL_PaySchedule)
+            <input type="hidden" id="submitButtonText" />
+            <input type="submit" name="statusButton" class="btn btn-info" value="Save as Draft" />
+            <input type="submit" name="statusButton" class="btn btn-primary" value="Submit" />
+        </div>
+
+    </section>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script type="text/javascript">
+        var serverRoot = '@Url.Content("~")';
+        var selectedInvoiceNo = new Array();
+        var invoiceReceiptCount = 0;
+
+        $(document).ready(function () {
+            $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#confirmationModal');
+
+            var i = 0;
+            $("#warningletterdtl > tbody > tr").each(function () {
+                var InvNo = $(this).find(".InvoiceNoHidden").val();
+                if (InvNo != null && InvNo != "")
+                    selectedInvoiceNo.splice(i, 0, InvNo);
+                i++;
+            });
+
+            if ($('#warningletterdtl tbody tr').length > 1)
+                $('#warningletterdtl tbody tr:first td:last button').removeAttr('disabled').attr('onclick', 'DeleteRow(this)');
+            else
+                $('#warningletterdtl tbody tr:first td:last button').attr('disabled', 'disabled').removeAttr('onclick');
+            invoiceReceiptCount = @Html.Raw(Json.Encode(Model.InvoiceReceiptCount));
+            if(invoiceReceiptCount > 0 && invoiceReceiptCount === selectedInvoiceNo.length)
+                $('#additem').attr('disabled', 'disabled').removeAttr('onclick');
+        });
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+            var submitvalue = $(this).val();
+            var msg = "";
+            var cm = "";
+            if (submitvalue === 'Save as Draft') {
+                msg = 'Save as Draft';
+                cm = "save as draft";
+            } else if (submitvalue === 'Submit') {
+                msg = 'Submit';
+                cm = "submit warning letter";
+            }
+
+            $('.msgModal').text(msg);
+            $('.confirmationMessage').text(cm);
+            $('#submitButtonText').val(submitvalue);
+        });
+
+        $('#confirmModal').click(function (e) {
+            var submitvalue = $('#submitButtonText').val();
+            ObjectNaming();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            $(this).prop('disabled', true);
+        });
+
+        function ObjectNaming() {
+            var i = 0;
+            $("#warningletterdtl > tbody > tr").each(function () {
+                $(this).find(".IdTb_BIL_WarningLetterDtl").attr("name", "WarningLetterDtl[" + i + "].IdTb_BIL_WarningLetterDtl");
+                $(this).find(".InvoiceNo").attr("name", "WarningLetterDtl[" + i + "].InvoiceNo");
+                $(this).find(".StartPeriod").attr("name", "WarningLetterDtl[" + i + "].StartPeriod");
+                $(this).find(".EndPeriod").attr("name", "WarningLetterDtl[" + i + "].EndPeriod");
+                $(this).find(".UsagePeriod").attr("name", "WarningLetterDtl[" + i + "].UsagePeriod");
+                $(this).find(".LeaseAmount").attr("name", "WarningLetterDtl[" + i + "].LeaseAmount");
+                $(this).find(".PPN").attr("name", "WarningLetterDtl[" + i + "].PPN");
+                $(this).find(".LeasePPN").attr("name", "WarningLetterDtl[" + i + "].LeasePPN");
+                $(this).find(".PenaltyAmount").attr("name", "WarningLetterDtl[" + i + "].PenaltyAmount");
+                $(this).find(".DueDate").attr("name", "WarningLetterDtl[" + i + "].DueDate");
+                i++;
+            });
+        }
+
+        function AddRow() {
+            var newtr = "<tr>"
+            + "<td><div class='input-group'><input type='text' class='form-control mandatory InvoiceNo' /><span class='input-group-btn'><button class='btn btn-white' data-toggle='modal' data-target='#invoiceReceiptModal' type='button' onclick='LoadData(this)' tabindex='1'>...</button></span></div></td>"
+            + "<td><input type='text' class='form-control UsagePeriod' readonly='readonly' /></td>"
+            + "<td><input type='text' class='form-control LeaseAmount' readonly='readonly' style='text-align: right;' /></td>"
+            + "<td><input type='text' class='form-control PPN' readonly='readonly' style='text-align: right;' /></td>"
+            + "<td><input type='text' class='form-control LeasePPN' readonly='readonly' style='text-align: right;' /></td>"
+            + "<td><input type='text' class='form-control PenaltyAmount' readonly='readonly' style='text-align: right;' /></td>"
+            + "<td><input type='text' class='form-control DueDate' readonly='readonly' /></td>"
+            + "<td style='text-align: center;'>"
+            + "<input type='hidden' class='IdTb_BIL_WarningLetterDtl' />"
+            + "<input type='hidden' class='StartPeriod' />"
+            + "<input type='hidden' class='EndPeriod' />"
+            + "<input type='hidden' class='InvoiceNoHidden' />"
+            + "<button class='btn btn-danger deleterow' type='button' style='height: 30px;' onclick='DeleteRow(this)'>-</button></td>"
+            + "</tr>";
+            $("#warningletterdtl > tbody").append(newtr);
+
+            if ($('#warningletterdtl tbody tr').length > 1)
+                $('#warningletterdtl tbody tr:first td:last button').removeAttr('disabled').attr('onclick', 'DeleteRow(this)');
+            else
+                $('#warningletterdtl tbody tr:first td:last button').attr('disabled', 'disabled').removeAttr('onclick');
+            var ItemCount = $('#warningletterdtl tbody tr').length;
+            if (invoiceReceiptCount > 0 && invoiceReceiptCount === ItemCount)
+                $("#additem").attr('disabled', 'disabled').removeAttr('onclick');
+        }
+
+        function DeleteRow(s) {
+            $tr = $(s).parent().parent();
+            var index = -1;
+            var InvNo = $tr.find(".InvoiceNoHidden").val();
+            if (InvNo != null && InvNo != "")
+                index = selectedInvoiceNo.indexOf(InvNo);
+            if (index != -1)
+                selectedInvoiceNo.splice(index, 1);
+            $tr.remove();
+
+            var rowTotal = $('#warningletterdtl tbody tr').length;
+            if (rowTotal == 1)
+                $('#warningletterdtl tbody tr:first td:last button').attr('disabled', 'disabled').removeAttr('onclick');
+
+            var IsEnabledButton = $('#additem').attr('disabled') != "disabled";
+            if (!IsEnabledButton && invoiceReceiptCount !== rowTotal) {
+                $('#additem').removeAttr('disabled').attr('onclick', 'AddRow()');
+            }
+        }
+
+        function LoadData(s) {
+            var $tr = $(s).parent().parent().parent().parent();
+
+            var InvoiceNo = $tr.find(".InvoiceNoHidden").val();
+            if (selectedInvoiceNo.indexOf(InvoiceNo) != -1)
+                selectedInvoiceNo.splice(selectedInvoiceNo.indexOf(InvoiceNo), 1);
+
+            var oTable = null;
+            $('#invoice-receipt-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "bRetrieve": true,
+                    "sAjaxSource": serverRoot + "BILWarningLetter/InvoiceReceiptDataTable",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "payScheduleId", "value": $("#IdTb_BIL_PaySchedule").val() },
+                            { "name": "selectedInvoiceNo", "value": selectedInvoiceNo }
+                        );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "InvoiceNoInstalment" },
+                        { "mData": "UsagePeriod" },
+                        { "mData": "Amount" }
+                    ],
+                    "iDisplayLength": 4,
+                    "bLengthChange": false,
+                    "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                        $('td:eq(2)', nRow).css("text-align", "right");
+                        return nRow;
+                    }
+                });
+            });
+            $("#invoice-receipt-list tbody").delegate("tr", "click", function () {
+                var index = selectedInvoiceNo.length;
+                var InvNo = $tr.find(".InvoiceNoHidden").val();
+                if (InvNo != null && InvNo != "") {
+                    index = selectedInvoiceNo.indexOf(InvNo);
+                    index = index != -1 ? index : selectedInvoiceNo.length;
+                }
+
+                var data = oTable.fnGetData(this);
+                $tr.find(".InvoiceNoHidden").val(data.InvoiceNoInstalment);
+                $tr.find(".InvoiceNo").val(data.InvoiceNoInstalment);
+                $tr.find(".StartPeriod").val(data.StartPeriod);
+                $tr.find(".EndPeriod").val(data.EndPeriod);
+                $tr.find(".UsagePeriod").val(data.UsagePeriod);
+                $tr.find(".LeaseAmount").val(data.Amount);
+                $tr.find(".PPN").val(data.PPN);
+                $tr.find(".LeasePPN").val(data.LeasePPN);
+                $tr.find(".PenaltyAmount").val(data.PenaltyAmount);
+                $tr.find(".DueDate").val(data.DueDate);
+
+                selectedInvoiceNo[index] = data.InvoiceNoInstalment;
+
+                $('#invoiceReceiptModal').modal('hide');
+                $("#invoice-receipt-list tbody").undelegate("tr", "click");
+            });
+            oTable.fnFilter('');
+
+            $('#invoiceReceiptModal').on('hidden.bs.modal', function () {
+                var index = selectedInvoiceNo.length;
+                var InvNo = $tr.find(".InvoiceNoHidden").val();
+                if (InvNo != null && InvNo != "") {
+                    index = selectedInvoiceNo.indexOf(InvNo);
+                    index = index != -1 ? index : selectedInvoiceNo.length;
+                    selectedInvoiceNo[index] = InvNo;
+                }
+            });
+        }
+
+        $(".datepicker-input").datepicker({
+            format: "m/d/yyyy",
+        });
+    </script>
+}

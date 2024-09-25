@@ -1,0 +1,630 @@
+﻿@model Dsf.Olss.Models.OPLBillpayDetailViewModel
+@using System.Web.UI.WebControls;
+<a href="@Url.Action("MainScreen", "OPLBillpay", new { id = Model.IdOPLBillpayHistory })" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@{
+
+    ViewBag.Title = "Add Billing Payment History Detail";
+    //decimal[] depreciate = Model.DepreciationRate;
+}
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+
+else if (Model.IsValid)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+
+<hr>
+
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(Model.CreatedDate.Equals(DateTime.MinValue) ? "-" : string.Format("{0:MM/dd/yyyy}", Model.CreatedDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Contract Information -->
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    @Html.HiddenFor(o => o.ConnId)
+    @Html.HiddenFor(o => o.IdOPLBillpayHistory)
+    @Html.HiddenFor(o => o.PaymentSeq)
+    <section class="panel">
+        <header class="panel-heading">Contract Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <!-- Agreement Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Agreement Number</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.AgreementNumber, new { @class = "form-control", @placeholder = "Agreement Number", @readonly = "readonly" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#agreementData" type="button">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Previous Agreement Number</label>
+                        @Html.TextBoxFor(o => o.AgreementNumberReff, new { @class = "form-control", @placeholder = "Agreement Number", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <!-- Agreement Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Agreement Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.AgreementDate, "{0:MM/dd/yyyy}", new { @class = "form-control ", @placeholder = "Agreement Date (mm/dd/yyyy)", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Billing and Payment History Details</header>
+        <div class="panel-body">
+
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Payment Transaction</label>
+                        @if (Model.IsTerminated)
+                        {
+                            @Html.DropDownListFor(o => o.PaymentTransactionType, ViewBag.PaymentTransactionType as SelectList, new { @class = "form-control", @data_required = "true", @disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(o => o.PaymentTransactionType, ViewBag.PaymentTransactionType as SelectList, new { @class = "form-control", @data_required = "true" })
+                        }
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>First Due Date of Usage Unit</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.FDueDateUsage, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "First Due Date of Usage Unit", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>First Due Date of Payment</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.FDDatePayment, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "First Due Date of Payment", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Term of Payment (Days)</label>
+                        @Html.TextBoxFor(o => o.TermOfPayment, new { @class = "form-control text-right", @placeholder = "Term of Payment (Days)", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Monthly Installment</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.MonthlyInstallmentAmount, "{0:N0}", new { @class = "form-control text-right", @placeholder = "Monthly Installment", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Deposit Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.DepositAmount, "{0:N0}", new { @class = "form-control text-right", @placeholder = "Deposit Amount", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Number of Payment (Numbers)</label>
+                        @Html.TextBoxFor(o => o.NumberOfPayments, new { @class = "form-control text-right", @placeholder = "Number of Payment (Numbers)", @readonly = "readonly" })
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Deposit Payment Date</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.DepositPaymentDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Deposit Payment Date", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Deposit Return Date</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.DepositReturnDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Deposit Return Date", @readonly = "readonly" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Breakdawn Special Contract</label>
+                        @{
+    var listItems = new List<ListItem>
+                                {
+                                      new ListItem { Text = "Yes", Value = "true" },
+                                      new ListItem { Text = "No",  Value = "false" }
+                                };
+                        }
+
+                        @if (Model.IsTerminated)
+                        {
+                            @Html.DropDownListFor(o => o.BreakDawnContract, new SelectList(listItems, "Value", "Text", @Model.BreakDawnContract), new { @class = "form-control", @tabindex = "11", @disabled = "disabled" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(o => o.BreakDawnContract, new SelectList(listItems, "Value", "Text", @Model.BreakDawnContract), new { @class = "form-control", @tabindex = "11" })
+                        }
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Issue of Invoice Date</label>
+                        <div class="input-group">
+                            @if (Model.IsTerminated)
+                            {
+                                @Html.TextBoxFor(o => o.IssueInvoiceDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Issue of Invoice Date", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(o => o.IssueInvoiceDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "Issue of Invoice Date" })
+                            }
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Interest Penalty (%)</label>
+                        @Html.TextBoxFor(o => o.InterestOfPenalty, new { @class = "form-control text-right", @placeholder = "Interest Penalty (%)", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Payment Condition</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Payment Schedule (mm/dd/yyyy)</label>
+                        @Html.DropDownListFor(o => o.IdOPLBillpayHistoryDetails, (List<SelectListItem>)ViewBag.ListOfDate, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Period Overdue Amount</label>
+                        @Html.TextBoxFor(o => o.PeriodOverdueAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Period Overdue Amount", @data_required = "true", @data_maxlength = "23", @readonly = "readonly" })
+                    </div>
+                </div>
+                <!-- Agreement Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Collection Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @if (Model.IsTerminated)
+                            {
+                                @Html.TextBoxFor(o => o.CollectionDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Collection Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @readonly = "readonly", @disabled = "disabled" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(o => o.CollectionDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "Collection Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @data_required = "true" })
+                            }
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Collection Category</label>
+                        @if (Model.IsTerminated)
+                        {
+                            <select class="form-control" disabled="disabled">
+                                <option>Full After Break Dawn</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <select class="form-control">
+                                <option>Full After Break Dawn</option>
+                            </select>
+                        }
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Break Dawn Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @if (Model.IsTerminated)
+                            {
+                                @Html.TextBoxFor(o => o.BreakDawnAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Break Dawn Amount", @data_required = "true", @data_maxlength = "23", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(o => o.BreakDawnAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Break Dawn Amount", @data_required = "true", @data_maxlength = "23" })
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Collection Billing Amount</label>
+                        @if (Model.IsTerminated)
+                        {
+                            @Html.TextBoxFor(o => o.CollectionBillingAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Collection Amount", @data_required = "true", @data_maxlength = "23", @readonly = "readonly" })
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(o => o.CollectionBillingAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Collection Amount", @data_required = "true", @data_maxlength = "23" })
+                        }
+                        @Html.ValidationMessageFor(o => o.CollectionBillingAmount)
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>VAT Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.VATAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "VAT Amount", @data_required = "true", @data_maxlength = "23", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>PPH Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.PPHAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "PPH Amount", @data_required = "true", @data_maxlength = "23", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Collection Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.CollectionAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Collection Amount", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Penalty Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.PenaltyAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Penalty Amount", @data_maxlength = "23", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Penalty Collection Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @if (Model.IsTerminated)
+                            {
+                                @Html.TextBoxFor(o => o.PenaltyCollectionDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Penalty Collection Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(o => o.PenaltyCollectionDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "Penalty Collection Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy" })
+                            }
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Penalty Collection Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @if (Model.IsTerminated)
+                            {
+                                @Html.TextBoxFor(o => o.PenaltyCollectionAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Penalty Collection Amount", @data_maxlength = "23", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(o => o.PenaltyCollectionAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Penalty Collection Amount", @data_maxlength = "23" })
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Penalty Overdue Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            <input id="TotalOverduePenaltyAmount" type="text" class="form-control currenciesOnly" disabled="disabled">
+                            @Html.HiddenFor(o => o.OverduePenaltyAmount)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*@Html.HiddenFor(o => o.PaymentSchedule)*@
+            @Html.HiddenFor(o => o.Bill)
+        </div>
+        <footer class="panel-footer bg-light lter">
+            @if (!Model.IsTerminated)
+            {
+                if (Model.IsDraft && Session["Role"].ToString().Equals("User"))
+                {
+                    <input type="submit" name="statusButton" class="btn btn-info" value="Save Changes" />
+
+                }
+                else if (Model.IsValid && Session["Role"].ToString().Equals("User"))
+                {
+
+                }
+                else if (Model.IsDraft)
+                {
+                    <input type="submit" name="statusButton" class="btn btn-info" value="Save Changes" />
+                    <input type="submit" name="statusButton" class="btn btn-primary" value="Validate" />
+                }
+                else if (Model.IsValid)
+                {
+                    <input type="submit" name="statusButton" class="btn btn-white" value="Set To Draft" />
+                }
+            }
+        </footer>
+
+
+
+    </section>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+    var OPLBillpayHub = $.connection.OPLBillpay;
+    var confirm = false;
+    var thisurl = '@Url.Action("Detail", "OPLBillpay", new { idbillpaydetail = Model.IdOPLBillpayHistoryDetails, idbillpay = Model.IdOPLBillpayHistory })';
+    var mainurl = '@Url.Action("MainScreen", "OPLBillpay", new { id = Model.IdOPLBillpayHistory})';
+    OPLBillpayHub.client.OnSaveLock = function (id, iddetail) {
+
+        if (iddetail == '@Model.IdOPLBillpayHistoryDetails' && !confirm) {
+            confirm = true;
+            bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                if (result != false) {
+                    window.location.href = thisurl;
+                }
+                confirm = false;
+            });
+        }
+    };
+
+
+    OPLBillpayHub.client.OnStatusLock = function (id, iddetail) {
+
+        if (iddetail == '@Model.IdOPLBillpayHistoryDetails' && !confirm) {
+            confirm = true;
+            bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                window.location.href = mainurl;
+            });
+        }
+    };
+
+    $.connection.hub.start().done(function () {
+        var myClientId = $.connection.hub.id;
+        $('#ConnId').val(myClientId);
+    });
+
+    function CalculateTax() {
+        var pphAmt = 0;
+        var vatAmt = 0;
+        var collectAmt = Number($("#CollectionBillingAmount").val().replace(/,/g, ''));
+        var breakdawnAmt = Number($("#BreakDawnAmount").val().replace(/,/g, ''));
+
+        if (collectAmt > 0) {
+            pphAmt = (collectAmt) * 2 / 100;
+            vatAmt = (collectAmt) * 10 / 100;
+        }
+
+        $("#VATAmount").val(vatAmt).formatCurrency();
+        $("#PPHAmount").val(pphAmt).formatCurrency();
+    }
+
+    function CalculateTotal() {
+        var collectAmt = Number($("#CollectionBillingAmount").val().replace(/,/g, ''));
+        var vatAmt = Number($("#VATAmount").val().replace(/,/g, ''));
+        var pphAmt = Number($("#PPHAmount").val().replace(/,/g, ''));
+
+        var total = collectAmt + vatAmt - pphAmt;
+        $("#CollectionAmount").val(total).formatCurrency();
+    }
+
+    $(document).ready(function () {
+        CalculatePenaltyOverdue();
+        $(".currenciesOnly").on('keydown', currenciesOnly)
+                                     .on('blur', function () { $(this).formatCurrency(); });
+
+        $("#CollectionBillingAmount").change(function () {
+            CalculatePenalty();
+            CalculateTax();
+            CalculateTotal();
+            GetValidityCollection();
+        });
+
+        $("#BreakDawnAmount").change(function () {
+            CalculateTax();
+            CalculateTotal();
+        });
+
+        $("#PenaltyAmount").change(function () {
+            CalculateTotal();
+        });
+
+        function GetValidityCollection() {
+            var collectionBillingAmount = Number($("#CollectionBillingAmount").val().replace(/,/g, ''));
+            var periodOverdueAmount = Number($("#PeriodOverdueAmount").val().replace(/,/g, ''));
+            if (collectionBillingAmount > periodOverdueAmount) {
+                $('span[data-valmsg-for=CollectionBillingAmount]').html("the collection value cannot greater than billing");
+                $('span[data-valmsg-for=CollectionBillingAmount]').addClass("text-danger").addClass("text-sm").show();
+                $('#CollectionBillingAmount').val('');
+            }
+            else {
+                $('span[data-valmsg-for=CollectionBillingAmount]').hide();
+                // window.ParsleyUI.removeError($('#LeaseCategory').parsley(), "myCustomError");
+            }
+        }
+
+        function CalculatePenaltyOverdue() {
+            var penalty = Number($("#PenaltyAmount").val().replace(/,/g, ''));
+            var overdue = Number($("#OverduePenaltyAmount").val().replace(/,/g, ''));
+
+            $("#TotalOverduePenaltyAmount").val(overdue + penalty).formatCurrency();
+        }
+
+
+        function CalculatePenalty() {
+            var bill = Number($("#CollectionBillingAmount").val().replace(/,/g, ''));
+            var penaltyrate = Number($("#InterestOfPenalty").val()) / 100;
+            var paySchedule = new Date($("#IdOPLBillpayHistoryDetails option:selected").text());
+            var coldate = new Date($('#CollectionDate').datepicker().val());
+
+            if (paySchedule < coldate) {
+
+                var datediff = coldate.getTime() - paySchedule.getTime();
+                datediff = Math.ceil(datediff / 1000 / 60 / 60 / 24);
+
+                $("#PenaltyAmount").val((datediff/30) * penaltyrate * bill).formatCurrency().change();
+            } else {
+                $("#PenaltyAmount").val(0).formatCurrency().change();
+            }
+            CalculatePenaltyOverdue();
+        }
+
+        $("#CollectionDate").datepicker().on('changeDate', function () {
+            CalculatePenalty();
+        });
+    });
+    var getUrl = '@Url.Action("GetPeriodOverdueAmount", "OPLBillpay")';
+        $("#IdOPLBillpayHistoryDetails").change(function () {
+            if($("#IdOPLBillpayHistory").val() != 0)
+            {
+                $.ajax({
+                    url: getUrl,
+                    dataType: "json",
+                    type: "POST",
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({ paymentschedule: $("#IdOPLBillpayHistoryDetails option:selected").text(), idbillpay: $("#IdOPLBillpayHistory").val() }),
+                    async: true,
+                    processData: false,
+                    cache: false,
+                    success: function (data) {
+                        $('#PeriodOverdueAmount').val(data.PeriodOverdueAmount)
+                        $('#Bill').val(data.BillAmount)
+                        $('#PaymentSeq').val(data.PaymentSeq)
+                        $('#PenaltyAmount').val('0')
+                        $('#BreakDawnAmount').val('0')
+                        $('#CollectionDate').val('');
+                        $('#CollectionBillingAmount').val('');
+                        $('#IssueInvoiceDate').val(data.IssueInvoiceDate);
+                    },
+                    error: function (xhr) {
+                        alert('Error on retrieving data');
+                    }
+                })
+            }
+            else
+            {
+                $('#PeriodOverdueAmount').val('')
+                $('#Bill').val('')
+                $('#PaymentSeq').val('')
+                $('#PenaltyAmount').val('0')
+                $('#BreakDawnAmount').val('0')
+                $('#CollectionDate').val('');
+                $('#CollectionBillingAmount').val('');
+                $('#IssueInvoiceDate').val('');
+            }
+        });
+
+    </script>
+}

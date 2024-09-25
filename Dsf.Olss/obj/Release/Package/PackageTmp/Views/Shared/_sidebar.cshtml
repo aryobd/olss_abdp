@@ -1,0 +1,228 @@
+﻿   <!-- .aside -->
+<aside class="bg-danger dker aside-xl nav-vertical hidden-print" id="nav">
+    <section>
+        <header class="bg-gradient dker nav-bar">
+            <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="body">
+                <i class="fa fa-bars"></i>
+            </a>
+            <a href="@Url.Action("Index", "Home")" class="nav-brand">OLSS</a>
+            <a class="btn btn-link visible-xs" data-toggle="class:show" data-target=".nav-user">
+                <i class="fa fa-comment-o"></i>
+            </a>
+        </header>
+        <section>
+            <nav class="nav-primary hidden-xs">
+                <ul class="nav">
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-th"></i>
+                            <span>Master Data Information</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Customer Information", "Index", "Customer")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Supplier Information", "Index", "Supplier")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Product Information", "Index", "Product")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Maintenance Category", "Index", "MaintenanceCategory")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Maintenance Item", "Index", "MaintenanceItem")
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-globe"></i>
+                            <span>Marketing</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Visit Customer Survey", "Index", "CustomerVisitSurvey")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Complement Document", "Update", "ComplementDocument")
+                            </li>
+                            <li>
+                                @Html.RouteLink("Calculation of Operating Lease (Cashflow Method)", "OPLCalcCashflow")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Operating Lease Quotation", "Index", "OPLQuotation")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Board of Director Decree / SKD Process", "Index", "Skd")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Agreement Information Inquiry", "Index", "OPLAgreement")
+                            </li>
+                            
+
+                            <li class="divider"></li>
+                            <li>
+                                @Html.ActionLink("Calculation of Refinance", "Index", "SalesCalculation")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Refinance Quotation", "Index", "SalesQuotation")
+                            </li>
+
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span>Procurement</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Monitoring Purchase Order", "Index", "PurchaseOrder")
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-wrench"></i>
+                            <span>Maintenance</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Maintenance Calculation Budget", "Index", "MaintenanceCalculation")
+                            </li>
+                            <li>
+                                @Html.ActionLink("List of Maintenance Schedule", "Index", "MaintenanceSchedule")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Maintenance Payment Approval", "Index", "MaintenancePaymentApproval")
+                            </li>
+                            @*<li>
+                                @Html.ActionLink("Service History Inquiry", "Index", "OPLServiceHistory")
+                            </li>*@
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-truck"></i>
+                            <span>Management</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Monitoring Unit Preparation", "Index", "MGTPreparationUnit")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring OPL Unit and Replacement Unit", "Index", "MGTOplUnitReplace")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring Document Complement", "Index", "MGTComplementUnit")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring Agreement Integration Process", "Index", "MGTIntegrationMonitor")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring Payment Schedule Integration", "Index", "MGTIntegrationPaySchdl")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring Payment History Integration", "Index", "MGTIntegrationPaymentHistory")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring OverDue Integration", "Index", "MGTIntegrationOverDue")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring Debit Credit Note Integration", "Index", "MGTIntegrationDebitCreditNote")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitoring Invoice Number Integration", "Index", "MGTInvoiceIntegration")
+                            </li>
+
+                        </ul>
+                    </li>
+
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-list-alt"></i>
+                            <span>Collection</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Monitor Schedule", "Index", "BILSchedule")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Monitor Overdue", "Index", "BILOverdue")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Manage Warning Letter", "Index", "BILWarningLetter")
+                            </li>
+                            <li>
+                                @Html.ActionLink("Manage RAL", "Index", "BILRAL")
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                @Html.ActionLink("Manage Invoice", "Index", "BilInvoiceMonitor")
+                            </li>
+                            @*<li>
+                                @Html.ActionLink("Billing Payment History Inquiry", "MainScreen", "OPLBillpay")
+                            </li>*@
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a href="@Url.Action("Index", "ApprovalEscalation")">
+                            <i class="fa fa-list-alt"></i>
+                            <span>Approval Escalation</span>
+                        </a>
+                        @*<ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Approval Escalation", "Index", "ApprovalEscalation")
+                            </li>
+                        </ul>*@
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-external-link"></i>
+                            <span>Asset Selling</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Manage Memo", "Index", "DISAssetSelling", new { id = "1"}, null)
+                            </li>
+                            <li>
+                                @Html.ActionLink("Manage Report", "IndexDetail", "DISAssetSelling")
+                            </li>
+                            <li class="divider" hidden></li>
+                            <li hidden>
+                                @Html.ActionLink("Asset Write Off", "Index", "DISAssetSelling", new { id = "2" }, null)
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a href="#">
+                            <i class="fa fa-cog"></i>
+                            <span>System Setting</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                @Html.ActionLink("Approval Path Setting", "Index", "ApprovalPath")
+                            </li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <footer class="footer bg-gradient hidden-xs">
+                <a href="@Url.Action("LogOff", "Account")" title="Sign Out" class="btn btn-sm btn-link m-r-n-xs pull-right">
+                    <i class="fa fa-power-off"></i>
+                </a>
+                @*<a href="#nav" title="Toggle" data-toggle="class:nav-vertical" class="btn btn-sm btn-link m-l-n-sm">
+                <i class="fa fa-bars"></i>
+            </a>*@
+            </footer>
+        </section>
+    </section>
+</aside>
+<!-- /.aside -->

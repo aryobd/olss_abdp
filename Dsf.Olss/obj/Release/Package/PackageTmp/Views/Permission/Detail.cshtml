@@ -1,0 +1,63 @@
+﻿@model Dsf.Olss.Data.Entities.Permission
+
+@{
+    ViewBag.Title = "Permission Detail";
+}
+
+<a href="@Url.Action("Index", "Permission")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@StatusLabel.Create(Model.IsDraft, Model.IsSubmit, Model.IsActive)
+<br /><hr />
+<section class="panel">
+    <header class="panel-heading">Detail Permission</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>PermissionName</label>
+                    <p class="form-control-static">@(Model.PermissionName ?? "-")</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Remarks</label>
+                    <p class="form-control-static">@(Model.Remarks ?? "-")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @using (Html.BeginForm("Detail", "Permission", FormMethod.Post, new { @data_validate = "parsley" }))
+    {
+        @Html.HiddenFor(o => o.IdPermission)
+        <footer class="panel-footer bg-light lter">
+            @StateButton.Create("detail", Model.IsDraft, Model.IsSubmit, Model.IsActive)
+        </footer>
+    }
+
+</section>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var permissionHub = $.connection.Permission;
+        permissionHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdPermission') {
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                });
+            }
+        };
+
+        permissionHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdPermission') {
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "Permission")';
+                });
+            }
+        };
+    </script>
+}

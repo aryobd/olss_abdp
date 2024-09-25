@@ -1,0 +1,376 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@{
+    ViewBag.Title = "Monitor Payment Schedule Integration";
+    // Get loading image url
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/css/style.css")" type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@*<a href="@Url.Action("Add", "OPLAgreement")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>*@<br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+<div id="printsuccess"></div>
+
+<div class="tab-pane" id="datatable">
+
+    @*<section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">DSF Office</option>
+                            <option value="2">Agreement Number</option>
+                            <option value="3">SKD Number</option>
+                            <option value="4">Customer Name</option>
+                            <option value="5">Brand Name</option>
+                            <option value="6">Model Name</option>
+                            <option value="7">Created By</option>
+                            <option value="8">Last Approval</option>
+                            <option value="9">Next Approval</option>
+                            <option value="10">Status</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Start Agreement Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>End Agreement Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>*@
+
+
+    <section class="panel">
+        <div class="DocumentList">
+            <div class="table-responsive billingOverdue30days_responsive">
+                <table id="table-list" class="table table-striped m-b-none display nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="header-grid-name">Record Status</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-action">Read Status</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">Agreement Number</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-name">Billing Total</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Expectation Collection Amount</div>
+                            </th>
+
+                            <th>
+                                <div class="header-grid-short">Create Date</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Created By</div>
+                            </th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+
+
+
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <div id='loadingmessage' style='display:none'>
+                <img src='@Url.Content(ImgUrl)' />
+            </div>
+            @*<input id="btnPrintAll" name="statusButton" class="btn btn-info" type="submit" value="Print Report">*@
+        </footer>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var oTable;
+            // datatable
+            $('#table-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[15, "desc"]],
+                    "sScrollXInner": "200%",
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "MGTIntegrationPaySchdl")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+
+                            { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() },
+                            { "name": "txtStartDate", "value": $("#txtStartDate").val() },
+                            { "name": "txtEndDate", "value": $("#txtEndDate").val() }
+
+                            );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "bAutoWidth": false,
+                    "aoColumns": [
+                                {
+                                    "mData": "RecordStatus",
+                                    "bSearchable": false,
+                                    "bSortable": false,
+                                    "fnRender": function (oObj) {
+                                        var status = oObj.aData["RecordStatus"];
+
+                                        if (status == 'N') {
+                                            return "<span class='label label-success'>New Schedule</span>";
+                                        }
+                                        return "<span class='label label-danger'>Recshedule</span>";
+                                    }
+                                },
+
+
+                                {
+                                    "mData": "IdTb_BIL_PaySchedule",
+                                    "bSearchable": false,
+                                    "bSortable": false,
+                                    "fnRender": function (oObj) {
+                                        var id = oObj.aData["IdTb_BIL_PaySchedule"];
+                                        var htmlButtonAction = '';
+                                        var status = oObj.aData["IsRead"];
+                                        if (status == 'Y') {
+                                            htmlButtonAction = "<span class='label label-success'>Sync To OLSS</span>";
+                                        }
+                                        else {
+                                            htmlButtonAction = "";//<a title='Get To OLSS' href='@Url.Action("GetToOLSS", "MGTIntegrationPaySchdl")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-edit'></i></a> </a>&nbsp; "
+                                            htmlButtonAction = htmlButtonAction + "<a title='Show Detail' href='@Url.Action("Detail", "MGTIntegrationPaySchdl")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a> </a>&nbsp;"
+                                        }
+
+                                        return htmlButtonAction;
+                                    }
+                                },
+
+
+
+
+                                        { "mData": "AgreementNumber" },
+                                        { "mData": "BillingTotal" },
+                                        { "mData": "ExpectationCollAmt" },
+                                        { "mData": "CreatedDate" },
+                                        { "mData": "CreatedBy" }
+                    ],
+                    "aoColumnDefs": [
+                        { "sWidth": "50%", "aTargets": [0] },
+                        { "sClass": "center", "aTargets": [1] }
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0,
+                            "error": handleAjaxError
+                        });
+                    }
+                });
+            });
+
+            var htmlTemp = '<div class="dataTables_wrapper row">';
+            var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+            var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+            $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+            htmlTemp += fakePagination + '</div>';
+            $('.table-responsive').append(htmlTemp);
+            $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+            $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+            $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+        });
+
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            }
+            else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        // Searching
+        $('#btnSatus').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+                $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+            }
+        });
+
+        //Print Report
+        $('#btnPrintAll').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessage').show();
+            $('#btnPrintAll').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReport", "OPLAgreement")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "./Base/Download?fileName=" + response + "&rptType=" + 2;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                    var printreport = response.substr(response.length - 34);
+                    $("#printsuccess").html('<div class="alert alert-success" role="success">Print Report ' + printreport + ' has been successfully printed</div>').show();
+
+                }
+            });
+        });
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+
+
+        //add by rudolf
+        $('#btnSendToStaging').click(function (e) {
+            alert("1");
+            // prevent the default event behaviour
+            e.preventDefault();
+            var someData = "123";
+            $.ajax({
+                url: "/MGTIntegrationMonitor/SendToStaging",
+                type: "POST",
+                data: JSON.stringify({ 'Options': someData }),
+                dataType: "json",
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    // perform your save call here
+
+                    if (data.status == "Success") {
+                        alert("Done");
+                    } else {
+                        alert("Error occurs on the Database level!");
+                    }
+                },
+                error: function () {
+                    alert("An error has occured!!!");
+                }
+            });
+        });
+        //end add
+
+
+
+    </script>
+}

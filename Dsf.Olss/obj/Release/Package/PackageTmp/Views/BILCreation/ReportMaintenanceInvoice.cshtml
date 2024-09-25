@@ -1,0 +1,15 @@
+﻿@using System.Web.UI.WebControls
+
+@{
+    ViewBag.Title = "Report Maintenance Invoice";
+    var id = ViewBag.Id;
+    var idInv = ViewBag.IdInvoice;
+}
+<a href="@Url.Action("ListInvoiceStatusApproval", "BILCreation", new { id = idInv })" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+
+@Html.Partial("ReportViewer")
+
+<a title="" class="btn btn-white" href="@Url.Action("ReportInstallmentReceipt", "BILCreation", new { id })" class=" btn btn-white" data-original-title=""><i class="fa fa-chevron-left"></i> Previous Page</a>
+<a title="" class="btn btn-white" href="@Url.Action("ReportMaintenanceReceipt", "BILCreation", new { id })" class=" btn btn-white" data-original-title=""><i class="fa fa-chevron-right"></i> Next Page</a>
+
+

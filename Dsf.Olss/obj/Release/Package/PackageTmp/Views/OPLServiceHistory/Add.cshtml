@@ -1,0 +1,740 @@
+﻿@model Dsf.Olss.Models.OPLServiceHistoryViewModel
+@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "Add Service History Inquiry";
+}
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "OPLServiceHistory")" class=" btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+@using (Html.BeginForm("Add", "OPLServiceHistory", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+
+    <!-- Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">General Information of Service</header>
+        <div class="panel-body">
+            @Html.TextBoxFor(o => o.IdUObjLease, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.IdOPLAgreement, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.IdOPLServiceHistory, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.IdServiceHistorySum, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.ConnId, null, new { @type = "hidden" })
+            <div class="row">
+                <!-- Quotation Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Agreement Number</label>
+                        <div class="input-group">@(Model.AgreementNumber)</div>
+                    </div>
+                </div>
+
+                <!-- Quotation Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Previous Agreement Number</label>
+                        <div class="input-group">@(Model.PreviousAgreementNumber)</div>
+                    </div>
+                </div>
+
+                <!-- Agreement Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Agreement Date (mm/dd/yyyy)</label>
+                        <div class="input-group">@(String.Format("{0:MM/dd/yyyy}", Model.AgreementDate))</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Police Number / invoice Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Police Number / invoice Number</label>
+                        <div class="input-group">@(Model.IdentityPoliceNumber)</div>
+                    </div>
+                </div>
+
+                <!-- Engine Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Engine Number</label>
+                        <div class="input-group">@(Model.EngineNumber)</div>
+                    </div>
+                </div>
+
+                <!-- Mintenance Type -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Maintenance Type</label>
+                        @Html.TextBoxFor(o => o.MaintenanceType, null, new { @type = "hidden" })
+                        <div class="input-group">@(Model.MaintenanceTypeName)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service History Detail -->
+    <section class="panel">
+        <header class="panel-heading">Service History Details</header>
+        <div class="panel-body">
+
+            <div class="row">
+                <!-- Periodic Maintenance -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Periodic Maintenance</label>
+                        <div class="input-group">@Html.CheckBoxFor(m => m.IsPerodicMaintenance)</div>
+                    </div>
+                </div>
+
+                <!-- Customer Service Desk (CSD) -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Customer Service Desk (CSD)</label>
+                        <div class="input-group">@Html.CheckBoxFor(m => m.IsCServiceDesk)</div>
+                    </div>
+                </div>
+
+                <!-- Irregular Maintenance -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Irregular Maintenance</label>
+                        <div class="input-group">@Html.CheckBoxFor(m => m.IsIregularMaintenance)</div>
+                    </div>
+                </div>
+                <!-- Workshop -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Workshop</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.SuplierCode, null, new { @type = "hidden" })
+                            @Html.TextBox("SupplierName", null, new { @class = "form-control", @readonly = "readonly", @data_maxlength = "50", @data_required = "true", @placeholder = "Workshop", @parsley_error_container = "input-group", @tabindex = "1" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#supplierModal" type="button" onclick="LoadSupplier()">...</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Service Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Service Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ServiceDate, "{0:mm/dd/yyyy}", new { @class = "form-control datepicker-input", @placeholder = "Service Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @data_required = "true" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ServiceDate)
+                    </div>
+                </div>
+
+                <!-- Customer Service Desk (CSD) -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Actual Milleage (KM)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.MonthlyMileage, null, new { @class = "form-control numbersOnly", @placeholder = "Actual Milleage (KM)", @data_required = "true", @data_maxlength = "32" })
+                            <span class="input-group-addon">Km</span>
+                        </div>  
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="line line-dashed"></div>
+            <div id="alert_placeholder"></div>
+
+
+        </div>
+        <footer class="panel-footer bg-light lter">
+            @StateButton.OPLServiceHistoryStateButton("add", Model.IsDraft, Model.IsValid, false)
+        </footer>
+    </section>
+
+
+}
+@{
+    Html.RenderPartial("SupplierModalPopUp");
+    Html.RenderPartial("ItemModalPopUp");
+    Html.RenderPartial("PartModalPopUp");
+    Html.RenderPartial("DeleteItemConfirmation");
+    Html.RenderPartial("DeletePartConfirmation");
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+    var OPLServiceHistoryHub = $.connection.OPLServiceHistory;
+    var OPLSHistoryItemHub = $.connection.OPLSHistoryItem;
+    var OPLSHistoryPartHub = $.connection.OPLSHistoryPart;
+
+    //OPLServiceHistoryHub.client.OnSaveLock = function (id) {
+    //    location.reload();
+    //    alert("aduh...");
+    //};
+
+    //OPLServiceHistoryHub.client.OnStatusLock = function (id) {
+    //    location.reload();
+    //    alert("piye...");
+    //};
+
+    OPLServiceHistoryHub.client.OnStatusLock = function (id) {
+        if (id == '@Model.IdOPLServiceHistory') {
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    location.reload();
+                });
+            }
+        };
+
+        OPLSHistoryItemHub.client.OnStatusLock = function (id) {
+            var t = $('#item-list').dataTable();
+            t.fnDraw();
+        };
+
+        OPLSHistoryPartHub.client.OnStatusLock = function (id) {
+            var t = $('#part-list').dataTable();
+            t.fnDraw();
+        };
+
+        $("#IsPerodicMaintenance").on("click", function (e) {
+            var checkbox = $(this);
+            if (!checkbox.is(":checked")) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#IsCServiceDesk").on("click", function (e) {
+            var checkbox = $(this);
+            if (!checkbox.is(":checked")) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        $("#IsIregularMaintenance").on("click", function (e) {
+            var checkbox = $(this);
+            if (!checkbox.is(":checked")) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        $('#IsPerodicMaintenance').change(function () {
+            if (this.checked) {
+                $('#IsCServiceDesk').removeAttr('checked');
+                $('#IsIregularMaintenance').removeAttr('checked');
+            }
+        });
+        $('#IsCServiceDesk').change(function () {
+            if (this.checked) {
+                $('#IsPerodicMaintenance').removeAttr('checked');
+                $('#IsIregularMaintenance').removeAttr('checked');
+            }
+        });
+        $('#IsIregularMaintenance').change(function () {
+            if (this.checked) {
+                $('#IsPerodicMaintenance').removeAttr('checked');
+                $('#IsCServiceDesk').removeAttr('checked');
+            }
+        });
+
+        $(document).ready(function () {
+            $('#IsPerodicMaintenance').attr('checked','checked');
+            $(".currenciesOnly").on('keydown', currenciesOnly)
+                                      .on('blur', function () { $(this).formatCurrency(); });
+            $(".numbersOnly").on('keydown', numbersOnly);
+
+            $('#ServiceDate').val('');
+
+            $('#itemForm').parsley();
+            var counter = 1;
+
+            $('#itemForm').submit(function (e) {
+                e.preventDefault();
+                if ($('#itemForm').parsley('isValid')) {
+
+                    var implementationItems = $('#ImplementationItems').val();
+
+                    var laborCostAmount = $('#LaborCostAmount').val();
+
+                    var itemRemarks = $('#ItemRemarks').val();
+
+                    var idOPLSHistoryItems = $('#IdOPLSHistoryItems').val();
+
+                    var t = $('#item-list').dataTable();
+
+
+                    if ($('#itemSubmitId').text() == "Add") {
+                        var getUrlAddItem = '@Url.Action("AddItem", "OPLServiceHistory")';
+                    $.ajax({
+                        type: "POST",
+                        url: getUrlAddItem,
+                        cache: false,
+                        data: {
+                            idOPLSHistoryItems: idOPLSHistoryItems,
+                            implementationItems: implementationItems,
+                            laborCostAmount: laborCostAmount,
+                            itemRemarks: itemRemarks,
+                            idOPLServiceHistory: $('#IdOPLServiceHistory').val()
+                        },
+                        success: function (data) {
+                            $('#itemModal').modal('hide');
+                            t.fnDraw();
+                            $('#SubTotal').val(data.SubTotal);
+                            $('#PPNTax').val(data.PPNTax);
+                            $('#PPHTax').val(data.PPHTax);
+                            $('#TotalIncludeTax').val(data.TotalIncludeTax);
+                            bootstrap_alert.success("The data has been successfully added");
+                        }
+                    });
+                } else {
+
+
+
+                    var getUrlEditItem = '@Url.Action("EditItem", "OPLServiceHistory")';
+                    var idUObjLease = $('#IdUObjLease').val();
+                    $.ajax({
+                        type: "POST",
+                        url: getUrlEditItem,
+                        cache: false,
+                        data: {
+                            idOPLSHistoryItems: idOPLSHistoryItems,
+                            implementationItems: implementationItems,
+                            laborCostAmount: laborCostAmount,
+                            itemRemarks: itemRemarks,
+                            idOPLServiceHistory: $('#IdOPLServiceHistory').val()
+                        },
+                        success: function (data) {
+                            $('#itemModal').modal('hide');
+                            t.fnDraw();
+                            $('#SubTotal').val(data.SubTotal);
+                            $('#PPNTax').val(data.PPNTax);
+                            $('#PPHTax').val(data.PPHTax);
+                            $('#TotalIncludeTax').val(data.TotalIncludeTax);
+                            bootstrap_alert.success("The data has been successfully saved");
+                        }
+                    });
+                }
+
+
+            }
+        });
+
+        $('#partForm').parsley();
+
+        $('#partForm').submit(function (e) {
+            e.preventDefault();
+            if ($('#partForm').parsley('isValid')) {
+
+                var partCode = $('#PartCode').val();
+
+                var partName = $('#PartName').val();
+
+                var typeOfAction = $('#TypeOfAction').val();
+
+                var quantity = $('#Quantity').val();
+                var amount = $('#Amount').val();
+                var partRemarks = $('#PartRemarks').val();
+
+                var idOPLSHistoryParts = $('#IdOPLSHistoryParts').val();
+                var t = $('#part-list').dataTable();
+                if ($('#partSubmitId').text() == "Add") {
+                    var getUrlAddPart = '@Url.Action("AddPart", "OPLServiceHistory")';
+                    $.ajax({
+                        type: "POST",
+                        url: getUrlAddPart,
+                        cache: false,
+                        data: {
+                            partCode: partCode,
+                            partName: partName,
+                            typeOfAction: typeOfAction,
+                            quantity: quantity,
+                            amount: amount,
+                            partRemarks: partRemarks,
+                            idOPLServiceHistory: $('#IdOPLServiceHistory').val()
+                        },
+                        success: function (data) {
+                            $('#partModal').modal('hide');
+                            t.fnDraw();
+                            $('#SubTotal').val(data.SubTotal);
+                            $('#PPNTax').val(data.PPNTax);
+                            $('#PPHTax').val(data.PPHTax);
+                            $('#TotalIncludeTax').val(data.TotalIncludeTax);
+                            bootstrap_alert.success("The data has been successfully added");
+                        }
+                    });
+                } else {
+
+                    var getUrlEditPart = '@Url.Action("EditPart", "OPLServiceHistory")';
+                    var idUObjLease = $('#IdUObjLease').val();
+                    $.ajax({
+                        type: "POST",
+                        url: getUrlEditPart,
+                        cache: false,
+                        data: {
+                            idOPLSHistoryParts: idOPLSHistoryParts,
+                            partCode: partCode,
+                            partName: partName,
+                            typeOfAction: typeOfAction,
+                            quantity: quantity,
+                            amount: amount,
+                            partRemarks: partRemarks,
+                            idOPLServiceHistory: $('#IdOPLServiceHistory').val()
+                        },
+                        success: function (data) {
+                            $('#partModal').modal('hide');
+                            t.fnDraw();
+                            $('#SubTotal').val(data.SubTotal);
+                            $('#PPNTax').val(data.PPNTax);
+                            $('#PPHTax').val(data.PPHTax);
+                            $('#TotalIncludeTax').val(data.TotalIncludeTax);
+                            bootstrap_alert.success("The data has been successfully saved");
+                        }
+                    });
+                }
+
+
+            }
+        });
+
+
+
+    });
+
+    $('#itemModal').on('hidden.bs.modal', function () {
+        $('#itemForm').parsley('reset');
+    });
+
+    $('#partModal').on('hidden.bs.modal', function () {
+        $('#partForm').parsley('reset');
+    });
+
+    function LoadSupplier() {
+        // datatable
+        var oTable = null;
+        $('#supplier-lookup').each(function () {
+            oTable = $(this).dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "sAjaxSource": "@Url.Action("SupplierListLookUp", "OPLServiceHistory")",
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    { "mData": "SupplierCode" },
+                    { "mData": "SupplierName" },
+                    { "mData": "Telephone" },
+                    { "mData": "BusinessEconomySector" },
+                    {
+                        "mData": "IsActive",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function (oObj) {
+                            var IsActive = oObj.aData["IsActive"];
+                            var IsDraft = oObj.aData["IsDraft"];
+                            var IsSubmit = oObj.aData["IsSubmit"];
+
+                            if (IsActive == true && IsDraft == false && IsSubmit == false) {
+                                return "<span class='label label-success'>active</span>"
+                            }
+                            else if (IsActive == false && IsDraft == false && IsSubmit == false) {
+                                return "<span class='label label-default'>inactive</span>"
+                            }
+                            else if ((IsActive == false && IsDraft == true && IsSubmit == false) || (IsActive == true && IsDraft == true && IsSubmit == false)) {
+                                return "<span class='label label-info'>draft</span>"
+                            }
+                            else if ((IsActive == false && IsDraft == false && IsSubmit == true) || (IsActive == true && IsDraft == false && IsSubmit == true)) {
+                                return "<span class='label label-info'>submitted</span>"
+                            }
+                            else {
+                                return "no status";
+                            }
+                        }
+                    }
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+            });
+
+        });
+
+
+        $("#supplier-lookup tbody").delegate("tr", "click", function () {
+            var data = oTable.fnGetData(this);
+            $("#SuplierCode").val(data.SupplierCode);
+            $("#SupplierName").val(data.SupplierName);
+
+            $('#supplierModal').modal('hide');
+        });
+    };
+
+    function OpenAddItemModal() {
+        $('#ImplementationItems').val('');
+        $('#LaborCostAmount').val('');
+        $('#ItemRemarks').val('');
+        $('#itemModalLabel').text('Add History Item');
+        $('#itemSubmitId').text('Add');
+    }
+
+    $('#itemModal').on('shown.bs.modal', function () {
+        $('#ImplementationItems').focus();
+    })
+
+    function OpenAddPartModal() {
+        $('#PartCode').val('');
+        $('#PartName').val('');
+        $('#TypeOfAction').val('');
+        $('#Amount').val('');
+        $('#Quantity').val('');
+        $('#PartRemarks').val('');
+
+        var getUrlTypeOfActionData = '@Url.Action("GetTypeOfAction", "OPLServiceHistory")';
+        $.ajax({
+            type: "GET",
+            url: getUrlTypeOfActionData,
+            cache: false,
+            success: function (data) {
+                $("#TypeOfAction option").remove();
+                $.each(data.TypeOfActionList, function (i) {
+                    var optionhtml = '<option value="' +
+                data.TypeOfActionList[i].Value + '">' + data.TypeOfActionList[i].Text + '</option>';
+                    $("#TypeOfAction").append(optionhtml);
+                });
+            }
+        });
+
+        $('#itemModalLabel').text('Add Part Item');
+        $('#partSubmitId').text('Add');
+        $('#PartCode').focus();
+    }
+
+    $('#partModal').on('shown.bs.modal', function () {
+        $('#PartCode').focus();
+    })
+
+    function DetailItem(a) {
+        var str = a.id;
+        var id = str.slice(6);
+        var t = $('#item-list').dataTable();
+        var getUrlDetailItem = '@Url.Action("DetailHistoryItem", "OPLServiceHistory")';
+        $.ajax({
+            type: "GET",
+            url: getUrlDetailItem,
+            cache: false,
+            data: {
+                id: id,
+            },
+            success: function (data) {
+                $('#IdOPLSHistoryItems').val(data.IdOPLSHistoryItems);
+                $('#IdOPLServiceHistory').val(data.IdOPLServiceHistory);
+                $('#ImplementationItems').val(data.ImplementationItems);
+                $('#LaborCostAmount').val(data.LaborCostAmount);
+                $('#ItemRemarks').val(data.Remarks);
+                $('#itemModalLabel').text('History Item Detail');
+                $('#itemSubmitId').text('Save Changes');
+
+                $('#itemModal').modal('show');
+
+            }
+        });
+    }
+
+    function DetailPart(a) {
+        var str = a.id;
+        var id = str.slice(6);
+        var t = $('#part-list').dataTable();
+        var getUrlDetailPart = '@Url.Action("DetailHistoryPart", "OPLServiceHistory")';
+        $.ajax({
+            type: "GET",
+            url: getUrlDetailPart,
+            cache: false,
+            data: {
+                id: id,
+            },
+            success: function (data) {
+                $('#IdOPLSHistoryParts').val(data.IdOPLSHistoryParts);
+                $('#IdOPLServiceHistory').val(data.IdOPLServiceHistory);
+                $('#PartCode').val(data.PartCode);
+                $('#PartName').val(data.PartName);
+                $('#Quantity').val(data.Quantity);
+
+                $('#Amount').val(data.Amount);
+                $('#PartRemarks').val(data.Remarks);
+                $("#TypeOfAction option").remove();
+                $.each(data.TypeOfActionList, function (i) {
+                    var optionhtml = '<option value="' +
+                data.TypeOfActionList[i].Value + '">' + data.TypeOfActionList[i].Text + '</option>';
+                    $("#TypeOfAction").append(optionhtml);
+                });
+                $('#TypeOfAction').val(data.TypeOfAction);
+                $('#partModalLabel').text('History Part Detail');
+                $('#partSubmitId').text('Save Changes');
+
+                $('#partModal').modal('show');
+
+
+
+
+
+
+            }
+        });
+    }
+
+    $('#item-list').each(function () {
+        var itemTable = $(this).dataTable({
+            "bProcessing": true,
+            "bServerSide": true,
+            "aaSorting": [[0, "asc"]],
+            "sAjaxSource": "@Url.Action("HistoryItemAjaxHandler", "OPLServiceHistory")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "idOPLServiceHistory", "value": $("#IdOPLServiceHistory").val() }
+                );
+            },
+            "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            "sPaginationType": "full_numbers",
+            "aoColumns": [
+            { "mData": "ImplementationItems" },
+            { "mData": "LaborCostAmount" },
+            { "mData": "Remarks" },
+            {
+                "mData": "IdOPLSHistoryItems",
+                "bSearchable": false,
+                "bSortable": false,
+                "fnRender": function (oObj) {
+                    var ImplementationItems = oObj.aData["ImplementationItems"];
+                    var Id = oObj.aData["IdOPLSHistoryItems"];
+                    return "<a title='Details' data-toggle='modal' id='detail" + Id + "' onclick='DetailItem(this)' href='#' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp; <a title='Delete' href='#' id='" + Id + "' class='btn btn-danger btn-xs' onclick='ShowDeleteItemConfirmation(this)'><i class='fa fa-times'></i> </a> &nbsp;"
+                }
+            }
+            ]
+        });
+    });
+
+    $('#part-list').each(function () {
+        var partTable = $(this).dataTable({
+            "bProcessing": true,
+            "bServerSide": true,
+            "aaSorting": [[0, "asc"]],
+            "sAjaxSource": "@Url.Action("HistoryPartAjaxHandler", "OPLServiceHistory")",
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "idOPLServiceHistory", "value": $("#IdOPLServiceHistory").val() }
+                );
+            },
+            "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            "sPaginationType": "full_numbers",
+            "aoColumns": [
+            { "mData": "PartCode" },
+            { "mData": "PartName" },
+            { "mData": "Amount" },
+            { "mData": "Quantity" },
+            { "mData": "Remarks" },
+            {
+                "mData": "IdOPLSHistoryParts",
+                "bSearchable": false,
+                "bSortable": false,
+                "fnRender": function (oObj) {
+                    var ImplementationItems = oObj.aData["PartCode"];
+                    var Id = oObj.aData["IdOPLSHistoryParts"];
+                    return "<a title='Details' data-toggle='modal' id='detail" + Id + "' onclick='DetailPart(this)' href='#' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp; <a title='Delete' href='#' id='" + Id + "' class='btn btn-danger btn-xs' onclick='ShowDeletePartConfirmation(this)'><i class='fa fa-times'></i> </a> &nbsp;"
+                }
+            }
+            ]
+        });
+    });
+
+    function ShowDeleteItemConfirmation(a) {
+        var implementation_item_label = $(a).closest('tr').find('td:first').text();
+        var id = a.id;
+        $('#implementation_item_label').text(implementation_item_label);
+        $('#IdOPLSHistoryItemsToDelete').val(id);
+        $('#deleteItemConfirmation').modal('show');
+    }
+
+    function DeleteItem(id) {
+        var getUrlDeleteItem = '@Url.Action("DeleteItem", "OPLServiceHistory")';
+        var t = $('#item-list').dataTable();
+        $.ajax({
+            type: "POST",
+            url: getUrlDeleteItem,
+            cache: false,
+            data: {
+                id: id,
+                idOPLServiceHistory: $('#IdOPLServiceHistory').val()
+            },
+            success: function (data) {
+                $('#deleteItemConfirmation').modal('hide');
+                t.fnDraw();
+                $('#SubTotal').val(data.SubTotal);
+                $('#PPNTax').val(data.PPNTax);
+                $('#PPHTax').val(data.PPHTax);
+                $('#TotalIncludeTax').val(data.TotalIncludeTax);
+                bootstrap_alert.success("The data has been successfully deleted");
+            }
+        });
+    }
+
+    function ShowDeletePartConfirmation(a) {
+        var part_code_label = $(a).closest('tr').find('td:first').text();
+        var id = a.id;
+        $('#part_code_label').text(part_code_label);
+        $('#IdOPLSHistoryPartsToDelete').val(id);
+        $('#deletePartConfirmation').modal('show');
+    }
+
+    function DeletePart(id) {
+        var getUrlDeletePart = '@Url.Action("DeletePart", "OPLServiceHistory")';
+        var t = $('#part-list').dataTable();
+        $.ajax({
+            type: "POST",
+            url: getUrlDeletePart,
+            cache: false,
+            data: {
+                id: id,
+                idOPLServiceHistory: $('#IdOPLServiceHistory').val()
+            },
+            success: function (data) {
+                $('#deletePartConfirmation').modal('hide');
+                t.fnDraw();
+                $('#SubTotal').val(data.SubTotal);
+                $('#PPNTax').val(data.PPNTax);
+                $('#PPHTax').val(data.PPHTax);
+                $('#TotalIncludeTax').val(data.TotalIncludeTax);
+                bootstrap_alert.success("The data has been successfully deleted");
+            }
+        });
+    }
+
+    bootstrap_alert = function () { }
+    bootstrap_alert.success = function (message) {
+        $('#alert_placeholder').html('<div class="alert alert-success pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;" ><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Success!</b> ' + message + '</div>');
+    }
+
+    bootstrap_alert.error = function (message) {
+        $('#alert_placeholder').html('<div class="alert alert-danger pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Failed!</b> ' + message + '</div>');
+    }
+
+    $.connection.hub.start().done(function () {
+        var myClientId = $.connection.hub.id;
+        $('#ConnId').val(myClientId);
+    });
+
+    </script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+}

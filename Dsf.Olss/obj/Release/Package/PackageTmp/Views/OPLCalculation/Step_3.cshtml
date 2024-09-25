@@ -1,0 +1,714 @@
+﻿@model Dsf.Olss.Models.OPLCMaintenanceViewModel
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    var step = 3;
+    var isNoMaintenance = Model.MaintenanceTypeName.Equals("Non Maintenance");
+    ViewBag.Title = "Calculation of Operating Lease - Step 3";
+    var success = ViewBag.Success ?? TempData["Success"];
+    var error = ViewBag.Error ?? TempData["Error"];
+}
+@Message.Display(success, error)
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 3, remark, x => @Url.RouteUrl("OPLCalculation", new { Controller = "OPLCalculation", Action = "Edit", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@if (isNoMaintenance)
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Info</header>
+        <div class="panel-body">
+            <p class="h6 text-center">You choose no maintenance for this calculation. You can continue to next step or you can change the value of maintenance type on step 1</p>
+        </div>
+        <div class="panel-footer bg-light lter">
+            <a href="@Url.RouteUrl("OPLCalculation", new { Controller = "OPLCalculation", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+            <a href="@Url.RouteUrl("OPLCalculation", new { Controller = "OPLCalculation", Action = "Edit", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+        </div>
+    </section>
+}
+else
+{
+    using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Maintenance", @data_validate = "parsley" }))
+    {
+        @Html.HiddenFor(o => o.ConnId)
+        @Html.HiddenFor(o => o.IdOPLCalculation)
+        @Html.HiddenFor(o => o.OPLRemarks)
+          <!-- Input Basic Information -->
+        <section class="panel">
+            <header class="panel-heading font-bold">Maintenance Basic Information</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Brand Code</label>
+                            @Html.TextBoxFor(o => o.ProductBrandCode, null, new { @class = "form-control", @placeholder = "Brand Code", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            @Html.TextBoxFor(o => o.ProductType, null, new { @class = "form-control", @placeholder = "Product Type", @readonly = "readonly" })
+                        </div>
+
+                        <div class="form-group">
+                            <label>Monthly Mileage (Km)</label>
+                            @Html.TextBoxFor(o => o.MonthlyMileage, null, new { @class = "form-control numbersOnly", @placeholder = "Monthly Mileage", @readonly = "readonly" })
+
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Brand Name</label>
+                            @Html.TextBoxFor(o => o.BrandName, null, new { @class = "form-control", @placeholder = "Brand Name", @readonly = "readonly" })
+
+                        </div>
+                        <div class="form-group">
+                            <label>Product Category</label>
+                            @Html.TextBoxFor(o => o.ProductCategoryName, null, new { @class = "form-control", @placeholder = "Product Category", @readonly = "readonly" })
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Usage</label>
+                            @Html.TextBoxFor(o => o.UsageName, null, new { @class = "form-control", @placeholder = "usage", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="form-group">
+                            <label>Model Name</label>
+                            @Html.TextBoxFor(o => o.ModelName, null, new { @class = "form-control", @placeholder = "Model Name", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group">
+                            <label>Model Year (yyyy/mm) </label>
+                            @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new { @class = "form-control", @placeholder = "Model Year (yyyy/mm)", @readonly = "readonly" })
+                        </div>
+                        <div class="form-group">
+                            <label>Lease Period (Months)</label>
+                            @Html.TextBoxFor(o => o.LeasePeriod, null, new { @class = "form-control numbersOnly", @placeholder = "Lease Period (Months)", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+          <!-- Input Basic Information -->
+        <section class="panel">
+            <header class="panel-heading font-bold">Maintenance Condition & Cost</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label>Maintenance Type</label>
+                            @Html.TextBoxFor(o => o.MaintenanceTypeName, null, new { @class = "form-control", @placeholder = "Maintenance Type", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.periodic_maintenance)
+                            @Html.LabelFor(o => o.periodic_maintenance)
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.PeriodicMaintenanceKm, null, new { @class = "form-control numbersOnly", @placeholder = "Periodic Maintenance", @readonly = "true" })
+                                <span class="input-group-addon">Km</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.oil_exchange)
+                            @Html.LabelFor(o => o.oil_exchange)
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.PeriodicOilExchange, null, new { @class = "form-control numbersOnly", @placeholder = "Oil Exchange", @readonly = "true" })
+                                <span class="input-group-addon">Km</span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.oil_exchange)
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.oil_fat)
+                            @Html.LabelFor(o => o.oil_fat)
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.PeriodicOilFats, null, new { @class = "form-control numbersOnly", @placeholder = "Remarks", @readonly = "true" })
+                                <span class="input-group-addon">Km</span>
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.PeriodicMaintenanceAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.irregular_maintenance)
+                            @Html.LabelFor(o => o.irregular_maintenance)
+                            @Html.TextBoxFor(o => o.IrregularMaintenance, null, new { @class = "form-control", @placeholder = "Remarks", @readonly = "true", @data_maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                    </div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.IrregularMaintenanceAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.battery)
+                            @Html.LabelFor(o => o.battery)
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.BateryKm, null, new { @class = "form-control numbersOnly", @placeholder = "Exchange Cycle", @readonly = "true" })
+                                <span class="input-group-addon">Km</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.BateryAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.tire)
+                            @Html.LabelFor(o => o.tire)
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.TireKm, null, new { @class = "form-control numbersOnly", @placeholder = "Exchange Cycle", @readonly = "true" })
+                                <span class="input-group-addon">Km</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.TireAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.maintenance_op_parts)
+                            @Html.LabelFor(o => o.maintenance_op_parts)
+                            @Html.TextBoxFor(o => o.SpecialParts, null, new { @class = "form-control", @placeholder = "Remarks", @readonly = "true", @data_maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.SpecialPartsAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.cbcsd)
+                            @Html.LabelFor(o => o.cbcsd)
+                            @Html.TextBoxFor(o => o.CSD, null, new { @class = "form-control", @placeholder = "Remarks", @readonly = "true", @data_maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.CSDAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.others_1)
+                            @Html.LabelFor(o => o.others_1)
+                            @Html.TextBoxFor(o => o.MaintenanceOther1, null, new { @class = "form-control", @placeholder = "Remarks", @readonly = "true", @data_maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.MaintenanceOther1Amount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.others_2)
+                            @Html.LabelFor(o => o.others_2)
+                            @Html.TextBoxFor(o => o.MaintenanceOther2, null, new { @class = "form-control", @placeholder = "Remarks", @readonly = "true", @data_maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.MaintenanceOther2Amount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="form-group">
+                            @Html.CheckBoxFor(o => o.others_3)
+                            @Html.LabelFor(o => o.others_3)
+                            @Html.TextBoxFor(o => o.MaintenanceOther3, null, new { @class = "form-control", @placeholder = "Remarks", @readonly = "true", @data_maxlength = "100" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <div class="form-group">
+                            <label style="visibility:hidden">This label is hidden</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.MaintenanceOther3Amount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Amount", @readonly = "true", @data_maxlength = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-9 col-md-9"></div>
+                    <div class="col-lg-3 col-md-3">
+                        <label>Total Maintenance Cost</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalMaintenanceAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Total", @readonly = "true", @data_maxlength = "23" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="panel-footer bg-light lter">
+                @if (remark < step)
+                {
+                    <a href="@Url.RouteUrl("OPLCalculation", new { Controller = "OPLCalculation", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                    <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                }
+                else
+                {
+                    <a href="@Url.RouteUrl("OPLCalculation", new { Controller = "OPLCalculation", Action = "Edit", step = "2", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+                    {
+                        if (Model.IsDraft)
+                        {
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                        }
+                        else if (Model.IsSubmitted)
+                        {
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                        }
+                    }
+                    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+                    {
+                        if (Model.IsDraft)
+                        {
+
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_3" />
+                        }
+                    }
+                    @Html.HiddenFor(o => o.IsValid)
+                    @Html.HiddenFor(o => o.IsSubmitted)
+                    @Html.HiddenFor(o => o.IsDraft)
+                    <a href="@Url.RouteUrl("OPLCalculation", new { Controller = "OPLCalculation", Action = "Edit", step = "4", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+                }
+            </div>
+        </section>
+
+    }
+
+    @section Scripts{
+        <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+        <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+        <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+        <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+        <script src="~/signalr/hubs"></script>
+        <script>
+            var OPLCalculationHub = $.connection.OPLCalculation;
+            var confirm = false;
+            OPLCalculationHub.client.OnSaveLock = function (id, remarks) {
+                if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks' && !confirm) {
+                    confirm = true;
+                    bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                        if (result != false) {
+                            location.href = location.href;
+                        }
+                        confirm = false;
+                    });
+                }
+            };
+
+            OPLCalculationHub.client.OnStatusLock = function (id) {
+                if (id == '@Model.IdOPLCalculation' && !confirm) {
+                    confirm = true;
+                    bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                        window.location.href = '@Url.Action("Index", "OPLCalculation")';
+                    });
+                }
+            };
+
+            $.connection.hub.start().done(function () {
+                var myClientId = $.connection.hub.id;
+                $('#ConnId').val(myClientId);
+            });
+            var $form = $('#Maintenance'),
+            $summands = $form.find('.income_count'),
+            $sumDisplay = $('#TotalMaintenanceAmount');
+
+            $form.delegate('.income_count', 'blur', function () {
+
+                CalculateTotal();
+            });
+            function CalculateTotal() {
+                var sum = 0;
+                $summands.each(function () {
+                    var value = Number($(this).val().replace(/,/g, ''));
+                    if (!isNaN(value)) sum += value;
+                });
+
+                $sumDisplay.val(sum);
+                $sumDisplay.formatCurrency();
+            }
+            $(document).ready(function () {
+
+                $("input[type=text].income_count").on('keydown', currenciesOnly)
+                                          .on('blur', function () { $(this).formatCurrency(); });
+                $(".numbersOnly").on('keydown', numbersOnly);
+
+                if ($("[name='periodic_maintenance']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#PeriodicMaintenanceKm').attr("readOnly", false);
+                    $('#PeriodicMaintenanceAmount').attr("readOnly", false);
+                }
+                $("[name='periodic_maintenance']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#PeriodicMaintenanceKm').attr("readOnly", false);
+                        $('#PeriodicMaintenanceAmount').attr("readOnly", false);
+                    }
+                    else {
+                        if (!($("[name='oil_fat']").is(":checked")) && !($("[name='oil_exchange']").is(":checked"))) {
+                            $('#PeriodicMaintenanceAmount').attr("readOnly", true);
+                        }
+                        $('#PeriodicMaintenanceKm').attr("readOnly", true);
+                        $('#PeriodicMaintenanceAmount').val(null);
+                        $('#PeriodicMaintenanceKm').val(null);
+                        CalculateTotal();
+                    }
+                });
+
+                if ($("[name='oil_exchange']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#PeriodicOilExchange').attr("readOnly", false);
+                    $('#PeriodicMaintenanceAmount').attr("readOnly", false);
+                }
+
+                $("[name='oil_exchange']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#PeriodicOilExchange').attr("readOnly", false);
+                        $('#PeriodicMaintenanceAmount').attr("readOnly", false);
+                    }
+                    else {
+                        if (!($("[name='periodic_maintenance']").is(":checked")) && !($("[name='oil_fat']").is(":checked"))) {
+                            $('#PeriodicMaintenanceAmount').attr("readOnly", true);
+                        }
+                        $('#PeriodicOilExchange').attr("readOnly", true);
+                        $('#PeriodicMaintenanceAmount').val(null);
+                        $('#PeriodicOilExchange').val(null);
+                        CalculateTotal();
+                    }
+                });
+
+                if ($("[name='oil_fat']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#PeriodicOilFats').attr("readOnly", false);
+                    $('#PeriodicMaintenanceAmount').attr("readOnly", false);
+                }
+                $("[name='oil_fat']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#PeriodicOilFats').attr("readOnly", false);
+                        $('#PeriodicMaintenanceAmount').attr("readOnly", false);
+                    }
+                    else {
+                        if (!($("[name='periodic_maintenance']").is(":checked")) && !($("[name='oil_exchange']").is(":checked"))) {
+                            $('#PeriodicMaintenanceAmount').attr("readOnly", true);
+                            $('#PeriodicOilFats').attr("readOnly", true);
+                            $('#PeriodicMaintenanceAmount').val(null);
+                            $('#PeriodicOilFats').val(null);
+                            CalculateTotal();
+                        }
+                        $('#PeriodicOilFats').attr("readOnly", true);
+                    }
+                });
+
+                if ($("[name='irregular_maintenance']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#IrregularMaintenance').attr("readOnly", false);
+                    $('#IrregularMaintenanceAmount').attr("readOnly", false);
+                }
+                $("[name='irregular_maintenance']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#IrregularMaintenance').attr("readOnly", false);
+                        $('#IrregularMaintenanceAmount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#IrregularMaintenanceAmount').attr("readOnly", true);
+                        $('#IrregularMaintenanceAmount').val(null);
+                        $('#IrregularMaintenance').val(null);
+                        CalculateTotal();
+                        $('#IrregularMaintenance').attr("readOnly", true);
+                    }
+                });
+
+                if ($("[name='battery']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#BateryKm').attr("readOnly", false);
+                    $('#BateryAmount').attr("readOnly", false);
+                }
+                $("[name='battery']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#BateryKm').attr("readOnly", false);
+                        $('#BateryAmount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#BateryKm').attr("readOnly", true);
+                        $('#BateryAmount').attr("readOnly", true);
+                        $('#BateryAmount').val(null);
+                        $('#BateryKm').val(null);
+                        CalculateTotal();
+                    }
+                });
+                if ($("[name='tire']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#TireKm').attr("readOnly", false);
+                    $('#TireAmount').attr("readOnly", false);
+                }
+                $("[name='tire']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#TireKm').attr("readOnly", false);
+                        $('#TireAmount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#TireKm').attr("readOnly", true);
+                        $('#TireAmount').attr("readOnly", true);
+                        $('#TireAmount').val(null);
+                        $('#TireKm').val(null);
+                        CalculateTotal();
+                    }
+                });
+                if ($("[name='maintenance_op_parts']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#SpecialParts').attr("readOnly", false);
+                    $('#SpecialPartsAmount').attr("readOnly", false);
+                }
+                $("[name='maintenance_op_parts']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#SpecialParts').attr("readOnly", false);
+                        $('#SpecialPartsAmount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#SpecialParts').attr("readOnly", true);
+                        $('#SpecialPartsAmount').attr("readOnly", true);
+                        $('#SpecialPartsAmount').val(null);
+                        $('#SpecialParts').val(null);
+                        CalculateTotal();
+                    }
+                });
+                if ($("[name='cbcsd']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#CSD').attr("readOnly", false);
+                    $('#CSDAmount').attr("readOnly", false);
+                }
+                $("[name='cbcsd']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#CSD').attr("readOnly", false);
+                        $('#CSDAmount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#CSD').attr("readOnly", true);
+                        $('#CSDAmount').attr("readOnly", true);
+                        $('#CSDAmount').val(null);
+                        $('#CSD').val(null);
+                        CalculateTotal();
+                    }
+                });
+                if ($("[name='others_1']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#MaintenanceOther1').attr("readOnly", false);
+                    $('#MaintenanceOther1Amount').attr("readOnly", false);
+                }
+                $("[name='others_1']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#MaintenanceOther1').attr("readOnly", false);
+                        $('#MaintenanceOther1Amount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#MaintenanceOther1').attr("readOnly", true);
+                        $('#MaintenanceOther1Amount').attr("readOnly", true);
+                        $('#MaintenanceOther1Amount').val(null);
+                        $('#MaintenanceOther1').val(null);
+                        CalculateTotal();
+                    }
+                });
+                if ($("[name='others_2']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#MaintenanceOther2').attr("readOnly", false);
+                    $('#MaintenanceOther2Amount').attr("readOnly", false);
+                }
+                $("[name='others_2']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#MaintenanceOther2').attr("readOnly", false);
+                        $('#MaintenanceOther2Amount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#MaintenanceOther2').attr("readOnly", true);
+                        $('#MaintenanceOther2Amount').attr("readOnly", true);
+                        $('#MaintenanceOther2Amount').val(null);
+                        $('#MaintenanceOther2').val(null);
+                        CalculateTotal();
+                    }
+                });
+                if ($("[name='others_3']").is(":checked")) {
+                    var returnVal = true;
+                    $(this).attr("checked", returnVal);
+                    $('#MaintenanceOther3').attr("readOnly", false);
+                    $('#MaintenanceOther3Amount').attr("readOnly", false);
+                }
+                $("[name='others_3']").change(function () {
+                    if ($(this).is(":checked")) {
+                        var returnVal = true;
+                        $(this).attr("checked", returnVal);
+                        $('#MaintenanceOther3').attr("readOnly", false);
+                        $('#MaintenanceOther3Amount').attr("readOnly", false);
+                    }
+                    else {
+                        $('#MaintenanceOther3').attr("readOnly", true);
+                        $('#MaintenanceOther3Amount').attr("readOnly", true);
+                        $('#MaintenanceOther3Amount').val(null);
+                        $('#MaintenanceOther3').val(null);
+                        CalculateTotal();
+                    }
+                });
+            });
+
+
+
+        </script>
+
+        <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    }
+}

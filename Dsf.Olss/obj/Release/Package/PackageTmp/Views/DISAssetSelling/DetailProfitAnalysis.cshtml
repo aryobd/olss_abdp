@@ -1,0 +1,605 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "Detail Profit Analysis";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+<button onclick="window.history.back();" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</button><br /><br />
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<section class="panel">
+    <header class="panel-heading font-bold">Agreement Info</header>
+    <div class="panel-body">
+        <div class="container">
+            <h5>Edited : @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].IsEdited)</h5>
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <td>Agreement Number</td>
+                        <td>: @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].AgreementNumber)</td>
+                        <td>SKD Number</td>
+                        <td>: @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].SKDNumber)</td>
+                    </tr>
+                    <tr>
+                        <td>Due Date</td>
+                        <td>: @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].sDueDate)</td>
+                        <td>Total Unit</td>
+                        <td>: @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].Quantity)</td>
+                    </tr>
+                    <tr>
+                        <td>Customer Name</td>
+                        <td>: @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].CustomerName)</td>
+                        <td>Object Lease</td>
+                        <td>: @Html.DisplayTextFor(o => Model.ProfitAnalysisInfos[0].ModelName)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<div class="readonly">
+    <section class="panel">
+        <header class="panel-heading font-bold">Profit Analysis</header>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table id="table-list" class="table table-striped">
+                    <thead>
+                        <tr>
+																									  
+																									  
+                            <th width="25%"></th>
+                            <th width="25%" style="text-align:center" colspan="2">SKD Budget For All Total Unit</th>
+                            <th width="20%" style="text-align:left"><label>SKD Budget For</label>&nbsp; @Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Perunit, new { @class = "numeric", @Style = "width: 20%; disabled;" }) <label> Unit</label> </th>
+                            <th width="30%" style="text-align:center" colspan="2">Actual</th>
+                            <th width="15%" style="text-align:left">Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>A. PERIOD</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Period, "{0:N0}", new { @class = "form-control text-center numeric" })</td>
+                            <td colspan="1">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].PeriodUnit, "{0:N0}", new { @class = "form-control text-center numeric", @Id = "AnalysisInfosPeriod" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].Period, "{0:N0}", new { @class = "form-control text-center numeric" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Period, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td>B. NET INVESTMENT</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].NetInvestment, "{0:N0}", new { @class = "form-control text-center numeric currency calculation" })</td>
+                            <td colspan="1">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].NetInvestmentPerUnit, "{0:N0}", new { @class = "form-control text-center numeric currency calculation", @Id = "perunit_NetInvestment" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].NetInvestment, "{0:N0}", new { @class = "form-control text-center numeric currency calculation" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_NetInvestment, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td>C. RESIDUAL VALUE</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].ResidualValue, "{0:N0}", new { @class = "form-control text-center numeric currency calculation", @Id = "ResidualValueBudget" })</td>
+                            <td colspan="1">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].ResidualValuePerUnit, "{0:N0}", new { @class = "form-control text-center numeric currency calculation", @Id = "perunit_ResidualValue" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].ResidualValue, "{0:N0}", new { @class = "form-control text-center numeric currency calculation residualvalue", @Id = "ResidualValueActual" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_ResidualValue, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td>D. USL/MONTH</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].UslMonth, "{0:N0}", new { @class = "form-control text-center numeric currency calculation", @Id = "USLMonth" })</td>
+                            <td colspan="1">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].UslMonthPerUnit, "{0:N0}", new { @class = "form-control text-center numeric currency calculation", @Id = "perunit_UslMonth" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].UslMonth, "{0:N0}", new { @class = "form-control text-center numeric currency calculation installment", @Id = "USLMonth1" })</td>
+                            <td colspan="2">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_UslMonth, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="text-align:center; color:red;">Expense</td>
+                            <td style="text-align:center;">Income</td>
+                            <td style="text-align:center; color:red;">Expense</td>
+                            <td style="text-align:center;">Income</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">1. INCOME</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> a. Installment Income</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].InstallmentIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].InstallmentIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeActual", @Id = "InstallmentIncome" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_InstallmentIncome, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> b. Insurance Income</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].InsuranceIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].InsuranceIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_InsuranceIncome, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> c. KTB Discount Direct to DSF</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].KTBDiscountToDSF, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].KTBDiscountToDSF, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_KTBDiscount, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> d. Residual Value</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].ResidualValueIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].ResidualValueIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeActual residualvalue" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_ResidualValue, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr hidden>
+                            <td style="text-indent:10px"> e. Total Lease Income</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            @*<td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].TotalLeaseIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeBudget" })</td>*@
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            @*<td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].TotalLeaseIncome, "{0:N0}", new { @class = "form-control text-right numeric currency calculation incomeActual" })</td>*@
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_TotalLeaseIncome, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> e. Total Income</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control currency" style="text-align:right" placeholder="0" id="TotalIncomeBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalIncomeActual" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_TotalIncome, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">2. EXPENSE</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> a. Product Price</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].ProductPrice, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].ProductPrice, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_ProductPrice, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> b. Registration</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Registration, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].Registration, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Registration, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> c. Maintenance</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Maintenance, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].Maintenance, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Maintenance, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> d. Replacement</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Replacement, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].Replacement, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Replacement, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> e. Insurance Cost</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].InsuranceCost, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].InsuranceCost, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_InsuranceCost, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> f. Mediator Fee</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].MediatorFee, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].MediatorFee, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_MediatorFee, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> g. Mobilization</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Mobilization, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].Mobilization, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Mobilization, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> h. Demobilization</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Demobilization, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].Demobilization, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Demobilization, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> i. Interest Cost</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].InterestCost, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].InterestCost, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_InterestCost, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> j. Term of Payment Cost</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].TermOfPaymentCost, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].TermOfPaymentCost, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_TermOfPaymentCost, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px;"> k. Interest Cost Before BAST</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].InterestCostBeforeBast, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].InterestCostBeforeBast, "{0:N0}", new { @class = "form-control text-right numeric currency calculation expenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_InterestCostBeforeBast, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px;"> l. Total Expense</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalExpenseBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalExpenseActual" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_TotalExpense, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">3. PROFIT</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalProfitBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalProfitActual" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_Profit, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">4. ADDITIONAL EXPENSE</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px">a. <div class="col-lg-11 pull-right">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalExpenseLabel01, new { @class = "form-control text-left" })</div></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalExpenseAmount01, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addExpenseBudget", @readonly = "readonly" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].AdditionalExpenseAmount01, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addExpenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalExpenseAmount01, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px">b. <div class="col-lg-11 pull-right">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalExpenseLabel02, new { @class = "form-control text-left" })</div></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalExpenseAmount02, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addExpenseBudget", @readonly = "readonly" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].AdditionalExpenseAmount02, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addExpenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalExpenseAmount02, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px">c. <div class="col-lg-11 pull-right">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalExpenseLabel03, new { @class = "form-control text-left" })</div></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalExpenseAmount03, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addExpenseBudget", @readonly = "readonly" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].AdditionalExpenseAmount03, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addExpenseActual" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalExpenseAmount03, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> d. Additional Expense</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalAdditionalExpenseBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalAdditionalExpenseActual" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalExpenseTotal, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">5. ADDITIONAL INCOME</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> a. VAT In Unit</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].VATInUnit, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].VATInUnit, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_VATInUnit, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> b. VAT In Carroseries</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].VATInCaroseries, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].VATInCaroseries, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_VATInCaroseries, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> c. VAT In Accesories</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].VATInAccesories, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].VATInAccesories, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_VATInAccesories, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> d. VAT In Maintenance</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].VATInMaintenance, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].VATInMaintenance, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_VATInMaintenance, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px">e. <div class="col-lg-11 pull-right">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalIncomeLabel01, new { @class = "form-control text-left" })</div></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalIncomeAmount01, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget", @readonly = "readonly" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].AdditionalIncomeAmount01, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalIncomeAmount01, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> f. <div class="col-lg-11 pull-right">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalIncomeLabel02, new { @class = "form-control text-left" })</div></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalIncomeAmount02, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget", @readonly = "readonly" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].AdditionalIncomeAmount02, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalIncomeAmount02, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> g. <div class="col-lg-11 pull-right">@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalIncomeLabel03, new { @class = "form-control text-left" })</div></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].AdditionalIncomeAmount03, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeBudget", @readonly = "readonly" })</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[1].AdditionalIncomeAmount03, "{0:N0}", new { @class = "form-control text-right numeric currency calculation addIncomeActual" })</td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalIncomeAmount03, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td style="text-indent:10px"> h. Additional Income</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalAdditionalIncomeBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalAdditionalIncomeActual" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_AdditionalIncomeTotal, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">6. LOSS / PROFIT ACTUAL</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalLossProfitBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalLossProfitActual" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_LossProfit, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">7. GAIN / LOSS AFTER SALES</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalGainLossAfterSalesBudgetExpense" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalGainLossAfterSalesBudgetIncome" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalGainLossAfterSalesActualExpense" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalGainLossAfterSalesActualIncome" disabled /></td>
+                            <td>@Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].Remark_GainLossAfterSales, new { @class = "form-control text-left" })</td>
+                        </tr>
+                        <tr>
+                            <td class="font-bold">8. NET POTENTIAL (LOSS) / PROFIT</td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalNetPotentialLossProfitBudget" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" disabled /></td>
+                            <td><input class="form-control" style="text-align:right" placeholder="0" id="TotalNetPotentialLossProfitActual" disabled /></td>
+                            <td><input class="form-control font-bold" style="text-align:center; color:white;" id="ProfitOrLoss" disabled /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel-footer bg-light lter col-lg-12">
+            <div class="panel-footer bg-light lter col-lg-8">
+
+            </div>
+            <div class="panel-footer bg-light lter col-lg-2">
+                <input class="pull-right type=" text" value="Selling Price: " style="background-color:transparent; border-color:transparent; text-align:right;" disabled />
+            </div>
+            <div class="panel-footer bg-light lter col-lg-2" style="background-color:transparent">
+                @Html.TextBoxFor(o => Model.ProfitAnalysisInfos[0].SellingPriceAmount, "{0:N0}", new { @class = "form-control detail-white text-right numeric pull-right", @readonly = "readonly", @Id = "SellingPrice" })
+            </div>
+        </div>
+    </section>
+</div>
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $(document).ready(function () {
+            calculateincome();
+
+        });
+
+        $('.readonly').find('input', 'checkbox').attr('disabled', true);
+
+        $(".currency").keyup(formatCurrency);
+
+        function formatCurrency(counterRow) {
+            thousandSeparator2($(".currency"));
+        }
+
+
+        function calculateincome() {
+            var perunit = $('#ProfitAnalysisInfos_0__Perunit').val();
+            var totalunit = $('#ProfitAnalysisInfos_0__Quantity').val();
+
+            var Residual1 = parseFloat(document.getElementById('perunit_ResidualValue').value.replace(/,/g, ''));
+
+            var Period = document.getElementById('AnalysisInfosPeriod').value;
+
+            var UslMonth1 = parseFloat(document.getElementById('perunit_UslMonth').value.replace(/,/g, ''));
+
+            UslMonth1 = Math.round(UslMonth1);
+
+            Residual1 = Math.round(Residual1);
+
+            var Insinc = UslMonth1 * Period;
+
+            document.getElementById('ProfitAnalysisInfos_0__ResidualValueIncome').value = thousandSeparator1(Residual1.toString());
+
+
+            calculate();
+
+        }
+
+        function calculate() {
+            if ($('#ProfitAnalysisInfos_0__NetInvestment').val() == '') {
+
+                var NetBudget = $('#ProfitAnalysisInfos_0__NetInvestment').val();
+
+                document.getElementById('ProfitAnalysisInfos_1__NetInvestment').value = NetBudget;
+
+            }
+
+            if ($('#ResidualValueActual').val() == '') {
+
+                var NetBudget = $('#ResidualValueBudget').val();
+
+                document.getElementById('ResidualValueActual').value = NetBudget;
+
+            }
+
+            if ($('#USLMonth1').val() == '') {
+
+                var NetBudget = $('#USLMonth').val();
+
+                document.getElementById('USLMonth1').value = NetBudget;
+
+            }
+
+            if ($('#ProfitAnalysisInfos_1__Period').val() == '') {
+
+                var Period1 = $('#ProfitAnalysisInfos_0__Period').val();
+
+                document.getElementById('ProfitAnalysisInfos_1__Period').value = Period1;
+
+            }
+            //1. Income
+            var TotalIncomeBudget = 0;
+            var TotalIncomeActual = 0;
+            $('.incomeBudget').each(function () {
+                TotalIncomeBudget = parseFloat($(this).val().replace(/\,/g, '')) + TotalIncomeBudget;
+            });
+            $('.incomeActual').each(function () {
+                TotalIncomeActual = parseFloat($(this).val().replace(/\,/g, '')) + TotalIncomeActual;
+            });
+
+            //2. Expense
+            var TotalExpenseBudget = 0;
+            var TotalExpenseActual = 0;
+            $('.expenseBudget').each(function () {
+                TotalExpenseBudget = parseFloat($(this).val().replace(/\,/g, '')) + TotalExpenseBudget;
+            });
+            $('.expenseActual').each(function () {
+                TotalExpenseActual = parseFloat($(this).val().replace(/\,/g, '')) + TotalExpenseActual;
+            });
+
+            //3. Profit
+            var TotalProfitBudget = TotalIncomeBudget - TotalExpenseBudget;
+            var TotalProfitActual = TotalIncomeActual - TotalExpenseActual;
+
+            //4. Additional Expense
+            var TotalAdditionalExpenseBudget = 0;
+            var TotalAdditionalExpenseActual = 0;
+            $('.addExpenseBudget').each(function () {
+                TotalAdditionalExpenseBudget = parseFloat($(this).val().replace(/\,/g, '')) + TotalAdditionalExpenseBudget;
+            });
+            $('.addExpenseActual').each(function () {
+                TotalAdditionalExpenseActual = parseFloat($(this).val().replace(/\,/g, '')) + TotalAdditionalExpenseActual;
+            });
+
+            //5. Additional Income
+            var TotalAdditionalIncomeBudget = 0;
+            var TotalAdditionalIncomeActual = 0;
+            $('.addIncomeBudget').each(function () {
+                TotalAdditionalIncomeBudget = parseFloat($(this).val().replace(/\,/g, '')) + TotalAdditionalIncomeBudget;
+            });
+            $('.addIncomeActual').each(function () {
+                TotalAdditionalIncomeActual = parseFloat($(this).val().replace(/\,/g, '')) + TotalAdditionalIncomeActual;
+            });
+
+            //6. Loss / Profit Actual
+            var TotalLossProfitBudget = TotalProfitBudget + TotalAdditionalIncomeBudget;
+            var TotalLossProfitActual = TotalProfitActual + TotalAdditionalIncomeActual - TotalAdditionalExpenseActual;
+
+            //7. Gain / Loss After Sales
+            var TotalGainLossAfterSalesActualIncome = parseFloat($("#SellingPrice").val().replace(/\,/g, '')) - parseFloat(($("#ResidualValueActual").val().replace(/\,/g, '')));
+
+            //8. Net Potential (LOSS) / Profit
+            var TotalNetPotentialLossProfitBudget = TotalProfitBudget + TotalAdditionalIncomeBudget;
+            var TotalNetPotentialLossProfitActual = TotalLossProfitActual + TotalGainLossAfterSalesActualIncome;
+            var ProfitOrLoss = (TotalNetPotentialLossProfitActual > 0) ? "PROFIT" : "LOSS";
+
+            thousandSeparator2($('#TotalIncomeBudget').val(TotalIncomeBudget));
+            thousandSeparator2($('#TotalIncomeActual').val(TotalIncomeActual));
+            thousandSeparator2($('#TotalExpenseBudget').val(TotalExpenseBudget));
+            thousandSeparator2($('#TotalExpenseActual').val(TotalExpenseActual));
+            thousandSeparator2($('#TotalProfitBudget').val(TotalProfitBudget));
+            thousandSeparator2($('#TotalProfitActual').val(TotalProfitActual));
+            thousandSeparator2($('#TotalAdditionalExpenseBudget').val(TotalAdditionalExpenseBudget));
+            thousandSeparator2($('#TotalAdditionalExpenseActual').val(TotalAdditionalExpenseActual));
+            thousandSeparator2($('#TotalAdditionalIncomeBudget').val(TotalAdditionalIncomeBudget));
+            thousandSeparator2($('#TotalAdditionalIncomeActual').val(TotalAdditionalIncomeActual));
+            thousandSeparator2($('#TotalLossProfitBudget').val(TotalLossProfitBudget));
+            thousandSeparator2($('#TotalLossProfitActual').val(TotalLossProfitActual));
+            thousandSeparator2($('#TotalGainLossAfterSalesActualIncome').val(TotalGainLossAfterSalesActualIncome));
+            thousandSeparator2($('#TotalNetPotentialLossProfitBudget').val(TotalNetPotentialLossProfitBudget));
+            thousandSeparator2($('#TotalNetPotentialLossProfitActual').val(TotalNetPotentialLossProfitActual));
+            $('#ProfitOrLoss').val(ProfitOrLoss);
+            if (TotalNetPotentialLossProfitActual < 0) {
+                $('#ProfitOrLoss').css('background-color', '#FF0040');
+            } else {
+                $('#ProfitOrLoss').css('background-color', '#00BFFF');
+            }
+
+            $('.detail-white').css('background-color', '#FFFFFF');
+        }
+
+        function thousandSeparator2(param) {
+            param.each(function () {
+                let v = $(this).val();
+
+                v = v.replace(/[^-\d]/g, '');
+                v = v.replace(/(\d{3,3})$/g, ',$1');
+                v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+
+                v = v ? v : '';
+                //if (v = ',0') { v = 0 }
+                $(this).val(v);
+
+            });
+        }
+
+        function thousandSeparator1(dataval) {
+            return dataval.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        }
+
+        $('.calculation').keyup(function () {
+            calculate();
+        });
+
+        $('.calculation').focusout(function () {
+            if ($(this).val() == "") { $(this).val(0); }
+        });
+    </script>
+}

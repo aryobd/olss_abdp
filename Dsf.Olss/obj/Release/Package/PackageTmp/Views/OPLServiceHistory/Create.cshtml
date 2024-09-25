@@ -1,0 +1,525 @@
+﻿@model Dsf.Olss.Models.OPLServiceHistoryViewModel
+@using System.Web.UI.WebControls
+
+@{
+    ViewBag.Title = "Create Service History";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<label class="label label-info label-lg pull-right">submitted</label>
+<a href="@Url.Action("Index", "Agreement")" class="btn btn-default btn-sm">Open Agreement Information Inquiry</a>
+<hr>
+
+<div class="panel label-panel">
+    <table class="table">
+        <td class="font-bold"><i class="fa fa-user text-danger"></i> Created by</td>
+        <td>@Html.DisplayFor(o => o.CreateBy)</td>
+        <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Created Date</td>
+        <td>@Html.DisplayFor(o => o.CreateDate)</td>
+        <td class="font-bold"><i class="fa fa-user text-danger"></i> Last Modified By</td>
+        <td>@Html.DisplayFor(o => o.LastModifiedBy)</td>
+        <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</td>
+        <td>@Html.DisplayFor(o => o.LastModified)</td>
+    </table>
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    
+<!-- Basic Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Agreement Information</header>
+    <div class="panel-body">
+
+        @Html.Hidden("IdOPLAgreement")
+        @Html.Hidden("IdUObjLease")
+            <div class="row">
+
+                <!-- Quotation Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+
+                        <label>Agreement Number</label>
+                        <div class="input-group">
+                            @Html.TextBox("AgreementNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Agreement Number" })
+                            @Html.ValidationMessageFor(o => o.AgreementNumber)
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#agrData" onclick="LoadAgreement()" type="button">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div>
+                </div>
+
+                <!-- Quotation Number -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Previous Agreement Number</label>
+                        @Html.TextBox("PreviousAgreementNumber", null, new { @class = "form-control", @readonly = "readonly",    @placeholder = "Previous Agreement Number" })
+                        @Html.ValidationMessageFor(o => o.PreviousAgreementNumber)
+                    </div>
+                </div>
+
+                <!-- Agreement Date -->
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Agreement Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBox("AgreementDate", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Agreement Date (mm/dd/yyyy)" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.AgreementDate)
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+    
+<!-- Service Record Inquiry -->
+<section class="panel">
+    <header class="panel-heading">Service Record History</header>
+    <div class="panel-body">
+        <div class="row">
+
+            <!-- Police Number / Invoice Number -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Police Number / Invoice Number</label>
+                    <div class="input-group">
+                        @Html.TextBox("PoliceNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Police Number / Invoice Number" })
+                        <span class="input-group-btn">
+                            <button class="btn btn-white" data-toggle="modal" data-target="#ojlData" onclick="LoadObjectLease()" type="button">...</button>
+                        </span>
+                    </div><!-- /input-group -->
+
+                    @Html.ValidationMessageFor(o => o.IdentityPoliceNumber)
+                </div>
+            </div>
+
+            <!-- Engine Number -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Engine Number</label>
+                    @Html.TextBox("EngineNumber", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Engine Number" })
+                    @Html.ValidationMessageFor(o => o.EngineNumber)
+                </div>
+            </div>
+
+            <!-- Maintenance Type -->
+            @*<div class="col-lg-3">
+                <div class="form-group">
+                    <label>Maintenance Type</label>
+                    @Html.TextBox("MaintenanceType", null, new { @class = "form-control", @placeholder = "Maintenance Type" })
+                    @Html.ValidationMessageFor(o => o.MaintenanceType)
+                </div>
+            </div>*@
+
+        </div>
+
+        <div class="row">
+
+            <!-- Marketing Officer PIC Name -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Name</label>
+                    @Html.TextBox("SalesPICName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Name" })
+                    @Html.ValidationMessageFor(o => o.SalesPICName)
+                </div>
+            </div>
+
+            <!-- Sales PIC Position -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Position</label>
+                    @Html.TextBox("SalesPICPosition", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Position" })
+                    @Html.ValidationMessageFor(o => o.SalesPICPosition)
+                </div>
+            </div>
+
+            <!-- Sales PIC Phone -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Phone</label>
+                    @Html.TextBox("SalesPICPhone", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Phone" })
+                    @Html.ValidationMessageFor(o => o.SalesPICPhone)
+                </div>
+            </div>
+
+            <!-- Sales PIC Email -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Marketing Officer PIC Email</label>
+                    @Html.TextBox("SalesPICEmail", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Marketing Officer PIC Email" })
+                    @Html.ValidationMessageFor(o => o.SalesPICEmail)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <!-- Customer Name -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    @Html.TextBox("CustomerName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Customer Name" })
+                    @Html.ValidationMessageFor(o => o.CustomerName)
+                </div>
+            </div>
+
+            <!-- Product Brand Name -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Product Brand Name</label>
+                    @Html.TextBox("BrandName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Product Brand Name" })
+                    @Html.ValidationMessageFor(o => o.BrandName)
+                </div>
+            </div>
+
+            <!-- Product Model Name -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Product Model Name</label>
+                    @Html.TextBox("ModelName", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Product Model Name" })
+                    @Html.ValidationMessageFor(o => o.ModelName)
+                </div>
+            </div>
+
+            <!-- Agreement Date -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Model Year</label>
+                    <div class="input-group">
+                        @Html.TextBox("ModelYear", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Model Year" })
+                        @Html.ValidationMessageFor(o => o.ModelYear)
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Lease Category</label>
+                    @Html.DropDownListFor(o => o.LeaseCategory, (List<SelectListItem>)ViewBag.LeaseCategory, new { @class = "form-control", @data_required = "true" })
+                </div>
+                @Html.ValidationMessageFor(o => o.LeaseCategory)
+            </div>
+
+            <!-- Maintenance Type -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Maintenance Type</label>
+                    @{
+                                var maintenancelistItems = new List<SelectListItem>
+                                {
+                                      new SelectListItem { Text = "Full Maintenance", Value = "1" },
+                                      new SelectListItem { Text = "Limited", Value = "2" },
+                                      new SelectListItem { Text = "Customer Service Desk", Value = "3" },
+                                      new SelectListItem { Text = "Non Maintenance", Value = "4" },
+                                };
+                    }
+                    @Html.DropDownListFor(o => o.MaintenanceType, new SelectList(maintenancelistItems, "Value", "Text"), new { @class = "form-control" })
+                </div>
+            </div>
+
+            <!-- Insurance -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Insurance</label>
+                    @{
+                                var insuranceItemLists = new List<SelectListItem>
+                                {
+                                      new SelectListItem { Text = "Yes", Value = "0" },
+                                      new SelectListItem { Text = "No", Value = "1" },
+                                };
+                    }
+                    @Html.DropDownList("Insurance", new SelectList(insuranceItemLists, "Value", "Text"), new { @class = "form-control" })
+                </div>
+            </div>
+
+            <!-- Purchase Required -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Purchase Required</label>
+                    @{
+                                var purchaseRequiredItemLists = new List<SelectListItem>
+                                {
+                                      new SelectListItem { Text = "Yes", Value = "0" },
+                                      new SelectListItem { Text = "No", Value = "1" },
+                                };
+                    }
+                    @Html.DropDownListFor(o => o.PurchaseRequired, new SelectList(purchaseRequiredItemLists, "Value", "Text"), new { @class = "form-control" })
+                </div>
+            </div>
+
+            <!-- Contract Start Date -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Contract Start Date</label>
+                    <div class="input-group">
+                        @Html.TextBox("ContractStartDate", null, new { @class = "form-control datepicker-input", @placeholder = "Contract Start Date" })
+                        @Html.ValidationMessageFor(o => o.ContractStartDate)
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contract Expired Date -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Contract Expired Date</label>
+                    <div class="input-group">
+                        @Html.TextBox("ContractExpiredDate", null, new { @class = "form-control datepicker-input", @placeholder = "Contract Expired Date" })
+                        @Html.ValidationMessageFor(o => o.ContractExpiredDate)
+                        <span class="input-group-addon">
+                            <span class="fa fa-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lease Period (Months) -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Lease Period (Months)</label>
+                    @Html.TextBox("LeasePeriod", null, new { @class = "form-control", @placeholder = "Lease Period (Months)" })
+                    @Html.ValidationMessageFor(o => o.ContractExpiredDate)
+                </div>
+            </div>
+
+            <!-- Usage -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Usage</label>
+                    @Html.TextBox("Usage", null, new { @class = "form-control", @placeholder = "Usage" })
+                    @Html.ValidationMessageFor(o => o.Usage)
+                </div>
+            </div>
+
+            <div class="line line-dashed pull-in"></div>
+
+            <div class="col-lg-3"></div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Maintenance Budget</label>
+                    @Html.TextBox("MaintenanceBudget", null, new { @class = "form-control", @placeholder = "Maintenance Budget" })
+                    @Html.ValidationMessageFor(o => o.MaintenanceBudget)
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Maintenance Disbursement</label>
+                    @Html.TextBox("MaintenanceDisbursement", null, new { @class = "form-control", @placeholder = "Maintenance Disbursement" })
+                    @Html.ValidationMessageFor(o => o.MaintenanceDisbursement)
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label>Digestibility</label>
+                    @Html.TextBox("Digestibility", null, new { @class = "form-control", @placeholder = "Digestibility" })
+                    @Html.ValidationMessageFor(o => o.Digestibility)
+                </div>
+            </div>
+
+            <div id="servicedatetable" style="display:none">
+                <hr />
+                <div class="tab-pane">
+                    <div class="table-responsive">
+                        <table id="osh-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th>Service Date</th>
+                                    <th>Actual Mileage</th>
+                                    <th>Maintenance Item</th>
+                                    <th>Payment Expenses</th>
+                                    <th>Workshop</th>
+                                    <th width="5%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        
+
+    </div>
+    <footer class="panel-footer bg-light lter">
+        <input type="submit" name="statusButton" class="btn btn-info" value="Save Changes" />
+        <input type="submit" name="statusButton" class="btn btn-primary" value="Submit" />
+    </footer>
+</section>
+
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+@{Html.RenderPartial("ModalPopUpObjectLease");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+
+    <script>
+        function ShowDeleteServiceConfirmation(a) {
+            var part_code_label = $(a).closest('tr').find('.sorting_1').text();
+            var id = a.id;
+            $('#part_code_label').text(part_code_label);
+            $('#IdOPLSHistoryPartsToDelete').val(id);
+            $('#deleteServiceConfirmation').modal('show');
+        }
+
+        $('#osh-list').each(function () {
+            oTable = $(this).dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bRetrieve": true,
+                "aaSorting": [[1, "desc"]],
+                "sAjaxSource": "@Url.Action("ServiceHistoryRecordList", "OPLServiceHistory")",
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                { "mData": "ServiceDate" },
+                { "mData": "MonthlyMileage" },
+                { "mData": "MaintenanceItem" },
+                { "mData": "PaymentExpense" },
+                {
+                    "mData": "PPNTax",
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "fnRender": function (oObj) {
+                        return "-";
+                    }
+                },
+                {
+                    "mData": "IdOPLServiceHistory",
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "sClass": "datatables_action",
+                    "fnRender": function (oObj) {
+                        var Id = oObj.aData["IdOPLServiceHistory"];
+                        return "<a title='Detail' href='@Url.Action("Detail", "OPLServiceHistory")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Delete' data-toggle='modal' onclick='ShowDeleteServiceConfirmation(this)' href='#'" + Id + "' class='btn btn-danger btn-xs'><i class='fa fa-times'></i></a>"
+
+                    }
+                }
+                ],
+                "iDisplayLength": 5,
+                "bLengthChange": false
+        });
+
+        });
+
+        function LoadAgreement() {
+            // datatable
+            var oTable = null;
+            $('#agr-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[1, "desc"]],
+                    "sAjaxSource": "@Url.Action("AgreementModalDataTable", "OPLServiceHistory")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                    {
+                        "mData": "IdOPLAgreement",
+                        "bVisible": false,
+                    },
+                    { "mData": "AgreementNumber" },
+                    { "mData": "AgreementDate" },
+                    { "mData": "CustomerName" },
+                    { "mData": "BrandName" },
+                    { "mData": "ModelName" },
+                    { "mData": "ExpiredDate" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+            });
+
+        });
+
+
+        $("#agrData tbody").delegate("tr", "click", function () {
+
+            var data = oTable.fnGetData(this);
+
+            $("#IdOPLAgreement").val(data.IdOPLAgreement);
+            $("#AgreementNumber").val(data.AgreementNumber);
+            $("#PreviousAgreementNumber").val(data.AgreementNumberReff);
+            $("#AgreementDate").val(data.AgreementDate);
+
+            $('#agrData').modal('hide');
+            $('div#servicedatetable').show();
+        });
+        };
+
+        function LoadObjectLease() {
+            // datatable
+            var oTable = null;
+            $('#obj-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[1, "desc"]],
+                    "sAjaxSource": "@Url.Action("ObjectLeaseModalDataTable", "OPLServiceHistory")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                    { "mData": "IdentityPoliceNumber" },
+                    { "mData": "EngineNumber" },
+                    { "mData": "Carroserrie" },
+                    { "mData": "BrandName" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+            });
+
+        });
+
+
+        $("#ojlData tbody").delegate("tr", "click", function () {
+
+            var data = oTable.fnGetData(this);
+
+            $("#PoliceNumber").val(data.IdentityPoliceNumber);
+            $("#IdUObjLease").val(data.IdUObjLease);
+            $("#EngineNumber").val(data.EngineNumber);
+            $("#SalesPICName").val(data.SalesPICName);
+            $("#SalesPICPosition").val(data.SalesPICPosition);
+            $("#SalesPICPhone").val(data.SalesPICPhone);
+            $("#SalesPICEmail").val(data.SalesPICEmail);
+            $("#CustomerName").val(data.CustomerName);
+            $("#ModelName").val(data.ModelName);
+            $("#ModelYear").val(data.ModelYear);
+            $("#BrandName").val(data.BrandName);
+            $("#LeaseCategory").val(data.LeaseCategory);
+            $("#MaintenanceType").val(data.MaintenanceType);
+            $("#Insurance").val(data.Insurance);
+            $("#PurchaseRequired").val(data.PurchaseRequired);
+
+            $('#ojlData').modal('hide');
+            $('div#servicedatetable').show();
+        });
+        };
+    </script>
+}

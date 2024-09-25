@@ -1,0 +1,1085 @@
+﻿@model Dsf.Olss.Models.MaintenancePaymentApprovalViewModel
+
+@{
+    ViewBag.Title = "Add New Maintenance Payment Approval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@section Styles{
+    <style>
+        .panel-heading a:after {
+            font-family: 'Glyphicons Halflings';
+            content: "\e114";
+            float: left;
+            color: grey;
+        }
+
+        .panel-heading a.collapsed:after {
+            content: "\e080";
+        }
+    </style>
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "MaintenancePaymentApproval")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("Add", "MaintenancePaymentApproval", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Product Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Payment Approval Number</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.PaymentApprovalNumber, null, new { @class = "form-control", id = "PaymentApprovalNumber", @placeholder = "Payment Approval Number", @readonly = "true", @tabindex = "1" })
+                        </div><!-- /input-group -->
+                    </div>
+                    <div class="form-group">
+                        <label>Supplier</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.SupplierName, null, new { @class = "form-control mandatory", id = "SupplierName", @placeholder = "Select Supplier", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "1" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#supplierModal" type="button" onclick="LoadSupplier()" tabindex="4">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.SupplierName)
+                        @Html.TextBoxFor(o => o.IdSupplier, null, new { @type = "hidden" })
+
+
+                    </div>
+
+
+
+
+
+
+
+                    <div class="form-group" id="workOrderDiv">
+                        <label>Work Order Number</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.WorkOrderNumber, null, new { @class = "form-control mandatory", id = "WorkOrderNum", @placeholder = "Select Work Order", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "1" })
+                            @Html.HiddenFor(o => o.PoliceNumber)
+                            @Html.HiddenFor(o => o.AgreementNumber)
+                            @Html.HiddenFor(o => o.BrandName)
+                            @Html.HiddenFor(o => o.ModelName)
+                            @Html.HiddenFor(o => o.MaintenanceType)
+                            @Html.HiddenFor(o => o.ItemValuesName)
+                            @Html.HiddenFor(o => o.ServiceAmount)
+                            @Html.HiddenFor(o => o.Sparepart)
+                            @Html.HiddenFor(o => o.PPn)
+                            @Html.HiddenFor(o => o.PPh)
+                            @Html.HiddenFor(o => o.ActualAmount)
+                            @Html.HiddenFor(o => o.Materai)
+
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#workOrderModal" type="button" onclick="LoadWorkOrder()" tabindex="2">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.WorkOrderNumber)
+                    </div>
+
+                    <div class="form-group">
+                        <label>Customer</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.CustomerName, null, new { @class = "form-control mandatory", id = "CustomerName", @placeholder = "Select Customer", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "1" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#customerModal" type="button" onclick="LoadCustomer()" tabindex="4">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.CustomerName)
+                        @Html.TextBoxFor(o => o.CustID, null, new { @type = "hidden" })
+
+
+                    </div>
+
+
+
+                </div>
+
+
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Approval Level 1</label>
+                        @Html.TextBoxFor(o => o.ApprovalLevel1, null, new { @class = "form-control numbersOnly", @placeholder = "Approval Level 1", @data_required = "true" })
+                    </div>
+                    <div class="form-group">
+                        <label>Approval Level 2</label>
+                        @Html.TextBoxFor(o => o.ApprovalLevel2, null, new { @class = "form-control numbersOnly", @placeholder = "Approval Level 2", @data_required = "true" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Approval Level 3</label>
+                        @Html.TextBoxFor(o => o.ApprovalLevel3, null, new { @class = "form-control numbersOnly", @placeholder = "Approval Level 3", @data_required = "true" })
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Bank Name</label>
+                        @Html.TextBoxFor(o => o.BankAccount, null, new { @class = "form-control", id = "BankAccount", @placeholder = "Set Bank Name", @data_required = "true", @parsley_error_container = "input-group", @tabindex = "1" })
+                    </div>
+                    <div class="form-group">
+                        <label>Account Number</label>
+                        @Html.TextBoxFor(o => o.BankAccountNumber, null, new { @class = "form-control", id = "BankAccountNumber", @placeholder = "Set Bank Account Number", @data_required = "true", @parsley_error_container = "input-group", @tabindex = "1" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Name Account Holder</label>
+                        @Html.TextBoxFor(o => o.NameAccountHolder, null, new { @class = "form-control", id = "NameAccountHolder", @placeholder = "Set Name Account Holder", @data_required = "true", @parsley_error_container = "input-group", @tabindex = "1" })
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+        <footer class="panel-footer">
+            <span class="input-group-btn">
+                <a id="addTerm" href="#" class="btn btn-primary"><i class="fa fa-plus"></i> Generate Work Order</a>
+
+            </span>
+            <span class="input-group-btn">
+                <a id="addWorkOrder" href="#" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Work Order</a>
+
+            </span>
+        </footer>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Work Order Cost</header>
+        <div class="panel-body">
+
+            <div style="overflow:auto">
+
+                <div class="table-responsive">
+                    <table class="table table-striped m-b-none display nowrap" id="term-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <div class="header-grid-short">Row Action</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Work Order Number</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Invoice Number</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Police Number</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Customer</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Agreement Number</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Object Lease</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Maintenance Category</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Services</div>
+                                </th>
+
+                                <th>
+                                    <div class="header-grid-short">Sparepart</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">PPn</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">PPh</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Stamp</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Other</div>
+                                </th>
+                                <th>
+                                    <div class="header-grid-short">Total</div>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <div class="header-grid-short">
+                                        Total
+                                    </div>
+                                </td>
+                                <td>
+                                    @*@Html.TextBoxFor(o => o.Total_Payment_Expense, null, new { @class = "form-control", id = "BankAccount", @placeholder = "Set Bank Name", @data_required = "true", @parsley_error_container = "input-group", @tabindex = "1" })*@
+                                    <input class="form-control" data-val="true" id="AllTotal" name="AllTotalRow" readonly="readonly" />
+                                </td>
+
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer bg-light lter">
+            <button id="btnCalculate" class="btn btn-info" type="button" onclick="CalculateCost()" tabindex="14">Calculate</button>
+            <button id="btnSave" class="btn btn-info" type="button" onclick="Save()" tabindex="14">Save</button>
+
+            <a id="print" class="btn btn-info" disabled="disabled">Print</a>
+            <a id="validate" class="btn btn-info" disabled="disabled">Validate</a>
+
+
+
+
+
+        </div>
+    </section>
+
+
+
+
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Common.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/jsDate.js")"></script>*@
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+
+        $(document).ready(function () {
+            $('#WorkOrderNumber').click(function () {
+                var id = $('#IdSupplier').val();
+                if (id != 0) {
+                    LoadWorkOrder(id);
+                }
+            });
+
+            var id = $('#IdSupplier').val();
+            if (id != 0) {
+                getSupplierPaymentInfo(id);
+
+            }
+
+
+
+            $('.datepicker-input').datepicker({
+                format: 'mm/dd/yyyy',
+                minViewMode: 0,
+                startView: 0,
+                endDate: '12/31/9999',
+                startDate: '01/01/1753'
+            });
+
+
+        });
+
+
+
+
+
+
+
+
+        var serverRoot = '@Url.Content("~")';
+
+
+        function LoadWorkOrder(idSupplier) {
+            if ($("#IdSupplier").val() != "0") {
+                // datatable
+                var oTable = null;
+
+
+                $('#workOrder-list').removeAttr("style");
+                $('#workOrder-list').each(function () {
+                    oTable = $(this).dataTable({
+                        "bServerSide": true,
+                        "bProcessing": true,
+                        "bRetrieve": true,
+                        "aaSorting": [[0, "desc"]],
+                        "sAjaxSource": "@Url.Action("WorkOrderDataTable", "MaintenancePaymentApproval")",
+                        "fnServerParams": function (aoData) {
+                            aoData.push(
+                                { "name": "IdSupplier", "value": $("#IdSupplier").val() }
+                                );
+                        },
+                        "sPaginationType": "full_numbers",
+                        "aoColumns": [
+                            { "mData": "WorkOrderNum" },
+                            { "mData": "MaintenanceDate" },
+                            { "mData": "EstimatedCost" }
+                        ],
+                        "iDisplayLength": 5,
+                        "bLengthChange": false
+                    });
+
+                });
+                $("#workOrder-list tbody").delegate("tr", "click", function () {
+                    var data = oTable.fnGetData(this);
+                    if (data != null) {
+                        $("#WorkOrderNum").val(data.WorkOrderNum);
+                        $("#EstimatedCost").val(data.EstimatedCost);
+                        $("#MaintenanceDate").val(data.MaintenanceDate);
+                        $("#Notes").val(data.Notes);
+                    } else {
+                        $("#WorkOrderNum").val('');
+                        $("#EstimatedCost").val('');
+                        $("#MaintenanceDate").val('');
+                        $("#Notes").val('');
+                    }
+
+                    $('#workOrderModal').modal('hide');
+                    $("#workOrder-list tbody").undelegate("tr", "click");
+
+                    //delete datatable and remove DOM element
+                    if (oTable != null) oTable.fnDestroy();
+                    $('#workOrder-list').empty();
+
+                });
+            }
+            else {
+                var message = "Please select Supplier Number";
+                $('#alert_placeholder').html('<div class="alert alert-danger pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Failed!</b> ' + message + '</div>');
+
+            }
+        };
+
+
+
+
+
+        function CalculateCost() {
+            //calculate Total Value in Work Order Cost Table
+            var allTotalRow = 0;
+            var table = document.getElementById("term-table");
+            var numberOfRows = document.getElementById("term-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
+            for (var i = 0; i < numberOfRows ; i++) {
+                //get value base on id and calculate it.
+                var actualResidualValue = Number($('#Other_' + i).val().replace(/,/g, ''));
+                var service = document.getElementById("Services_" + i).value;
+                var sparepart = document.getElementById("Sparepart_" + i).value;
+                var ppn = document.getElementById("PPn_" + i).value;
+                var pph = document.getElementById("PPh_" + i).value;
+                var stamp = document.getElementById("Stamp_" + i).value;
+                var other = document.getElementById("Other_" + i).value;
+                var total = 0;
+                total = Number(service.replace(/,/g, '')) + Number(sparepart.replace(/,/g, '')) + Number(ppn.replace(/,/g, '')) + Number(stamp.replace(/,/g, '')) + Number(other.replace(/,/g, '')) - Number(pph.replace(/,/g, ''));
+                //document.getElementById("Total_" + i).value = total.toString();
+                $('#Total_' + i).val(total).formatCurrency();
+                allTotalRow = allTotalRow + total;
+            }
+            $('#AllTotal').val(allTotalRow).formatCurrency();
+        };
+
+
+        function LoadCustomer() {
+
+            // datatable
+            var oTable = null;
+            $('#customer-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("CustomerDataTable", "MaintenancePaymentApproval")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "CustomerCode" },
+                        { "mData": "CustomerName" },
+                        { "mData": "Telephone" },
+                        { "mData": "BusinessEconomySector" },
+                        {
+                            "mData": "IdCustomer",
+                            "bVisible": false
+                        }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+
+            });
+
+
+            $("#customer-lookup tbody").delegate("tr", "click", function () {
+                var data = oTable.fnGetData(this);
+                if (data != null) {
+                    $("#CustID").val(data.IdCustomer);
+                    $("#CustomerName").val(data.CustomerName);
+                } else {
+                    $("#IdCustomer").val('');
+                    $("#CustomerName").val('');
+                }
+
+                $('#customerModal').modal('hide');
+                $("#customer-lookup tbody").undelegate("tr", "click");
+            });
+        };
+
+
+        function LoadSupplier() {
+
+            // datatable
+            var oTable = null;
+            $('#supplier-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("SupplierDataTable", "MaintenancePaymentApproval")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "SupplierCode" },
+                        { "mData": "SupplierName" },
+                        { "mData": "Address" },
+                        { "mData": "Telephone" },
+                        { "mData": "BusinessEconomySector" },
+                        {
+                            "mData": "IdSupplier",
+                            "bVisible": false
+                        }
+                    ],
+                    "iDisplayLength": 6,
+                    "bLengthChange": false
+                });
+
+            });
+
+
+            $("#supplier-lookup tbody").delegate("tr", "click", function () {
+                var data = oTable.fnGetData(this);
+                if (data != null) {
+                    $("#IdSupplier").val(data.IdSupplier);
+                    $("#SupplierName").val(data.SupplierName);
+                } else {
+                    $("#IdSupplier").val('');
+                    $("#SupplierName").val('');
+                }
+
+                $('#supplierModal').modal('hide');
+                $("#supplier-lookup tbody").undelegate("tr", "click");
+
+                $('#WorkOrderNum').val("");
+                ClearPOItemList();
+
+                var idsupp = document.getElementById("IdSupplier").value;
+                var suppname = document.getElementById("SupplierName").value;
+                refreshPage(idsupp, suppname);
+
+
+
+
+
+            });
+        };
+
+
+        function refreshPage(idSupplier, supplierName) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '@Url.Action("RefreshPage", "MaintenancePaymentApproval")',
+                data: {
+                    IdSupplier: idSupplier,
+                    SupplierName: supplierName
+                },
+                success: function (Data) {
+                    var Result = Data.Result;
+                    if (Result == "Success") {
+                        location.reload();
+                    }
+                    else {
+                        alert(Data.Message);
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        }
+
+
+
+        function ClearPOItemList() {
+            var tableSelector = "#term-table tbody";
+            var emptyRow = "";
+            $(tableSelector).html(emptyRow);
+        };
+
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-success pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;" ><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Success!</b> ' + message + '</div>');
+        }
+
+        bootstrap_alert.error = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Failed!</b> ' + message + '</div>');
+        }
+
+
+
+        $('#addWorkOrder').click(function () {
+            var id = $('#IdSupplier').val();
+            var idCustomer = $('#CustID').val();
+
+
+            if (id != 0) {
+                if (idCustomer != 0) {
+                    AddNewTerm();
+                }
+                else {
+                    alert("Please Select Customer");
+                }
+            }
+            else {
+                var message = "Please select Supplier";
+                alert(message);
+
+            }
+        });
+
+
+
+
+        $('#addTerm').click(function () {
+            var id = $('#WorkOrderNum').val();
+            var idSupplier = $('#IdSupplier').val();
+
+            if (idSupplier != 0) {
+                if (id != "") {
+                    getMonScheduleDetail(id);
+                }
+                else {
+                    var message = "Please select Work Order Number";
+                    alert(message);
+
+                }
+            }
+            else {
+                alert("Please Select Supplier");
+            }
+
+
+
+        });
+
+        function Save() {
+
+
+
+            var numberOfRows = document.getElementById("term-table").getElementsByTagName("tbody")[0].getElementsByTagName("tr").length;
+            var htmlTable = document.getElementById("term-table");
+            CalculateCost();
+            var idSupplier = document.getElementById("IdSupplier").value;
+            var custId = document.getElementById("CustID").value;;
+            var approvalLevel1 = document.getElementById("ApprovalLevel1").value;
+            var approvalLevel2 = document.getElementById("ApprovalLevel2").value;
+            var approvalLevel3 = document.getElementById("ApprovalLevel3").value;
+            var bankAccount = document.getElementById("BankAccount").value;
+            var bankAccountNumber = document.getElementById("BankAccountNumber").value;
+            var nameAccountHolder = document.getElementById("NameAccountHolder").value;
+
+            //check for mandatory field
+            if (numberOfRows > 0) {
+                if (approvalLevel1 != "" && approvalLevel2 != "" && approvalLevel3 != "") {
+                    var data = {
+                        lstMaintenancePaymentApprovalDetailViewModel: [], IdSupplier: idSupplier,
+                        CustID: custId,
+                        ApprovalLevel1: approvalLevel1,
+                        ApprovalLevel2: approvalLevel2,
+                        ApprovalLevel3: approvalLevel3,
+                        BankAccount: bankAccount,
+                        BankAccountNumber: bankAccountNumber,
+                        NameAccountHolder: nameAccountHolder
+                    };
+
+
+                    //data.IdSupplier.push(document.getElementById("IdSupplier").value);
+
+
+
+                    for (var i = 0; i < numberOfRows ; i++) {
+                        var obj = {};
+                        var service = document.getElementById("Services_" + i).value;
+
+                        obj.WorkOrderNumber = document.getElementById("WorkOrderNum_" + i).value;
+                        obj.InvoiceNumber = document.getElementById("InvoiceNumber_" + i).value;
+                        obj.PoliceNumber = document.getElementById("PoliceNumber_" + i).value;
+                        obj.CustomerName = document.getElementById("CustomerName_" + i).value;
+                        obj.AgreementNumber = document.getElementById("AgreementNumber_" + i).value;
+                        obj.ObjectLease = document.getElementById("ObjLease_" + i).value;
+                        obj.MaintenanceCategory = document.getElementById("ItemValueName_" + i).value;
+
+                        obj.Services = document.getElementById("Services_" + i).value;
+                        obj.Pph = document.getElementById("PPh_" + i).value;
+                        obj.Sparepart = document.getElementById("Sparepart_" + i).value;
+                        obj.Ppn = document.getElementById("PPn_" + i).value;
+                        obj.Stamp = document.getElementById("Stamp_" + i).value;
+                        obj.Others = document.getElementById("Other_" + i).value;
+                        obj.Total = document.getElementById("Total_" + i).value;
+                        data.lstMaintenancePaymentApprovalDetailViewModel.push(obj);
+
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        url: '@Url.Action("SaveDraft", "MaintenancePaymentApproval")',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (Data) {
+                            var PaymentApprovalNumber = Data.PaymentApprovalNumber;
+                            var Success = Data.Success;
+                            window.location.href = "@Url.Action("Index", "MaintenancePaymentApproval")";
+
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        }
+                    });
+                }
+                else {
+                    alert("Please insert Approval Level 1 - 3");
+                }
+
+            }
+            else {
+                alert("Please add Payment Approval Details")
+            }
+
+
+
+
+
+        };
+
+        function formatCurrency(number) {
+            var number = number.toFixed(2) + '';
+            var x = number.split('.');
+            var x1 = x[0];
+            var x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+        }
+
+
+        function AddNewTerm() {
+            CalculateCost();
+            var countRowTerm = $("tr[class*='rowTerm']").length;
+            var strWorkOrderNumber = '';
+            var PoliceNumber = '';
+            var CustomerName = $("#CustomerName").val();
+            var CustID = $("#CustID").val();
+            var AgreementNumber = '';
+            var BrandName = '';
+            var MaintenanceType = '';
+            var ItemValuesName = '';
+            var ServiceAmount = 0;
+            var Sparepart = 0;
+            var PPn = 0;
+            var PPh = 0;
+            var ActualAmount = 0;
+            var Materai = 0;
+
+
+            var newTr = $('' +
+                '<tr class="rowTerm" id="row_' + countRowTerm + '">' +
+
+                    '<td>' +
+                            '<span class="input-group-btn">' +
+                            '<button class="btn btn-danger font-bold fa fa-minus" type="button" onclick="deleteRowTerm(' + countRowTerm + ')"></button>' +
+                            //'<input type="checkbox" class="checkbox" type="hidden"  id="IsDeleted_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].IsDeleted" />' +
+                            '</span>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td>' +
+
+                        '<input class="form-control" data-val="true" id="WorkOrderNum_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].WorkOrderNum" type="text" value="' + strWorkOrderNumber + '">' +
+                    '</td>' +
+                     '<td class="text-center"> ' +
+                             '<input class="form-control" data-val="true" id="InvoiceNumber_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].InvoiceNumber" type="text" value="" >' +
+                        '</td>' +
+                        '<td class="text-center">' +
+                        '<input class="form-control" data-val="true" id="PoliceNumber_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].PoliceNumber" type="text" value="' + PoliceNumber + '">' +
+                        '</td>' +
+                        '<td class="text-center"> ' +
+                        '<input class="form-control" data-val="true" id="CustomerName_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].CustomerName" type="text" value="' + CustomerName + '"/>' +
+                        '<input class="form-control" data-val="true" id="CustID_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].CustID" type="hidden" value="' + CustID + '"/>' +
+
+                        '</td>' +
+
+                        '<td class="text-center">' +
+                        '<input class="form-control" data-val="true" id="AgreementNumber_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].AgreementNumber" type="text" value="' + AgreementNumber + '">' +
+                        '</td> ' +
+                        '<td class="text-center" style="width:100%;"> ' +
+                        '<input class="form-control" data-val="true" id="ObjLease_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].ObjLease" type="text" value="' + BrandName + '">' +
+                        '</td>' +
+                        '<td class="text-center"> ' +
+                        '<input class="form-control" data-val="true" id="ItemValueName_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].ItemValueName" type="text" value="' + ItemValuesName + '">' +
+                        '<input class="form-control" data-val="true" id="ItemValueName_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].ItemValueName" type="hidden"  value="' + MaintenanceType + '">' +
+                        '</td> ' +
+                        '<td > ' +
+                        '<input class="form-control text-right numeric currency" data-val="true" id="Services_' + countRowTerm + '" onClick="this.setSelectionRange(0, this.value.length)" onChange = "Services(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + ServiceAmount + '">' +
+
+
+                        '</td> ' +
+
+                        '<td class="currency"> ' +
+                        '<input class="form-control" data-val="true" id="Sparepart_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Sparepart" onClick="this.setSelectionRange(0, this.value.length)" onChange = "test(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + Sparepart + '">' +
+                        '</td> ' +
+                         '<td class="currency"> ' +
+                        '<input class="form-control" data-val="true" id="PPn_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].PPn" onChange = "PajakPPN(' + countRowTerm + ')" onClick="this.setSelectionRange(0, this.value.length)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + PPn + '">' +
+                        '</td> ' +
+
+                        '</td> ' +
+                        '<td class="currency"> ' +
+                        '<input class="form-control" data-val="true" id="PPh_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].PPh" onChange = "PajakPPH(' + countRowTerm + ')" onClick="this.setSelectionRange(0, this.value.length)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + PPh + '">' +
+                        '</td> ' +
+                         '<td class="currency"> ' +
+                        '<input class="form-control numeric currency" data-val="true" id="Stamp_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Stamp" onChange = "Stamp(' + countRowTerm + ')" onClick="this.setSelectionRange(0, this.value.length)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + Materai + '">' +
+                        '</td> ' +
+                        '</td> ' +
+                         '<td class="currency"> ' +
+                        '<input class="form-control" data-val="true" id="Other_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Other" onChange = "Others(' + countRowTerm + ')" onClick="this.setSelectionRange(0, this.value.length)" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="">' +
+                        '</td> ' +
+                        '</td> ' +
+                         '<td class="currency"> ' +
+                        '<input class="form-control" data-val="true" id="Total_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Total" onClick="this.setSelectionRange(0, this.value.length)"  onkeypress="return event.charCode >= 48 && event.charCode <= 57"  value="' + ActualAmount + '">' +
+                        '</td> ' +
+
+
+
+
+
+                '</tr>');
+
+            $(newTr).appendTo('#term-table tbody');
+
+            countRowTerm += 1;
+            return false;
+        }
+
+
+        function AddTerm() {
+            CalculateCost();
+            var countRowTerm = $("tr[class*='rowTerm']").length;
+            var strWorkOrderNumber = $('#WorkOrderNum').val();
+            var PoliceNumber = $("#PoliceNumber").val();
+            var CustomerName = $("#CustomerName").val();
+            var CustID = $("#CustID").val();
+            var AgreementNumber = $("#AgreementNumber").val();
+            var BrandName = $("#BrandName").val() + ' ' + $("#ModelName").val();
+            var MaintenanceType = $("#MaintenanceType").val();
+            var ItemValuesName = $("#ItemValuesName").val();
+            var ServiceAmount = $("#ServiceAmount").val();
+            var Sparepart = $("#Sparepart").val();
+            var PPn = $("#PPn").val();
+            var PPh = $("#PPh").val();
+            var ActualAmount = $("#ActualAmount").val();
+            var Materai = $("#Materai").val();
+
+
+            var newTr = $('' +
+                '<tr class="rowTerm" id="row_' + countRowTerm + '">' +
+
+                    '<td>' +
+                            '<span class="input-group-btn">' +
+                            '<button class="btn btn-danger font-bold fa fa-minus" type="button" onclick="deleteRowTerm(' + countRowTerm + ')"></button>' +
+                            '</span>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td>' +
+
+                        '<input class="form-control" data-val="true" id="WorkOrderNum_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].WorkOrderNum" type="text" value="' + strWorkOrderNumber + '">' +
+                    '</td>' +
+                     '<td class="text-center"> ' +
+                             '<input class="form-control" data-val="true" id="InvoiceNumber_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].InvoiceNumber" type="text" value="" >' +
+                        '</td>' +
+                        '<td class="text-center">' +
+                        '<input class="form-control" data-val="true" id="PoliceNumber_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].PoliceNumber" type="text" value="' + PoliceNumber + '">' +
+                        '</td>' +
+                        '<td class="text-center"> ' +
+                        '<input class="form-control" data-val="true" id="CustomerName_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].CustomerName" type="text" value="' + CustomerName + '"/>' +
+                        '<input class="form-control" data-val="true" id="CustID_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].CustID" type="hidden" readonly value="' + CustID + '"/>' +
+
+                        '</td>' +
+
+                        '<td class="text-center">' +
+                        '<input class="form-control" data-val="true" id="AgreementNumber_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].AgreementNumber" type="text"  value="' + AgreementNumber + '">' +
+                        '</td> ' +
+                        '<td class="text-center" style="width:100%;"> ' +
+                        '<input class="form-control" data-val="true" id="ObjLease_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].ObjLease" type="text" value="' + BrandName + '">' +
+                        '</td>' +
+                        '<td class="text-center"> ' +
+                        '<input class="form-control" data-val="true" id="ItemValueName_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].ItemValueName" type="text" value="' + ItemValuesName + '">' +
+                        '<input class="form-control" data-val="true" id="ItemValueName_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].ItemValueName" type="hidden"  value="' + MaintenanceType + '">' +
+                        '</td> ' +
+
+                        '<td > ' +
+                            '<input class="form-control text-right numeric currency" data-val="true" id="Services_' + countRowTerm + '" onClick="this.setSelectionRange(0, this.value.length)"  onChange = "Services(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + ServiceAmount + '">' +
+
+
+                            '</td> ' +
+
+                            '<td class="currency"> ' +
+                            '<input class="form-control" data-val="true" id="Sparepart_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Sparepart" onClick="this.setSelectionRange(0, this.value.length)"  onChange = "test(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + Sparepart + '">' +
+                            '</td> ' +
+                             '<td class="currency"> ' +
+                            '<input class="form-control" data-val="true" id="PPn_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].PPn" onClick="this.setSelectionRange(0, this.value.length)" onChange = "PajakPPN(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + PPn + '">' +
+                            '</td> ' +
+
+                            '</td> ' +
+                            '<td class="currency"> ' +
+                            '<input class="form-control" data-val="true" id="PPh_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].PPh" onClick="this.setSelectionRange(0, this.value.length)" onChange = "PajakPPH(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + PPh + '">' +
+                            '</td> ' +
+                             '<td class="currency"> ' +
+                            '<input class="form-control numeric currency" data-val="true" id="Stamp_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Stamp" onClick="this.setSelectionRange(0, this.value.length)" onChange = "Stamp(' + countRowTerm + ')"  onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="' + Materai + '">' +
+                            '</td> ' +
+                            '</td> ' +
+                             '<td class="currency"> ' +
+                            '<input class="form-control" data-val="true" id="Other_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Other" onClick="this.setSelectionRange(0, this.value.length)" onChange = "Others(' + countRowTerm + ')" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="">' +
+                            '</td> ' +
+                            '</td> ' +
+                             '<td class="currency"> ' +
+                            '<input class="form-control" data-val="true" id="Total_' + countRowTerm + '" name="PaySchedDtl[' + countRowTerm + '].Total" onClick="this.setSelectionRange(0, this.value.length)"  onkeypress="return event.charCode >= 48 && event.charCode <= 57"  value="' + ActualAmount + '">' +
+                            '</td> ' +
+
+
+
+
+
+                '</tr>');
+
+            $(newTr).appendTo('#term-table tbody');
+
+            countRowTerm += 1;
+            return false;
+        }
+
+        function test(i) {
+            var actualResidualValue = Number($('#Sparepart_' + i).val().replace(/,/g, ''));
+            var actualResidualValue2 = Number($('#Services_' + i).val().replace(/,/g, ''));
+
+            if (isNaN(actualResidualValue)) actualResidualValue = 0;
+            if (isNaN(actualResidualValue2)) actualResidualValue2 = 0;
+
+            $('#Sparepart_' + i).val(actualResidualValue).formatCurrency();
+
+            if (actualResidualValue >= 0 && actualResidualValue2 >= 0) {
+                $('#PPn_' + i).val(0.1 * (parseFloat(actualResidualValue) + parseFloat(actualResidualValue2))).formatCurrency();
+                $('#PPh_' + i).val(0.02 * parseFloat(actualResidualValue2)).formatCurrency();
+            }
+
+            CalculateCost();
+        };
+
+
+        function Services(i) {
+            var actualResidualValue = Number($('#Services_' + i).val().replace(/,/g, ''));
+            var actualResidualValue2 = Number($('#Sparepart_' + i).val().replace(/,/g, ''));
+
+            if (isNaN(actualResidualValue)) actualResidualValue = 0;
+            if (isNaN(actualResidualValue2)) actualResidualValue2 = 0;
+
+            $('#Services_' + i).val(actualResidualValue).formatCurrency();
+
+            if (actualResidualValue >= 0 && actualResidualValue2 >= 0) {
+                $('#PPn_' + i).val(0.1 * (parseFloat(actualResidualValue) + parseFloat(actualResidualValue2))).formatCurrency();
+                $('#PPh_' + i).val(0.02 * parseFloat(actualResidualValue)).formatCurrency();
+            }
+
+            CalculateCost();
+        };
+
+        function PajakPPN(i) {
+            var actualResidualValue = Number($('#PPn_' + i).val().replace(/,/g, ''));
+            if (isNaN(actualResidualValue)) actualResidualValue = 0;
+
+            $('#PPn_' + i).val(actualResidualValue).formatCurrency();
+            CalculateCost();
+        };
+
+        function PajakPPH(i) {
+            var actualResidualValue = Number($('#PPh_' + i).val().replace(/,/g, ''));
+            if (isNaN(actualResidualValue)) actualResidualValue = 0;
+
+            $('#PPh_' + i).val(actualResidualValue).formatCurrency();
+            CalculateCost();
+        };
+
+        function Stamp(i) {
+            var actualResidualValue = Number($('#Stamp_' + i).val().replace(/,/g, ''));
+            if (isNaN(actualResidualValue)) actualResidualValue = 0;
+
+            $('#Stamp_' + i).val(actualResidualValue).formatCurrency();
+            CalculateCost();
+        };
+
+        function Others(i) {
+            var actualResidualValue = Number($('#Other_' + i).val().replace(/,/g, ''));
+            if (isNaN(actualResidualValue)) actualResidualValue = 0;
+
+            $('#Other_' + i).val(actualResidualValue).formatCurrency();
+            CalculateCost();
+        };
+
+
+
+
+
+        function deleteRowTerm(rowId) {
+            $("#row_" + rowId).remove();
+
+        }
+
+        function getSupplierPaymentInfo(idSupplier) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '@Url.Action("GetSupplierPaymentInfo", "MaintenancePaymentApproval")',
+                data: { IdSupplier: idSupplier },
+                success: function (Data) {
+                    var Result = Data.Result;
+                    if (Result == "Success") {
+                        var BankAccount = Data.BankAccount;
+                        var BankAccountNumber = Data.BankAccountNumber;
+                        var NameAccountHolder = Data.NameAccountHolder;
+
+                        $("#BankAccount").val(Data.BankAccount);
+                        $("#BankAccountNumber").val(Data.BankAccountNumber);
+                        $("#NameAccountHolder").val(Data.NameAccountHolder);
+                    }
+                    else {
+                        alert(Data.Message);
+                    }
+
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        };
+
+        function getMonScheduleDetail(strWorkOrderNumber) {
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: '@Url.Action("DetMonScheduleDetails", "MaintenancePaymentApproval")',
+                data: { WorkOrderNum: strWorkOrderNumber },
+                success: function (Data) {
+                    var Result = Data.Result;
+                    if (Result == "Success") {
+                        var PoliceNumber = Data.PoliceNumber;
+                        var CustomerName = Data.CustomerName;
+                        var CustID = Data.CustID;
+                        var AgreementNumber = Data.AgreementNumber;
+                        var BrandName = Data.BrandName;
+                        var ModelName = Data.ModelName;
+                        var MaintenanceType = Data.MaintenanceType;
+                        var ItemValuesName = Data.ItemValuesName;
+                        var ServiceAmount = Data.ServiceAmount;
+                        var Sparepart = Data.Sparepart;
+                        var PPn = Data.PPn;
+                        var PPh = Data.PPh;
+                        var ActualAmount = Data.ActualAmount;
+                        var Materai = Data.Materai;
+
+                        $("#PoliceNumber").val(Data.PoliceNumber);
+                        $("#CustomerName").val(Data.CustomerName);
+                        $("#CustID").val(Data.CustID);
+                        $("#AgreementNumber").val(Data.AgreementNumber);
+                        $("#BrandName").val(Data.BrandName);
+                        $("#ModelName").val(Data.ModelName);
+                        $("#MaintenanceType").val(Data.MaintenanceType);
+                        $("#ItemValuesName").val(ItemValuesName);
+                        $("#ServiceAmount").val(ServiceAmount);
+                        $("#Sparepart").val(Sparepart);
+                        $("#PPn").val(PPn);
+                        $("#PPh").val(PPh);
+                        $("#ActualAmount").val(ActualAmount);
+                        $("#Materai").val(Materai);
+                        AddTerm();
+                    }
+                    else {
+                        alert(Data.Message);
+                    }
+
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                }
+            });
+        }
+
+
+
+        // For adding thousand separator into input text
+        // parameter: jquery input object
+        function AddThousandSeperator(jInputControl) {
+            var lastPos = jInputControl[0].selectionStart;
+            var lastSep = jInputControl.val().split(',').length - 1;
+            var num = jInputControl.val().replace(/,/gi, "").split("").reverse().join("");
+            var num2 = RemoveRougeChar(num.replace(/(.{3})/g, "$1,").split("").reverse().join(""));
+            jInputControl.val(num2);
+            var newSep = jInputControl.val().split(',').length - 1;
+            if (lastSep !== newSep)
+                lastPos += (newSep - lastSep);
+            jInputControl[0].selectionStart = lastPos;
+            jInputControl[0].selectionEnd = lastPos;
+        }
+
+        // for removing rouge char
+        // parameter: string to remove rouge char
+        function RemoveRougeChar(convertString) {
+            if (convertString.substring(0, 1) === ",")
+                return convertString.substring(1, convertString.length);
+            return convertString;
+        }
+
+
+
+
+
+
+
+
+    </script>
+}
+
+@{
+    Html.RenderPartial("ModalPopUp");
+}
+

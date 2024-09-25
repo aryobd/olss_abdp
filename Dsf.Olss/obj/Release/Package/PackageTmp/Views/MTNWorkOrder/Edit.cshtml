@@ -1,0 +1,312 @@
+﻿@model Dsf.Olss.Models.MTNWorkOrderViewModel
+@{
+    ViewBag.Title = "Edit Work Order";
+
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+
+@if (ViewBag.IdMtnMonschdl != null)
+{
+    <a href="@Url.Action("Schedule", "MTNWorkOrder", new { id = ViewBag.IdMtnMonschdl })" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+}
+else
+{
+    <a title="" class="btn btn-white" href="@Url.Action("Index", "MaintenanceSchedule")" data-original-title=""><i class="fa fa-chevron-left"></i> Back</a>
+}
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("Edit", "MTNWorkOrder", FormMethod.Post))
+{
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Work Order Number</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.IdTbMtnMonschdl)
+                            @Html.HiddenFor(o => o.IdTbOplUnit)
+                            @Html.HiddenFor(o => o.IdTbMtnWorkOrder)
+                            @Html.TextBoxFor(o => o.WorkOrderNum, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Estimate Cost</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.EstimateCost, String.Format("{0:N}", Model.EstimateCost), new { @class = "form-control text-right numeric currency mandatory" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Brand</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.UnitBrand, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Last Service</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="input-group date">
+                                @Html.TextBoxFor(o => o.LastService, String.Format("{{0:" + localeDateFormat + "}}", Model.LastService), new { @class = "form-control", @readonly = "true" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Police Number</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.PoliceNumber, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Latest KM</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.LatestKm, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Chassis Number</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ChassisNumber, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label id="label">Customer Name</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.CustomerName, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Engine Number</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.EngineNumber, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Addres Workshop</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.WorkshopLocation, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Colour / Year</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ColourYear, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label id="label">Maintenance Type</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MaintenanceType, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>KM Service</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.KmService, new { @class = "form-control thousandSeparator", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>UP</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.UpWorkShop, new { @class = "form-control mandatory" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Workshop</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Workshop, new { @class = "form-control", @readonly = "true" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label id="label">Phone Number</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.PhoneNumber, new { @class = "form-control mandatory numericPhone", @maxlength = 20 })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label id="label">Fax Number</label>
+                        </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Fax, new { @class = "form-control mandatory numericPhone", @maxlength = 20 })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Notes</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-12">
+                        @Html.TextAreaFor(o => o.Notes, new { @class = "form-control mandatory", @rows = "3" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label>Remarks</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="col-lg-12">
+                        @Html.TextAreaFor(o => o.Remarks, new { @class = "form-control", @rows = "3", @readonly = "true" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <input type="hidden" id="submitButtonText" />
+            <input type="submit" name="statusButton" value="Save Changes" class="btn btn-info" />
+            <input type="submit" name="statusButton" value="Submit" class="btn btn-primary" />
+        </footer>
+    </section>
+}
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts
+{
+    <script src="@Url.Content("~/Content/js/MTNWorkOrder.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#confirmationModal');
+
+        });
+
+        var serverRoot = '@Url.Content("~")';
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+            var submitvalue = $(this).val();
+            var msg = '';
+            if (submitvalue === 'Save Changes') {
+                msg = 'Save';
+            } else if (submitvalue === 'Submit') {
+                msg = 'Submit';
+            }
+
+            $('#msgModal').text(msg);
+            $('#submitButtonText').val(submitvalue);
+        });
+
+        $('#confirmModal').click(function (e) {
+            var submitvalue = $('#submitButtonText').val();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+        });
+
+        $('.datepicker').datepicker({
+            format: '@localeDateFormat.ToLower()'
+        });
+
+    </script>
+}

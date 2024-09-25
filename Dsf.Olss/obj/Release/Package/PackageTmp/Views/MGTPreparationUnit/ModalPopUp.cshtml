@@ -1,0 +1,62 @@
+﻿<div class="modal fade" id="bastNoModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:1200px">
+		<div class="modal-content">
+			<br />
+			<header class="panel-heading font-bold">
+				Bast Number List
+				<i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+			</header>
+			<div class="tab-pane" id="datatable">
+				<section class="panel">
+					<div class="table-responsive">
+						<div class="table-responsive">
+							<table id="BastNo-list" class="table table-striped m-b-none">
+								<thead>
+									<tr>
+										<th width="10%">Bast Supplier No</th>
+										<th width="10%">Bast Customer No</th>
+										<th width="10%">Agreement No</th>
+										<th width="10%">Supplier Name</th>
+										<th width="10%">Customer Name</th>
+										<th width="10%">Unit Description</th>
+										<th width="10%">Created By</th>
+										<th width="10%">Created Date</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</section>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<p style="font-size:medium;"><span class="msgModal"></span> Confirmation</p>
+				<h4 class="modal-title"></h4>
+			</div>
+			<div class="panel-footer bg-light lter modal-body">
+				<p>Are you sure you want to <span class="msgModal"></span>?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="confirmModal" class="btn">Yes</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+

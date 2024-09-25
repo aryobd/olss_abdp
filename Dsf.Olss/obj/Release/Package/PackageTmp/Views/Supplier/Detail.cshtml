@@ -1,0 +1,255 @@
+﻿@model Dsf.Olss.Models.SupplierEditViewModel
+@{
+    ViewBag.Title = "Supplier Detail";
+}
+@StatusLabel.Create(Model.Supplier.IsDraft, Model.Supplier.IsSubmit, Model.Supplier.IsActive)
+<a href="@Url.Action("Index", "Supplier")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr />
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.Supplier.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.Supplier.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.Supplier.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.Supplier.LastModified))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.HiddenFor(o => o.ConnId)
+    @Html.HiddenFor(o => o.Supplier.IdSupplier)
+    @Html.HiddenFor(o => o.Supplier.IsActive)
+    @Html.HiddenFor(o => o.Supplier.IsDeleted)
+    @Html.HiddenFor(o => o.Supplier.IsSubmit)
+    @Html.HiddenFor(o => o.Supplier.IsDraft)
+<section class="panel">
+    <header class="panel-heading font-bold">Basic Information</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Supplier Code</label>
+                    <p class="form-control-static">@(Model.Supplier.SupplierCode ?? "-")</p>
+                </div>
+
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label>Supplier Category</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.Supplier.SupplierCategory, new { @value = "-" })</p>
+                </div>
+            </div>
+         
+        </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Main Supplier Code</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Supplier.MainSupplierCode, new { @value = "-" })</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Address</label>
+                        <p class="form-control-static">@(Model.Supplier.Address ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierName ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Telephone</label>
+                        <p class="form-control-static">@(Model.Supplier.Telephone ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Supplier Group</label>
+                        <p class="form-control-static">@Html.DisplayFor(o => o.Supplier.SupplierGroupCode, new { @value="-" })</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Economy Sector</label>
+                        <p class="form-control-static">@(Model.Supplier.BusinessEconomySector ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+</section>
+<!-- Corporate Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Corporate Information</header>
+    <div class="panel-body">
+        
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Date of Establishment</label>
+                        <p class="form-control-static">@(Model.Supplier.EstablishmentDate.HasValue ? string.Format("{0:MM/dd/yyyy}", Model.Supplier.EstablishmentDate) : "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Capital</label>
+                        <p class="form-control-static">@(Model.Supplier.Capital ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Number of Employees</label>
+                        <p class="form-control-static">@(Model.Supplier.NumberOfEmployee ?? "-")</p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Number of Branch</label>
+                        <p class="form-control-static">@(Model.Supplier.NumberOfBranch ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Go Public Company</label>
+                        <p class="form-control-static">@(Model.Supplier.GoPublicCompany.HasValue ? "Yes" : "No")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label style="visibility:hidden">this is hidden</label>
+                        <p class="form-control-static" style="visibility:hidden">Sales 3</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+
+
+                    <div class="form-group">
+                        <label>Bank 1</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.BankName).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 1</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.ShareHolder).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 1</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.MainCustomer).ElementAtOrDefault(0) ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+
+                    <div class="form-group">
+                        <label>Bank 2</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.BankName).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 2</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.ShareHolder).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 2</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.MainCustomer).ElementAtOrDefault(1) ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Bank 3</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.BankName).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Shareholder 3</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.ShareHolder).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Main Customer 3</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierCorporateInfoes.Select(o => o.MainCustomer).ElementAtOrDefault(2) ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+</section>
+<!-- Credit Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Payment Information</header>
+    <div class="panel-body">
+        
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Bank Account 1</label>
+                        <p class="form-control-static">@(Model.Supplier.SupplierPaymentInfoes.Select(o => o.BankAccount).FirstOrDefault() ?? "-")</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Branch Name</label>
+                        <div class="form-control-static">@(Model.Supplier.SupplierPaymentInfoes.Select(o => o.BranchName).FirstOrDefault() ?? "-")</div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Bank Account Number</label>
+                        <div class="form-control-static">@(Model.Supplier.SupplierPaymentInfoes.Select(o => o.BankAccountNumber).FirstOrDefault() ?? "-")</div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="form-group">
+                        <label>Name Account Number</label>
+                        <div class="form-control-static">@(Model.Supplier.SupplierPaymentInfoes.Select(o => o.NameAccountHolder).FirstOrDefault() ?? "-")</div>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+    <div class="panel-footer bg-light lter">
+        @StateButton.Create("detail", Model.Supplier.IsDraft, Model.Supplier.IsSubmit, Model.Supplier.IsActive)
+    </div>
+</section>
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var supplierHub = $.connection.Supplier;
+        var confirm = false;
+        supplierHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.Supplier.IdSupplier' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                    confirm = false;
+                });
+            }
+        };
+
+        supplierHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.Supplier.IdSupplier' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "Supplier")';
+                });
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

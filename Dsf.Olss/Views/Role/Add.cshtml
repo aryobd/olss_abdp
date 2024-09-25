@@ -1,0 +1,65 @@
+﻿@model Dsf.Olss.Data.Entities.Role
+@using System.Web.UI.WebControls;
+@using Dsf.Olss.Data.Entities;
+
+@{
+    ViewBag.Title = "Add New Role";
+    var permissions = ViewBag.Permission as IEnumerable<SelectListItem>;
+}
+
+<a href="@Url.Action("Index", "Role")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+
+@using (Html.BeginForm("Add", "Role", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading">Add New Role</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.RoleName)
+                        @Html.TextBoxFor(modelItem => Model.RoleName, new { @class = "form-control", @placeholder = "Role Name", @data_required = "true", @data_parsley_maxlength = "50" })
+                        @Html.ValidationMessageFor(modelItem => Model.RoleName)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.LabelFor(modelItem => Model.Remarks)
+                        @Html.TextBoxFor(modelItem => Model.Remarks, new { @class = "form-control", @placeholder = "Remarks", @data_parsley_maxlength = "200" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="panel-footer bg-light lter">
+            @StateButton.Create("add")
+        </footer>
+    </section>
+    @*<section class="panel">
+        <header class="panel-heading">Role Permission</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">*@
+                        @*@Html.CheckBoxListFor("selectedPermission", permissions)*@
+                        @*@foreach (var info in permissions)
+                            {
+
+                              <span>
+                                  <input type="checkbox" class="checkbox" name="selectedRoles" value="@info.IdPermission" id="@info.IdPermission" />
+                                  <label for="@info.PermissionName">@info.PermissionName</label>
+                              </span>
+                            }*@
+                    @*</div>
+                </div>
+            </div>
+        </div>
+    </section>*@
+    <section class="panel">
+
+    </section>
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+}

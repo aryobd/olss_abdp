@@ -1,0 +1,210 @@
+﻿@model Dsf.Olss.Models.PurchaseOrderViewModel
+
+<!--Agreement Popup-->
+<div class="modal fade" id="agreementModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Agreement Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="agreement-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Agreement Number</th>
+                                    <th width="20%">Agreement Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Supplier Popup-->
+<div class="modal fade" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Supplier Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="supplier-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Supplier Name</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Term and Condition Popup-->
+<div class="modal fade" id="termConditionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title" id="myModalLabel"><strong>Term and Condition Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <table id="termCondition-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Term and Condition</th>
+                                    <th width="20%">Param</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" name="addNewTerm" class="btn btn-primary" id="addNewTerm">Add new term</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <span id="msgModal"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!---Add new term popup-->
+ <div class="modal fade" id="addNewTermCondModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                 <h5 class="modal-title" id="myModalLabel"><strong>Add New Term and Condition</strong></h5>
+             </div>
+             <div class="panel-body">
+                 <div class="row">
+                     <div class="col-lg-12">
+                         <div class="form-group">
+                             <div class="col-lg-4"><label>First Term Condition </label> </div>
+                             <div class="col-lg-8">
+                                 <input type="text" class="form-control" name="TermDescFirst">
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="col-lg-12">
+                         <div class="form-group">
+                             <div class="col-lg-4"><label>Parameter</label></div>
+                             <div class="col-lg-8">
+                                 <input type="text" class="form-control" name="DefaultValue">
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <div class="row">
+                     <div class="col-lg-12">
+                         <div class="form-group">
+                             <div class="col-lg-4"><label>Second Term Condition</label></div>
+                             <div class="col-lg-8">
+                                 <input type="text" class="form-control" name="TermDescLast">
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="col-lg-12">
+                         <div class="form-group">
+                             <div class="col-lg-4"><label>Preview</label> </div>
+                             <div class="col-lg-8"> <textarea rows="4" cols="50" class="form-control" name="Preview" readonly="true"> </textarea></div>
+                         </div>
+                     </div>
+                 </div>
+
+                 <div class="row">
+                     <div class="col-lg-12">
+                         <div class="form-group">
+                             <div class="col-lg-4"> <label>Set as Default</label> </div>
+                             <div class="col-lg-6">
+                                 <div class="form-group">
+                                     <div class="col-lg-6">
+                                         <label><input type="radio" id="chkAppr" name="IsDefault" checked="checked" value="true"> Yes</label>
+                                     </div>
+                                     <div class="col-lg-6">
+                                         <label><input type="radio" id="chkAppr" name="IsDefault" value="false"> No</label>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="row">
+                     <div class="col-lg-12">
+                         <div class="form-group">
+                             <div class="col-lg-4"><label>Terms for</label></div>
+                             <div class="col-lg-6">
+                                 <div class="form-group">
+                                     <div class="col-lg-6">
+                                         <label><input type="checkbox" name="IsUnit" value="true"> Unit </label>
+                                     </div>
+                                     <div class="col-lg-6">
+                                         <label><input type="checkbox" name="IsAccessories" value="true"> Accessories</label>
+                                     </div>
+                                     <div class="col-lg-6">
+                                         <label><input type="checkbox" name="IsCarroserie" value="true"> Carrosserie</label>
+                                     </div>
+                                     <div class="col-lg-6">
+                                         <label><input type="checkbox" name="IsMaintenance" value="true"> Maintenance</label>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <input type="button" name="submitTermCondition" value="Add new term" class="btn btn-primary" onclick="AddNewTermCondition()" />
+                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+             </div>
+         </div>
+     </div>
+ </div>

@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Supplier Information";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@*<a href="@Url.Action("Add", "Supplier")" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>*@
+@*<input id="btnSycAcaSupplier" class="btn btn-primary" type="submit" name="SyncAcaSupplier" value="Sync With ACA Master" />
+<br><br>*@
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            Supplier List
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="supplier-list" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th width="20%">Supplier Code</th>
+                        <th width="25%">Supplier Name</th>
+                        <th width="15%">Supplier Address</th>
+                        <th width="15%">Telephone</th>
+                        <th width="15%">Business Economy Sector</th>
+                        <th width="15%">Capital</th>
+                        <th>Status</th>
+                        <th width="15%">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        var supplierHub = $.connection.Supplier;
+        var confirm = false;
+        supplierHub.client.OnSaveLock = function (id) {
+            if (!confirm) {
+                confirm = true;
+
+                location.reload();
+
+            }
+        };
+
+        supplierHub.client.OnStatusLock = function (id) {
+            if (!confirm) {
+                confirm = true;
+
+                location.reload();
+
+            }
+        };
+
+
+        //add by rudolf
+        $('#btnSycAcaSupplier').click(function (e) {
+
+            // prevent the default event behaviour
+            e.preventDefault();
+            $.ajax({
+                url: "@Url.Action("SyncACAMaster", "Supplier")",
+                type: "POST",
+                dataType: "json",
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    // perform your save call here
+
+                    if (data.status == "Success") {
+                        alert("Done");
+                    } else {
+                        alert("Error occurs on the Database level!");
+                    }
+                },
+                error: function () {
+                    alert("An error has occured!!!");
+                }
+            });
+        });
+        //end add
+
+
+        $.connection.hub.start();
+        $(document).ready(function () {
+
+            // datatable
+            $('#supplier-list').each(function () {
+                var oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "Supplier")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "SupplierCode" },
+                        { "mData": "SupplierName" },
+                        { "mData": "Telephone" },
+                        { "mData": "BusinessEconomySector" },
+                        { "mData": "Capital" },
+                        { "mData": "Address" },
+                        {
+                            "mData": "IsActive",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var isActive = oObj.aData["IsActive"];
+                                var isDraft = oObj.aData["IsDraft"];
+                                var isSubmit = oObj.aData["IsSubmit"];
+
+                                if (isActive === true && isDraft === false && isSubmit === false) {
+                                    return "<span class='label label-success'>active</span>";
+                                } else if (isActive === false && isDraft === false && isSubmit === false) {
+                                    return "<span class='label label-default bg-light'>inactive</span>";
+                                } else if ((isActive === false && isDraft === true && isSubmit === false) || (isActive === true && isDraft === true && isSubmit === false)) {
+                                    return "<span class='label label-default'>draft</span>";
+                                } else if ((isActive === false && isDraft === false && isSubmit === true) || (isActive === true && isDraft === false && isSubmit === true)) {
+                                    return "<span class='label label-info'>submitted</span>";
+                                } else {
+                                    return "no status";
+                                }
+                            }
+                        },
+                        {
+                            "mData": "IdSupplier",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData["IdSupplier"];
+                                return "<a title='Detail' href='@Url.Action("Detail", "Supplier")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;"
+                                    //<a title='Edit' href='@Url.Action("Edit", "Supplier")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;"
+                            }
+                        }
+                    ]
+                });
+            });
+        });
+</script>
+}
+

@@ -1,0 +1,506 @@
+﻿@model Dsf.Olss.Models.MGTBASTSuppCustViewModel
+
+@{
+    ViewBag.Title = "View BAST";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+}
+
+<a href="@Url.Action("Index", "MGTPreparationUnit")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate))</div>
+        </div>
+    </div>
+</div>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>BAST Supplier No</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.BASTSPNo, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>BAST Customer No</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.BASTCTNo, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Agreement No</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.AgreementNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Chassis No</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.ChassisNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Lesee</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.Lesse, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Machine No</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.EngineNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Supplier</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.Supplier, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>KM</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.KM, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Unit Description</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.UnitDescription, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Company Insurance</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.CompanyInsurance, null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Year</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.Year, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Insurance Number</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.InsuranceNumber, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Colour</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.Colour, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6">
+                        <label>Start Insurance</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.StartInsurance, String.Format("{{0:MM/dd/yyyy}}", Model.StartInsurance), new { @class = "form-control", @readonly = "readonly " })
+                            <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Police No</label></div>
+                    <div class="col-lg-6">
+                        @Html.TextBoxFor(o => o.PoliceNumber, null, new { @class = "form-control", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6">
+                        <label>End Insurance</label>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="input-group date">
+                            @Html.TextBoxFor(o => o.EndInsurance, String.Format("{{0:MM/dd/yyyy}}", Model.EndInsurance), new { @class = "form-control", @readonly = "readonly " })
+                            <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="scrollable wrapper">
+        <div class="tab-pane" id="datatable">
+            <section class="panel">
+                <table class="table table-striped table-input m-b-none text-sm">
+                    <thead>
+                        <tr>
+                            <td colspan="8">
+                                <label class="form-control">Document Complement</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th rowspan="2" width="1%">No</th>
+                            <th rowspan="2" width="39%">Description</th>
+                            <th colspan="2" width="10%" class="text-center">Available</th>
+                            <th colspan="2" width="20%" class="text-center">Expired Date</th>
+                            <th rowspan="2" width="20%">Remarks</th>
+                        </tr>
+                        <tr>
+                            <th width="10%" class="text-center">Yes</th>
+                            <th width="10%" class="text-center">No</th>
+                            <th width="10%" class="text-center">Start</th>
+                            <th width="10%" class="text-center">End</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p class="form-control-static">1</p>
+                            </td>
+                            <td>
+                                <p class="form-control-static">STNK</p>
+                            </td>
+                            <td>
+                                <div class="radioPositionCenter">
+                                    <label>@Html.RadioButtonFor(o => o.IsSTNK, true, new { disabled = "disabled" })</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="radioPositionCenter">
+                                    <label>@Html.RadioButtonFor(o => o.IsSTNK, false, new { disabled = "disabled" })</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(o => o.StartSTNK, String.Format("{{0:" + localeDateFormat + "}}", Model.StartSTNK), new { @class = "form-control", @readonly = "readonly" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(o => o.EndSTNK, String.Format("{{0:" + localeDateFormat + "}}", Model.EndSTNK), new { @class = "form-control", @readonly = "readonly" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(o => o.RemarkSTNK, new { @class = "form-control", @rows = "1", @readonly = "readonly " })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p class="form-control-static">2</p>
+                            </td>
+                            <td>
+                                <p class="form-control-static">STNK Sementara</p>
+                            </td>
+                            <td>
+                                <div class="radioPositionCenter">
+                                    <label>@Html.RadioButtonFor(o => o.IsSTNK2, true, new { disabled = "disabled" })</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="radioPositionCenter">
+                                    <label>@Html.RadioButtonFor(o => o.IsSTNK2, false, new { disabled = "disabled" })</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(o => o.StartSTNK2, String.Format("{{0:" + localeDateFormat + "}}", Model.StartSTNK2), new { @class = "form-control", @readonly = "readonly" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(o => o.EndSTNK2, String.Format("{{0:" + localeDateFormat + "}}", Model.EndSTNK2), new { @class = "form-control", @readonly = "readonly" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(o => o.RemarkSTNK2, new { @class = "form-control", @rows = "1", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p class="form-control-static">3</p>
+                            </td>
+                            <td>
+                                <p class="form-control-static">KEUR</p>
+                            </td>
+                            <td>
+                                <div class="radioPositionCenter">
+                                    <label>@Html.RadioButtonFor(o => o.IsKEUR, true, new { disabled="disabled"})</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="radioPositionCenter">
+                                    <label>@Html.RadioButtonFor(o => o.IsKEUR, false, new { disabled = "disabled" })</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group">
+                                    @Html.TextBoxFor(o => o.StartKEUR, String.Format("{{0:" + localeDateFormat + "}}", Model.StartKEUR), new { @class = "form-control", @readonly = "readonly" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group ">
+                                    @Html.TextBoxFor(o => o.EndKEUR, String.Format("{{0:" + localeDateFormat + "}}", Model.EndKEUR), new { @class = "form-control", @readonly = "readonly" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(o => o.RemarkKEUR, new { @class = "form-control", @rows = "1", @readonly = "readonly " })
+                            </td>
+                        <tr></tr>
+                    </tbody>
+                </table>
+            </section>
+            <br>
+            <section>
+                <div class="col-log-2">
+                    <ul class="nav nav-tabs pull-left bg-light">
+                        <li class="active"><a href="#uve" data-toggle="tab">Unit/Vehicle Equipment</a></li>
+                        <li><a href="#uvc" data-toggle="tab">Unit/Vehicle Condition</a></li>
+                        <li><a href="#carrosserie" data-toggle="tab">Carrosserie</a></li>
+                        <li><a href="#accessories" data-toggle="tab">Accessories</a></li>
+                    </ul>
+                    <!-- -----------------------UNIT VEHICLE Unit/Vehicle Equipment --------------------------------- -->
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="uve">
+                            <section class="panel">
+                                <table class="table table-striped m-b-none" id="TableTermsAndConditions">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" width="1%">No</th>
+                                            <th rowspan="2" width="31%">Description</th>
+                                            <th colspan="2" width="10%" class="text-center">Available</th>
+                                            <th rowspan="2" width="28%">Remarks</th>
+                                        </tr>
+                                        <tr>
+                                            <th width="8%" class="text-center">Yes</th>
+                                            <th width="8%" class="text-center">No</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Dari Sini Dynamic from DB TAB 1-->
+                                    <tbody></tbody>
+                                    <!-- /Dari Sini Dynamic from DB TAB 1-->
+                                </table>
+                            </section>
+                        </div>
+
+                        <!-- -----------------------UNIT VEHICLE Unit/Vehicle Condition --------------------------------- -->
+                        <div class="tab-pane" id="uvc">
+                            <section class="panel">
+                                <table class="table table-striped m-b-none">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" width="1%">No</th>
+                                            <th rowspan="2" width="31%">Description</th>
+                                            <th colspan="2" width="10%" class="text-center">Available</th>
+                                            <th rowspan="2" width="28%">Remarks</th>
+                                        </tr>
+                                        <tr>
+                                            <th width="8%" class="text-center">Yes</th>
+                                            <th width="8%" class="text-center">No</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Dari Sini Dynamic from DB TAB 2-->
+                                    <tbody></tbody>
+                                    <!-- Dari Sini Dynamic from DB TAB 2-->
+                                </table>
+                            </section>
+                        </div>
+
+                        <!-- -----------------------UNIT VEHICLE carrosserie --------------------------------- -->
+                        <div class="tab-pane" id="carrosserie">
+                            <section class="panel">
+                                <table class="table table-striped m-b-none" id="TableTermsAndConditions">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" width="1%">No</th>
+                                            <th rowspan="2" width="31%">Description</th>
+                                            <th colspan="2" width="10%" class="text-center">Available</th>
+                                            <th rowspan="2" width="28%">Remarks</th>
+                                        </tr>
+                                        <tr>
+                                            <th width="8%" class="text-center">Yes</th>
+                                            <th width="8%" class="text-center">No</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Dari Sini Dynamic from DB TAB 3-->
+                                    <tbody>
+
+                                    </tbody>
+                                    <!-- Dari Sini Dynamic from DB TAB 3-->
+                                </table>
+                            </section>
+                        </div>
+
+                        <!-- -----------------------UNIT VEHICLE accessories --------------------------------- -->
+                        <div class="tab-pane" id="accessories">
+                            <section class="panel">
+                                <table class="table table-striped m-b-none" id="TableTermsAndConditions">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2" width="1%">No</th>
+                                            <th rowspan="2" width="31%">Description</th>
+                                            <th colspan="2" width="10%" class="text-center">Available</th>
+                                            <th rowspan="2" width="28%">Remarks</th>
+                                        </tr>
+                                        <tr>
+                                            <th width="8%" class="text-center">Yes</th>
+                                            <th width="8%" class="text-center">No</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Dari Sini Dynamic from DB TAB 4-->
+                                    <tbody></tbody>
+                                    <!-- Dari Sini Dynamic from DB TAB 4-->
+                                </table>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+<section class="panel">
+    <header class="panel-heading font-bold">Remark</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        @Html.TextAreaFor(o => o.Remarks, new { @class = "form-control", @rows = "3", @readonly = "readonly " })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="panel">
+    <header class="panel-heading font-bold">Revision History</header>
+    <div class="panel-body">
+        <table class="table table-striped table-input m-b-none text-sm">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RevHistories != null)
+                {
+                    for (var i = 0; i < Model.RevHistories.Count; i++)
+                    {
+                        <tr>
+                            <td width="20">
+                                @Html.HiddenFor(o => o.RevHistories[i].CreateBy)
+                                <label class="form-control">@Model.RevHistories[i].CreateBy</label>
+                            </td>
+                            <td width="20">
+                                @Html.HiddenFor(o => o.RevHistories[i].CreateDate)
+                                <label class="form-control">@Model.RevHistories[i].CreateDate</label>
+                            </td>
+                            <td width="20">
+                                @Html.HiddenFor(o => o.RevHistories[i].Action)
+                                <label class="form-control">@Model.RevHistories[i].Action</label>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+
+<script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+<script src="@Url.Content("~/Content/js/BASTUnitReceive.js")"></script>
+<script>
+    // Global variable for CustomerVisitSurvey.js
+    var serverRoot = '@Url.Content("~")';
+
+    $(document).ready(function () {
+        var id = @Model.IdTbMGTBASTSupCust;
+        loadBastEquipmentForViewAction(id);
+    });
+</script>

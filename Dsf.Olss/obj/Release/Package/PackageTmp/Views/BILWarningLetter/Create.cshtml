@@ -1,0 +1,279 @@
+﻿@model Dsf.Olss.Models.BILWarningLetterViewModel
+
+@{
+    ViewBag.Title = "Create Warning Letter";
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/fuelux/fuelux.css") rel="stylesheet" />
+}
+
+<section class="scrollable wrapper">
+    <a href=@Url.Action("Index", "BILOverdue") class="btn btn-white">
+        <i class="fa fa-chevron-left"></i> Back
+    </a> <br /><br />
+    @Message.Display(ViewBag.Success, ViewBag.Error)
+    <hr>
+    @using (Html.BeginForm("Create", "BILWarningLetter", FormMethod.Post))
+    {
+        <!--<header class="panel-heading font-bold">
+            Warning  Letter Creation
+        <br> !-->
+
+            <section class="panel">
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-3"><label>Agreement Number</label></div>
+                                <div class="col-lg-6">
+                                    @Html.TextBoxFor(o => o.AgreementNumber, null, new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.HiddenFor(o => o.IdTb_BIL_PaySchedule)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-3"><label>Agreement Period</label></div>
+                                <div class="col-lg-6">
+                                    @Html.TextBoxFor(o => o.AgreementPeriod, null, new { @class = "form-control", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-3"><label>Authorized Person</label></div>
+                                <div class="col-lg-6">
+                                    @Html.TextBoxFor(o => o.AuthorizedPerson, null, new { @class = "form-control mandatory" })
+                                    @Html.ValidationMessageFor(o => o.AuthorizedPerson)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-3"><label>Unit Type Lease</label></div>
+                                <div class="col-lg-6">
+                                    @Html.TextBoxFor(o => o.UnitTypeLease, null, new { @class = "form-control", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-3"><label>Position</label></div>
+                                <div class="col-lg-6">
+                                    @Html.TextBoxFor(o => o.Position, null, new { @class = "form-control mandatory" })
+                                    @Html.ValidationMessageFor(o => o.Position)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-3"><label>Due Date Payment</label></div>
+                                <div class="col-lg-6">
+                                    <div class="input-group date">
+                                        @Html.TextBoxFor(o => o.ValidDate, null, new { @class = "form-control datepicker-input mandatory" })
+                                        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                                    </div>
+                                    @Html.ValidationMessageFor(o => o.ValidDate)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="panel-body">
+                        <button class="btn btn-primary add_btn" name="add_btn" type="button" onclick="AddItem(@Model.IdTb_BIL_PaySchedule)">Add Item</button><br/><br/>
+                        <table class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="15%">Invoice Number</th>
+                                    <th width="15%">Usage Period</th>
+                                    <th width="15%" class="text-right">Lease Amount</th>
+                                    <th width="10%" class="text-right">PPN</th>
+                                    <th width="15%" class="text-right">Lease + PPN</th>
+                                    <th width="15%" class="text-right">Penalty Amount</th>
+                                    <th width="10%">Due Date</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="container">
+                                <!-- nanti rows nya muncul di sini -->
+                                @if (Model.WarningLetterDtl.Count == 0)
+                                {
+                                    <tr rownumber="1">
+                                        <td>
+                                            <div>
+                                                <div class="input-group">
+                                                    <input id="InvoiceNo1" class="form-control mandatory invoice-no" type="text">
+                                                    <span class="input-group-btn">
+                                                        <button id="btnLoadInvoice" class="btn btn-white" data-toggle="modal" data-target="#invoiceReceiptModal" type="button" onclick="LoadInvoiceReceipt('1', '@Model.IdTb_BIL_PaySchedule')">...</button>
+                                                    </span>
+                                                </div>
+                                                <span class="field-validation-valid" data-valmsg-for="InvoiceNo1" data-valmsg-replace="true"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <input id="UsagePeriod1" type="text" readonly="readonly" class="form-control">
+                                                <input id="StartPeriod1" type="hidden">
+                                                <input id="EndPeriod1" type="hidden">
+                                            </div>
+                                        </td>
+                                        <td><div><input id="LeaseAmount1" type="text" readonly="readonly" class="form-control" style="text-align: right;"></div></td>
+                                        <td><div><input id="PPN1" type="text" readonly="readonly" class="form-control" style="text-align: right;"></div></td>
+                                        <td><div><input id="LeasePPN1" type="text" readonly="readonly" class="form-control" style="text-align: right;"></div></td>
+                                        <td><div><input id="PenaltyAmount1" type="text" readonly="readonly" class="form-control" style="text-align: right;"></div></td>
+                                        <td><div><input id="DueDate1" type="text" readonly="readonly" class="form-control"></div></td>
+                                        <td style="text-align: center;">
+                                            <button class="btn btn-danger remove_item" name="remove_btn" style="height: 30px;" type="button" disabled>-</button>
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    for (int index = 0; index < Model.WarningLetterDtl.Count; index++)
+                                    {
+                                        <tr rownumber="@index">
+                                            <td>
+                                                <div class="input-group">
+                                                    @Html.TextBoxFor(x => x.WarningLetterDtl[index].InvoiceNo, new { @class = "form-control mandatory InvoiceNo" })
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-white" data-toggle="modal" data-target="#invoiceReceiptModal" type="button" onclick="LoadInvoiceReceipt('@index', '@Model.IdTb_BIL_PaySchedule')" tabindex="1">...</button>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.WarningLetterDtl[index].InvoiceNo)
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(x => x.WarningLetterDtl[index].UsagePeriod, new { @class = "form-control UsagePeriod", @readonly = "readonly" })
+                                                @Html.HiddenFor(x => x.WarningLetterDtl[index].StartPeriod, new { @class = "StartPeriod" })
+                                                @Html.HiddenFor(x => x.WarningLetterDtl[index].EndPeriod, new { @class = "EndPeriod" })
+                                            </td>
+                                            <td>@Html.TextBoxFor(x => x.WarningLetterDtl[index].LeaseAmount, "{0:n0}", new { @class = "form-control LeaseAmount", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                            <td>@Html.TextBoxFor(x => x.WarningLetterDtl[index].PPN, "{0:n0}", new { @class = "form-control PPN", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                            <td>@Html.TextBoxFor(x => x.WarningLetterDtl[index].LeasePPN, "{0:n0}", new { @class = "form-control LeasePPN", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                            <td>@Html.TextBoxFor(x => x.WarningLetterDtl[index].PenaltyAmount, "{0:n0}", new { @class = "form-control PenaltyAmount", @readonly = "readonly", @style = "text-align: right;" })</td>
+                                            <td>@Html.TextBoxFor(x => x.WarningLetterDtl[index].DueDate, new { @class = "form-control DueDate", @readonly = "readonly" })</td>
+                                            <td style="text-align: center;">
+                                                @if (Model.WarningLetterDtl.Count > 1)
+                                                {
+                                                    <button class='btn btn-danger deleterow' type='button' style="height: 30px;" onclick="DeleteItem(@index)">-</button>
+                                                }
+                                                else
+                                                {
+                                                    <button class='btn btn-danger deleterow' type='button' style="height: 30px;" disabled>-</button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        <div class="panel-footer bg-light lter">
+            <input type="button" name="statusButton" class="btn btn-info" data-toggle="modal" data-target="#confirmationModal" value="Save as Draft" />
+            <input type="button" name="statusButton" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal" value="Submit" />
+        </div>
+    }
+</section>
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/BILWarningLetter.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script>
+        //style.js
+        $(document).ready(function () {
+            function centerModal() {
+                $(this).css('display', 'block');
+                var $dialog = $(this).find(".modal-dialog");
+                var offset = ($(window).height() - $dialog.height()) / 2;
+
+                // Center modal vertically in window
+                $dialog.css("margin-top", offset);
+            }
+
+            $('.modal').on('show.bs.modal', centerModal);
+            $(window).on("resize", function () {
+                $('.modal:visible').each(centerModal);
+            });
+
+            $('#myModal').on('show.bs.modal', function () {
+                $('.modal .modal-body').css('overflow-y', 'auto');
+                $('.modal .modal-body').css('max-height', $(window).height() * 0.7);
+            });
+        });
+    </script>
+    <script>
+        var invoiceReceiptCount = @Html.Raw(Json.Encode(Model.InvoiceReceiptCount));
+        var payScheduleId = @Html.Raw(Json.Encode(Model.IdTb_BIL_PaySchedule));
+        var selectedInvoiceNo = [];
+        var serverRoot = '@Url.Content("~")';
+        var invoiceNoList = @Html.Raw(Json.Encode(Model.WarningLetterDtl));
+
+        if(invoiceNoList.length != 0) {
+            var isNotEmpty = false;
+            for (index = 0; index < invoiceNoList.length; index++) {
+                isNotEmpty = invoiceNoList[index].InvoiceNo != "" && invoiceNoList[index].InvoiceNo != null;
+                if (isNotEmpty) {
+                    selectedInvoiceNo.push(invoiceNoList[index].InvoiceNo);
+                }
+            }
+        }
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+            var message = "";
+            var submitvalue = $(this).val();
+
+            if(submitvalue == "Save as Draft") {
+                message = "save warning letter as draft";
+            }
+            else {
+                message = "submit warning letter";
+            }
+
+            $('.confirmationMessage').text(message);
+        });
+
+        $('#confirmModal').click(function (e) {
+            $(this).prop('disabled', true);
+
+            UpdateNames();
+
+            var submitvalue = $('input[name="statusButton"]').val();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+        });
+        
+        $(document).ready(function () {
+            if(invoiceReceiptCount < 2) {
+                $('button[name="add_btn"]').attr('disabled', 'disabled');
+            }
+
+            if (invoiceReceiptCount === $('#container tr').length) {
+                $('button[name="add_btn"]').attr('disabled', 'disabled').removeAttr('onclick');
+            }
+        });
+</script>
+}

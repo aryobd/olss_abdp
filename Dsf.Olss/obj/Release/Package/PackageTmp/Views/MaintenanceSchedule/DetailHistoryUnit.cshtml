@@ -1,0 +1,371 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@{
+    ViewBag.Title = "Detail History of Unit";
+    // Get loading image url
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+    var jsID = Guid.NewGuid().ToString();
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/css/style.css")" type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "MaintenanceSchedule")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+
+<div id="alert_placeholder"></div>
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">Work Order Number</option>
+                            <option value="2">Actual KM</option>
+                            <option value="3">Maintenance Category</option>
+                            <option value="4">Workshop</option>
+                            <option value="5">Unit Brand</option>
+                            <option value="6">Maintenance Type</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Start Period</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>End Period</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            List of History Unit
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="DocumentList">
+            <div class="table-responsive">
+                <table id="table-list" class="table table-striped" width="100%">
+                    <thead class="table-bordered">
+                        <tr>
+                            <th rowspan="2">
+                                <div class="header-grid-short">Work Order No.</div>
+                            </th>
+                            <th rowspan="2">
+                                <div class="header-grid-date">Maintenance Date</div>
+                            </th>
+                            <th rowspan="2">
+                                <div class="header-grid-very-short">Actual KM</div>
+                            </th>
+                            <th rowspan="2">
+                                <div class="header-grid-short">Maintenance Category</div>
+                            </th>
+                            <th rowspan="2">
+                                <div class="header-grid-medium">Workshop</div>
+                            </th>
+                            <th rowspan="2">
+                                <div class="header-grid-medium">Unit Brand</div>
+                            </th>
+                            <th colspan="5" class="text-center">
+                                Maintenance
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="header-grid-medium">Type</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Outstanding <br> Budget</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Item</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-medium">Actual Cost</div>
+                            </th>
+                            <th>
+                                <div class="header-grid-short">Action</div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <div id='loadingmessage' style='display:none'>
+                <img src='@Url.Content(ImgUrl)' />
+            </div>
+            <input id="btnPrintAll" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+        </footer>
+    </section>
+
+</div>
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/js/MaintenanceSchedule.js?" + jsID)"></script>
+    <script>
+    var serverRoot = '@Url.Content("~")';
+    var oTable;
+    $(document).ready(function () {
+        //datatable
+        var oTable;
+        $('#table-list').each(function() {
+            oTable = $(this).dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "bResponsive": true,
+                "aaSorting": [[10, "desc"]],
+                "sScrollXInner": "200%",
+                "sAjaxSource": "@Url.Action("AjaxHandlerHistoryMaintenanceSch", "MaintenanceSchedule")",
+                "fnServerParams": function(aoData) {
+                    aoData.push(
+                        { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                        { "name": "txtSearch", "value": $("#txtSearch").val() },
+                        { "name": "txtStartDate", "value": $("#txtStartDate").val() },
+                        { "name": "txtEndDate", "value": $("#txtEndDate").val() },
+                        { "name": "idParam", "value": @ViewBag.IdMTNParam }
+                            );
+                },
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "bAutoWidth": false,
+                "aoColumns": [
+                    { "mData": "WONum" },
+                    { "mData": "MTDate" },
+                    { "mData": "ActualKM" },
+                    { "mData": "MaintenanceCategory" },
+                    { "mData": "Workshop" },
+                    { "mData": "UnitType" },
+                    { "mData": "MTType" },
+                    { "mData": "MTOutstandingBudget" },
+                    { "mData": "MaintenanceItemName" },
+                    { "mData": "MTActualCost" },
+                    {
+                        "mData": null,
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function (oObj) {
+                            var IDHistoryMT = oObj.aData["IDHistoryMT"];
+                            //alert(IDHistoryMT);
+                            var status = oObj.aData["StatusDescription"];
+                            var retElement = "";
+                            retElement += "<div style='width: 120px;'>";
+                            retElement += '<input type="hidden" value="' + IDHistoryMT + '" id="IDHistoryMT">';
+                            if (status === '@StatusCode.Draft') {
+                                retElement += "<a class='btn btn-primary btn-sm' role='button' onclick='UpdateRowHistoryUnitMaintenance(" + IDHistoryMT + ")' data-toggle='modal' data-target='#updateHistoryUnitModal'>Update</a>";
+                            }
+                            else if (status === '@StatusCode.Firmed') {
+                                retElement += "<a class='btn btn-primary btn-sm disabled' role='button' data-toggle='modal' data-target='#'>Update</a>";
+                                retElement += "<a title='Send To Staging' href='@Url.Action("SendToStaging", "MaintenanceSchedule")/" + IDHistoryMT + "' class='btn btn-info btn-xs'><i class='fa fa-edit'></i></a> </a>&nbsp;"
+                                //retElement += "<a title='Send To Staging' href='@Url.Action("SendToStaging", "MaintenanceSchedule")/7844' class='btn btn-info btn-xs'><i class='fa fa-edit'></i></a> </a>&nbsp;"
+
+                            }
+                            retElement += "</div>";
+                            return retElement;
+                        }
+                    },
+                        { "mData": "SortableMTDate", "bVisible": false }
+                ],
+                "aoColumnDefs": [
+                    { "sWidth": "50%", "aTargets": [0] },
+                    { "sClass": "center", "aTargets": [1] }
+                ],
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        "dataType": 'json',
+                        "type": "POST",
+                        "url": sSource,
+                        "data": aoData,
+                        "success": fnCallback,
+                        "timeout": 0,
+                        "error": handleAjaxError
+                    });
+                },
+                "fnRowCallback": function(nRow, aData, iDisplayIndex) {
+                    $('td:eq(2)', nRow).css("text-align", "right");
+                    $('td:eq(7)', nRow).css("text-align", "right");
+                    $('td:eq(9)', nRow).css("text-align", "right");
+                    $('td:eq(10)', nRow).css("text-align", "center");
+                    return nRow;
+                }
+            });
+        });
+
+        var htmlTemp = '<div class="dataTables_wrapper row">';
+        var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+        var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+        $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+        htmlTemp += fakePagination + '</div>';
+        $('.table-responsive').append(htmlTemp);
+        $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+        $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+        $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+
+    });
+
+    //handling Error
+
+    function handleAjaxError(textStatus) {
+        if (textStatus === 'timeout') {
+            bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+        } else {
+            bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+        }
+    }
+
+    bootstrap_alert = function() {
+    };
+
+    bootstrap_alert.error = function(header, message) {
+        $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+    };
+
+    // Searching
+    $('#btnSatus').on('click', function(e) {
+        e.preventDefault();
+
+        if (checkDate() === false) {
+            $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+        }
+    });
+
+    //status button
+    $('input[name="statusBtn"]').on('click', function (e) {
+        var statusHistory = "";
+        var submitvalue = $(this).val();
+        if (submitvalue === 'Save') {
+            statusHistory = 'Save as Draft';
+        } else if (submitvalue === 'Validate') {
+            statusHistory = 'Firmed';
+        }
+
+        UpdateMTNItemList(statusHistory);
+    });
+
+    $('#btnPrintAll').on('click', function(e) {
+        e.preventDefault();
+        var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+        var txtSearch = $("#txtSearch").val();
+        var txtStartDate = $("#txtStartDate").val();
+        var txtEndDate = $("#txtEndDate").val();
+        var idParam = '@ViewBag.IdMTNParam';
+        var policeNumber = '@ViewBag.PoliceNumber';
+        var getUrl = window.location;
+
+        // Ajax start animation progress
+        $('#loadingmessage').show();
+        $('#btnPrintAll').hide();
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PrintReportHistory", "MaintenanceSchedule")',
+            data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate, 'idParam': idParam, 'policeNumber':policeNumber }),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'text',
+            global: false,
+            success: function(response, status, xhr) {
+                // check for a filename
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                        response = filename;
+                    }
+                }
+                if (response !== "") {
+                    window.location = "/" + getUrl.pathname.split('/')[1] + "/Base/Download?fileName=" + response + "&rptType=" + 12;
+                }
+                // Ajax stop animation progress
+                $('#loadingmessage').hide();
+                $('#btnPrintAll').show();
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                alert('Cannot download file..! Error is occurs');
+                // Ajax stop animation progress
+                $('#loadingmessage').hide();
+                $('#btnPrintAll').show();
+            }
+        });
+    });
+
+    // Checking range date
+
+    function checkDate() {
+
+        var resultCheck = false;
+        var startDate = $('#txtStartDate').val();
+        var endDate = $('#txtEndDate').val();
+        startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+        endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+        if (startDate > endDate) {
+            resultCheck = true;
+            alert('Start Date should be less than End Date..!');
+        }
+        return resultCheck;
+    }
+
+    // Convert string to Date
+
+    function strToDate(date, format, delimiter) {
+        var formatLowerCase = format.toLowerCase();
+        var formatItems = formatLowerCase.split(delimiter);
+        var dateItems = date.split(delimiter);
+        var monthIndex = formatItems.indexOf("mm");
+        var dayIndex = formatItems.indexOf("dd");
+        var yearIndex = formatItems.indexOf("yyyy");
+        var month = parseInt(dateItems[monthIndex]);
+        month -= 1;
+        var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+        return formatedDate;
+    }
+</script>
+}

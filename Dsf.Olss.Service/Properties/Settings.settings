@@ -1,0 +1,29 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Dsf.Olss.Service.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ACAPRODVM" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source="(DESCRIPTION=(ADDRESS=(PORT=1521)(HOST=sndsfpdaca-scan.corp.dipostar.com)(PROTOCOL=TCP))(CONNECT_DATA=(SERVICE_NAME=ACAPROD)))";Persist Security Info=True;User ID=PDBACA02;Password=Pdbaca2014;Unicode=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.OracleClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source="(DESCRIPTION=(ADDRESS=(PORT=1521)(HOST=sndsfpdaca-scan.corp.dipostar.com)(PROTOCOL=TCP))(CONNECT_DATA=(SERVICE_NAME=ACAPROD)))";Persist Security Info=True;User ID=PDBACA02;Password=Pdbaca2014;Unicode=True</Value>
+    </Setting>
+    <Setting Name="OLSSMFAPPLConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;DATA SOURCE=192.168.132.107:1521/MFQA;PASSWORD=OLSS_MFAPPL;PERSIST SECURITY INFO=True;USER ID=OLSS_MFAPPL&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.OracleClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">DATA SOURCE=192.168.132.107:1521/MFQA;PASSWORD=OLSS_MFAPPL;PERSIST SECURITY INFO=True;USER ID=OLSS_MFAPPL</Value>
+    </Setting>
+    <Setting Name="olss_prod_4ConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=10.1.1.38\SQLEXP2012;Initial Catalog=olss_prod_4_20210310_crMgtRpt_P1_uat;Persist Security info=True;user id=sa;password=Ultron999;MultipleActiveResultSets=True&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=10.1.1.38\SQLEXP2012;Initial Catalog=olss_prod_4_20210310_crMgtRpt_P1_uat;Persist Security info=True;user id=sa;password=Ultron999;MultipleActiveResultSets=True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

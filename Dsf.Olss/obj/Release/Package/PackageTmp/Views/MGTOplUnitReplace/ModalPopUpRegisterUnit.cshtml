@@ -1,0 +1,325 @@
+﻿@model Dsf.Olss.Models.MGTUnitReplacement
+@{
+    SelectListItem add = new SelectListItem();
+    add.Selected = true;
+    add.Text = "Add";
+    add.Value = "0";
+    SelectListItem edit = new SelectListItem();
+    edit.Text = "Update";
+    edit.Value = "1";
+    List<SelectListItem> itemAction = new List<SelectListItem>();
+    itemAction.Add(add);
+    itemAction.Add(edit);
+}
+<!-- RegisterUnit -->
+<div class="modal fade" id="RegisterUnitModal" role="dialog" data-backdrop="static">
+    @using (Ajax.BeginForm("Index", "MGTOplUnitReplace", new AjaxOptions { HttpMethod = "POST", OnComplete = "postOnComplete" }))
+    {
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Register Unit Replacement</h4>
+                </div>
+                <div class="modal-body panel" style="padding-bottom: 5px; overflow-y: auto; max-height: 685.3px;">
+                    <form id="myForm" method="post">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @Html.LabelFor(x => x.Action)
+                                <div class="form-group">
+                                    @Html.DropDownListFor(x => x.Action, itemAction, new { @id = "Action", @class = "form-control mandatory" })
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mydiv">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    @Html.LabelFor(x => x.RegNo)
+                                    <div class="form-group">
+                                        <input readonly class="form-control mandatory" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="mydivHide">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    @Html.LabelFor(x => x.RegNo)
+                                    <div class="form-group input-group">
+                                        @Html.HiddenFor(x => x.IdTb_MGT_RegRPC, new { @id = "IdTb_MGT_RegRPC" })
+                                        @Html.TextBoxFor(x => x.RegNo, new { @id = "RegNo", @readonly = "true", @class = "form-control mandatory" })
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-white" data-toggle="modal" data-target="#RegistrationNo" type="button" onclick='PopulatePrompt("RegistrationNo")'>...</button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                @Html.LabelFor(x => x.IsActive)
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr class="form-group mandatory">
+                                                <td>@Html.RadioButtonFor(x => x.IsActive, true, new { @id = "statActive" }) Active</td>
+                                                <td>@Html.RadioButtonFor(x => x.IsActive, false, new { @id = "statNotActive" }) Not Active</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="padding: 0px 15px;">@Html.ValidationMessageFor(x => x.IsActive, string.Empty, new { @id = "errIsActive" })</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <section class="panel">
+                            <section class="panel-heading">
+                                <header class="font-bold">Replacement Unit</header>
+                            </section>
+                            <section class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.OPLBranch.BranchName)
+                                        <div class="form-group ">
+                                            <div class="form-group input-group">
+                                                @Html.HiddenFor(x => x.OPLBranch.IdTb_OPL_Branch, new { @id = "IdTb_OPL_Branch" })
+                                                @Html.TextBoxFor(x => x.OPLBranch.BranchName, new { @id = "BranchName", @readonly = "true", @class = "form-control mandatory" })
+                                                <span class="input-group-btn">
+                                                    <button id="btnBranchName" class="btn btn-white" data-toggle="modal" data-target="#DSFOfficeData" type="button" onclick='PopulatePrompt("DSFOfficeData")'>...</button>
+                                                </span>
+                                            </div>
+                                            @Html.ValidationMessageFor(x => x.OPLBranch.BranchName, string.Empty, new { @id = "errBranchName" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.RPCUnit.RPCPoliceNo)
+                                        <div class="form-group input-group">
+                                            @Html.HiddenFor(x => x.RPCUnit.IdRPCUnit, new { @id = "IdRPCUnit" })
+                                            @Html.TextBoxFor(x => x.RPCUnit.RPCPoliceNo, new { @id = "RPCPoliceNo", @class = "form-control mandatory" })
+                                            <span class="input-group-btn">
+                                                <button id="btnRPCPoliceNo" class="btn btn-white" data-toggle="modal" data-target="#policeNumberDataRPL" type="button" onclick='PopulatePrompt("policeNumberDataRPL")'>...</button>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(x => x.RPCUnit.RPCPoliceNo, string.Empty, new { @id = "errRPCPoliceNo" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.RPCUnit.Location)
+                                        <div class="form-group ">
+                                            @Html.TextBoxFor(x => x.RPCUnit.Location, new { @id = "Location", @class = "form-control mandatory" })
+                                            @Html.ValidationMessageFor(x => x.RPCUnit.Location, string.Empty, new { @id = "errLocation" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.RPCUnit.ModelInfo.ModelName)
+                                        <div class="form-group input-group">
+                                            @Html.HiddenFor(x => x.RPCUnit.ModelInfo.IdProduct, new { @id = "IdProduct" })
+                                            @Html.TextBoxFor(x => x.RPCUnit.ModelInfo.ModelName, new { @id = "ModelName", @readonly = "true", @class = "form-control mandatory" })
+                                            <span class="input-group-btn">
+                                                <button id="btnModelName" class="btn btn-white" data-toggle="modal" data-target="#ModelData" type="button" onclick='PopulatePrompt("ModelData")'>...</button>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(x => x.RPCUnit.ModelInfo.ModelName, string.Empty, new { @id = "errModelName" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.RPCUnit.EngineNumber)
+                                        <div class="form-group ">
+                                            @Html.TextBoxFor(x => x.RPCUnit.EngineNumber, new { @id = "EngineNumber", @class = "form-control mandatory" })
+                                            @Html.ValidationMessageFor(x => x.RPCUnit.EngineNumber, string.Empty, new { @id = "errEngineNumber" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.RPCUnit.ChassisNumber)
+                                        <div class="form-group ">
+                                            @Html.TextBoxFor(x => x.RPCUnit.ChassisNumber, new { @id = "ChassisNumber", @class = "form-control mandatory" })
+                                            @Html.ValidationMessageFor(x => x.RPCUnit.ChassisNumber, string.Empty, new { @id = "errChassisNumber" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.RPCUnit.Colour)
+                                        <div class="form-group ">
+                                            @Html.TextBoxFor(x => x.RPCUnit.Colour, new { @id = "Colour", @class = "form-control mandatory" })
+                                            @Html.ValidationMessageFor(x => x.RPCUnit.Colour, string.Empty, new { @id = "errColour" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <section class="panel">
+                                    <section class="panel-heading">
+                                        <header class="font-bold">STNK</header>
+                                    </section>
+                                    <section class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(x => x.RPCUnit.StartSTNK)
+                                                <div class="input-group date inmod">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.StartSTNK, new { @id = "StartSTNK", @class = "form-control mandatory datepicker", @style = "padding: 6px 12px;" })
+                                                    <span class="input-group-addon">
+                                                        <span id="btnStartSTNK" class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.RPCUnit.StartSTNK, string.Empty, new { @id = "errStartSTNK" })
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(x => x.RPCUnit.EndSTNK)
+                                                <div class="input-group date inmod">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.EndSTNK, new { @id = "EndSTNK", @class = "form-control mandatory datepicker", @style = "padding: 6px 12px;" })
+                                                    <span class="input-group-addon">
+                                                        <span id="btnEndSTNK" class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.RPCUnit.EndSTNK, string.Empty, new { @id = "errEndSTNK" })
+                                            </div>
+                                        </div>
+                                    </section>
+                                </section>
+                                <section class="panel">
+                                    <section class="panel-heading">
+                                        <header class="font-bold">KEUR</header>
+                                    </section>
+                                    <section class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(x => x.RPCUnit.StartKEUR)
+                                                <div class="input-group date inmod">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.StartKEUR, new { @id = "StartKEUR", @class = "form-control datepicker", @style = "padding: 6px 12px;" })
+                                                    <span class="input-group-addon">
+                                                        <span id="btnStartKEUR" class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.RPCUnit.StartKEUR, string.Empty, new { @id = "errStartKEUR" })
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(x => x.RPCUnit.EndKEUR)
+                                                <div class="input-group date inmod">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.EndKEUR, new { @id = "EndKEUR", @class = "form-control datepicker", @style = "padding: 6px 12px;" })
+                                                    <span class="input-group-addon">
+                                                        <span id="btnEndKEUR" class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.RPCUnit.EndKEUR, string.Empty, new { @id = "errEndKEUR" })
+                                            </div>
+                                        </div>
+                                    </section>
+                                </section>
+                                <section class="panel">
+                                    <section class="panel-heading">
+                                        <header class="font-bold">Insurance</header>
+                                    </section>
+                                    <section class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                @Html.LabelFor(x => x.RPCUnit.CompanyInsurance)
+                                                <div class="form-group">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.CompanyInsurance, new { @id = "CompanyInsurance", @class = "form-control mandatory" })
+                                                    @Html.ValidationMessageFor(x => x.RPCUnit.CompanyInsurance, string.Empty, new { @id = "errCompanyInsurance" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                @Html.LabelFor(x => x.RPCUnit.InsuranceNumber)
+                                                <div class="form-group">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.InsuranceNumber, new { @id = "InsuranceNumber", @class = "form-control mandatory" })
+                                                    @Html.ValidationMessageFor(x => x.RPCUnit.InsuranceNumber, string.Empty, new { @id = "errInsuranceNumber" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(x => x.RPCUnit.StartInsurance)
+                                                <div class="input-group date inmod">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.StartInsurance, new { @id = "StartInsurance", @class = "form-control mandatory datepicker", @style = "padding: 6px 12px;" })
+                                                    <span class="input-group-addon">
+                                                        <span id="btnStartInsurance" class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.RPCUnit.StartInsurance, string.Empty, new { @id = "errStartInsurance" })
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(x => x.RPCUnit.EndInsurance)
+                                                <div class="input-group date inmod">
+                                                    @Html.TextBoxFor(x => x.RPCUnit.EndInsurance, new { @id = "EndInsurance", @class = "form-control mandatory datepicker", @style = "padding: 6px 12px;" })
+                                                    <span class="input-group-addon">
+                                                        <span id="btnEndInsurance" class="fa fa-calendar"></span>
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessageFor(x => x.RPCUnit.EndInsurance, string.Empty, new { @id = "errEndInsurance" })
+                                            </div>
+                                        </div>
+                                    </section>
+                                </section>
+                            </section>
+                        </section>
+                        <section class="panel">
+                            <section class="panel-heading">
+                                <header class="font-bold">OPL Unit</header>
+                            </section>
+                            <section class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.OPLAgreement.AgreementNumber)
+                                        <div class="form-group input-group mandatory">
+                                            @Html.HiddenFor(x => x.OPLAgreement.IdOPLAgreement, new { @id = "IdOPLAgreement" })
+                                            @Html.TextBoxFor(x => x.OPLAgreement.AgreementNumber, new { @id = "AgreementNumber", @readonly = "true", @class = "form-control" })
+                                            <span class="input-group-btn">
+                                                <button id="btnAgreementNumber" class="btn btn-white" data-toggle="modal" data-target="#AgreementData" type="button" onclick='PopulatePrompt("AgreementData")'>...</button>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(x => x.OPLAgreement.AgreementNumber, string.Empty, new { @id = "errAgreementNumber" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.OPLAgreement.CustomerName)
+                                        <div class="form-group mandatory">
+                                            @Html.HiddenFor(x => x.OPLAgreement.IdCustomer, new { @id = "IdCustomer" })
+                                            @Html.TextBoxFor(x => x.OPLAgreement.CustomerName, new { @id = "CustomerName", @readonly = "true", @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.OPLUnit.OPLPoliceNo)
+                                        <div class="form-group input-group">
+                                            @Html.HiddenFor(x => x.OPLUnit.IdOPLUnit, new { @id = "IdOPLUnit" })
+                                            @Html.TextBoxFor(x => x.OPLUnit.OPLPoliceNo, new { @id = "OPLPoliceNo", @readonly = "true", @class = "form-control mandatory" })
+                                            <span class="input-group-btn">
+                                                <button id="btnOPLPoliceNo" class="btn btn-white" data-toggle="modal" data-target="#PoliceNumberData" type="button" onclick='PopulatePrompt("PoliceNumberData")'>...</button>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(x => x.OPLUnit.OPLPoliceNo, string.Empty, new { @id = "errOPLPoliceNo" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        @Html.LabelFor(x => x.OPLUnit.OPLModelName)
+                                        <div class="form-group ">
+                                            @Html.TextBoxFor(x => x.OPLUnit.OPLModelName, new { @id = "OPLModelName", @readonly = "true", @class = "form-control mandatory" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </section>
+                    </form>
+                </div>
+                <div class="modal-footer" style="padding-top: 5px; padding-bottom: 10px;">
+                    <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- RegistrationNo -->

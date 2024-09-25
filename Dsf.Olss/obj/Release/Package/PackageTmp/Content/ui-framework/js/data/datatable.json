@@ -1,0 +1,56 @@
+{ "aaData": [
+	{
+		"code": "DFS0001",
+		"name": "John Doe",
+		"phone": "08129309340",
+		"rating": "4",
+		"industry": "Automotive",
+		"action"  : "<a href='customer_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='customer_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	},
+	{
+		"code": "DFS0002",
+		"name": "Jane Doe",
+		"phone": "08129309341",
+		"rating": "3",
+		"industry": "Media",
+		"action"  : "<a href='customer_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='customer_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	},
+	{
+		"code": "DFS0003",
+		"name": "John Smith",
+		"phone": "08129309342",
+		"rating": "5",
+		"industry": "Food",
+		"action"  : "<a href='customer_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='customer_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	},
+	{
+		"code": "DFS0004",
+		"name": "Jane Smith",
+		"phone": "08129309345",
+		"rating": "5",
+		"industry": "Gas",
+		"action"  : "<a href='customer_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='customer_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	},
+	{
+		"code": "DFS0005",
+		"name": "John Adams",
+		"phone": "08129309346",
+		"rating": "3",
+		"industry": "Information System",
+		"action"  : "<a href='customer_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='customer_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	},
+	{
+		"code": "DFS0006",
+		"name": "Jane Adams",
+		"phone": "08129309347",
+		"rating": "3",
+		"industry": "Electricity",
+		"action"  : "<a href='customer_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='customer_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	}
+] }

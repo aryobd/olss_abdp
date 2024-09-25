@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Maintenance Item";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Add", "MaintenanceItem")" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a>
+<br>
+<br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            List of Maintenance Item
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="maincat-list" class="table table-striped m-b-none table-calc">
+                <thead>
+                    <tr>
+                        <th width="120px">Item Code</th>
+                        <th width="220px">Item Name</th>
+                        <th width="110px">Created By</th>
+                        <th width="110px">Created Date</th>
+                        <th width="100px">Status</th>
+                        <th width="110px">Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        //var MaintenanceItemHub = $.connection.MaintenanceItem;
+        //MaintenanceItemHub.client.OnSaveLock = function(id) {
+        //    location.reload();
+        //};
+
+        //MaintenanceItemHub.client.OnStatusLock = function(id) {
+        //    location.reload();
+        //};
+
+        //$.connection.hub.start();
+
+        // datatable
+        function LoadTable() {
+            $('#maincat-list').each(function() {
+                var oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "MaintenanceItem")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "aoColumns": [
+                    { "mData": "MaintenanceItemName" },
+                    { "mData": "Remarks" },
+                    { "mData": "CreatedBy" },
+                    {
+                        "mData": "CreatedDate",
+                        "fnRender": function(aObj) {
+                            var date = new Date(parseInt(aObj.aData["CreatedDate"].substr(6)));
+                            var modeldate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                            return modeldate;
+                        }
+                    },
+                    {
+                        "mData": "IsActive",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function(oObj) {
+                            var IsActive = oObj.aData["IsActive"];
+                            var IsDraft = oObj.aData["IsDraft"];
+                            var IsSubmit = oObj.aData["IsSubmitted"];
+
+                            if (IsActive == true && IsDraft == false && IsSubmit == false) {
+                                return "<span class='label label-success'>active</span>"
+                            }
+                            else if (IsActive == false && IsDraft == false && IsSubmit == false) {
+                                return "<span class='label label-default'>inactive</span>"
+                            }
+                            else if ((IsActive == false && IsDraft == true && IsSubmit == false) || (IsActive == true && IsDraft == true && IsSubmit == false)) {
+                                return "<span class='label label-info'>draft</span>"
+                            }
+                            else if ((IsActive == false && IsDraft == false && IsSubmit == true) || (IsActive == true && IsDraft == false && IsSubmit == true)) {
+                                return "<span class='label label-info'>submitted</span>"
+                            }
+                            else {
+                                return "no status";
+                            }
+                        }
+                    },
+                    {
+                        "mData": "IdMaintenanceItem",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "fnRender": function(oObj) {
+                            var Id = oObj.aData["IdMaintenanceItem"];
+                            var IsActive = oObj.aData["IsActive"];
+                            var IsDraft = oObj.aData["IsDraft"];
+                            var IsSubmit = oObj.aData["IsSubmitted"];
+
+                            if (IsActive == true || (IsActive == false && IsDraft == false && IsSubmit == false)) {
+                                return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceItem")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' disabled='disabled' href='@Url.Action("Edit", "MaintenanceItem")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;"
+                            }
+                            else {
+                                return "&nbsp;<a title='Detail' href='@Url.Action("Detail", "MaintenanceItem")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a title='Edit' href='@Url.Action("Edit", "MaintenanceItem")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>&nbsp;"
+                            }
+
+                        }
+                    }
+                ]
+                });
+            });
+        };
+
+        $(document).ready(function() {
+            LoadTable();
+        });
+    </script>
+}

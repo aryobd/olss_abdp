@@ -1,0 +1,923 @@
+﻿@model Dsf.Olss.Models.MaintenanceCalculationViewModel
+
+@{
+    ViewBag.Title = "Add New Maintenance Calculation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        .panel-heading a:after {
+            font-family: 'Glyphicons Halflings';
+            content: "\e114";
+            float: left;
+            color: grey;
+        }
+
+        .panel-heading a.collapsed:after {
+            content: "\e080";
+        }
+    </style>
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "MaintenanceCalculation")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("Add", "MaintenanceCalculation", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Product Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Registration Code</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ProductCode, null, new {@class = "form-control", @placeholder = "Product Registration Code", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "1"})
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#productModal" type="button" onclick="LoadProduct()" tabindex="2">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.ProductCode)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Code</label>
+                        @Html.TextBoxFor(o => o.ProductBrandCode, null, new {@class = "form-control", @placeholder = "Product Brand Code", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        @Html.TextBoxFor(o => o.ModelName, null, new {@class = "form-control", @placeholder = "Product Model Name", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Workshop</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.Workshop, null, new {@class = "form-control", @placeholder = "Workshop", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "3"})
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#supplierModal" type="button" onclick="LoadWorkshop()" tabindex="4">...</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        @Html.ValidationMessageFor(o => o.Workshop)
+                        @Html.TextBoxFor(o => o.IdSupplier, null, new {@type = "hidden"})
+                    </div>
+                    <div class="form-group">
+                        <label>Maintenance Type</label>
+                        @Html.DropDownListFor(o => o.MaintenanceType, (List<SelectListItem>) ViewBag.MaintenanceType, new {@class = "form-control", @tabindex = "5"})
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Mileage (Km)</label>
+                        @Html.TextBoxFor(o => o.MonthlyMileage, null, new {@class = "form-control numbersOnly", @placeholder = "Monthly Mileage", @tabindex = "6", @onchange = "IsMainCalcDetChanged(true)"})
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        @Html.TextBoxFor(o => o.ProductType, null, new {@class = "form-control", @placeholder = "Product Type", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        @Html.TextBoxFor(o => o.BrandName, null, new {@class = "form-control", @placeholder = "Product Brand Name", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Type</label>
+                        @Html.TextBoxFor(o => o.ProductType, null, new {@class = "form-control", @placeholder = "Product Model Type", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Maintenance Handle By</label>
+                        @Html.DropDownListFor(o => o.MaintenanceHandleBy, (List<SelectListItem>) ViewBag.MaintenanceHandleBy, new {@class = "form-control", @tabindex = "7"})
+                    </div>
+                    <div class="form-group">
+                        <label>Inflation Rate</label>
+                        @Html.TextBoxFor(o => o.InflationRate, null, new {@class = "form-control percentOnly", @placeholder = "Inflation Rate(%)", @tabindex = "8", @onchange = "IsMainCalcDetChanged(true)"})
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        @Html.TextBoxFor(o => o.ProductCategoryName, null, new {@class = "form-control", @placeholder = "Product Category", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Code</label>
+                        @Html.TextBoxFor(o => o.ModelCode, null, new {@class = "form-control", @placeholder = "Product Model Code", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Year (yyyy/mm)</label>
+                        @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new {@class = "form-control", @placeholder = "Product Model Year (yyyy/mm)", @readonly = "true"})
+                    </div>
+                    <div class="form-group">
+                        <label>Usage</label>
+                        @Html.DropDownListFor(o => o.Usage, (List<SelectListItem>) ViewBag.Usage, new {@class = "form-control", @tabindex = "9"})
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        @Html.TextBoxFor(o => o.Location, null, new {@class = "form-control", @placeholder = "Location", @data_required = "true", @data_parsley_maxlength = "200", @tabindex = "10"})
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Maintenance Calculation Detail</header>
+        <footer class="panel-footer">
+            <span class="input-group-btn">
+                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#mainCatModal" type="button" onclick="LoadMainCat()" tabindex="11">Add Category</button>
+            </span>
+        </footer>
+        <div class="panel-body">
+            <div class="panel-group" id="accordion_mainCalDet">
+
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Maintenance Cost</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Active Start Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ActiveStartDate, "{0:MM/dd/yyyy}", new {@class = "form-control datepicker-input", @placeholder = "Active Start Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @tabindex = "12"})
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ActiveStartDate)
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Active End Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ActiveEndDate, "{0:MM/dd/yyyy}", new {@class = "form-control datepicker-input", @placeholder = "Active End Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @tabindex = "13"})
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ActiveEndDate)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <div class="form-group">
+                        <label>Notes</label>
+                        @Html.TextBoxFor(o => o.Notes, null, new { @class = "form-control", @maxlength = 500 })
+                        <br/>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list" class="table table-striped m-b-none table-calc">
+                    <thead>
+                        <tr>
+                            <th width="110px">Month</th>
+                            <th width="110px" style="text-align:right">12</th>
+                            <th width="110px" style="text-align:right">24</th>
+                            <th width="110px" style="text-align:right">36</th>
+                            <th width="110px" style="text-align:right">48</th>
+                            <th width="110px" style="text-align:right">60</th>
+                            <th width="110px" style="text-align:right">72</th>
+                        </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                        <tr class="odd">
+                            <td class="">Total Cost</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                        </tr>
+                        <tr class="even">
+                            <td class="">Average/Month</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                            <td class="" style="text-align:right">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <div id="alert_placeholder"></div>
+        <footer class="panel-footer bg-light lter">
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost12, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost24, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost36, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost48, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost60, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost72, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.MaintenanceCalculationDetails, null, new { @type = "hidden" })
+            @Html.TextBoxFor(o => o.AdjMonthlyCost, null, new { @type = "hidden" })
+            <button id="btnCalculate" class="btn btn-info" type="button" onclick="MainCalcDo()" tabindex="14">Calculate</button>
+            @StateButton.MaintenanceCalculationStateButton("add")
+        </footer>
+    </section>
+}
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Common.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/jsDate.js")"></script>*@
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        $('.datepicker-input').datepicker({
+            format: 'mm/dd/yyyy',
+            minViewMode: 0,
+            startView: 0,
+            endDate: '12/31/9999',
+            startDate: '01/01/1753'
+        });
+
+        var serverRoot = '@Url.Content("~")';
+
+        function loadMaintenanceItem() {
+            //$('#mainItemModal').modal('hide');
+
+            // datatable
+            var oTable = null;
+            $('#maintenanceItem-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": serverRoot + "MaintenanceSchedule/MaintenanceItemListLookUp",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "MaintenanceItemCode" },
+                        { "mData": "MaintenanceItemName" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+
+            $("#maintenanceItem-lookup tbody").delegate("tr", "click", function () {
+                var data = oTable.fnGetData(this);
+                $('#IdMaintenanceItem').val(data.IdMaintenanceItem == null ? '' : data.IdMaintenanceItem);
+                $('#MaintenanceItemCode').val(data.MaintenanceItemCode == null ? '' : data.MaintenanceItemCode);
+                $('#MaintenanceItemName').val(data.MaintenanceItemName == null ? '' : data.MaintenanceItemName);
+                $('#maintenanceItemModal').modal('hide');
+                $('#maintenanceItem-lookup tbody').undelegate("tr", "click");
+                //$('#mainItemModal').modal('show');
+            });
+        }
+
+        function LoadProduct() {
+            // datatable
+            var oTable = null;
+            $('#product-list').each(function() {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("ProductDatatable", "MaintenanceCalculation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "ProductCode" },
+                        { "mData": "ProductCategory1" },
+                        { "mData": "BrandName" },
+                        { "mData": "ModelName" },
+                        { "mData": "ModelYear" },
+                        {
+                            "mData": "ModelCode",
+                            "bVisible": false,
+                        },
+                        {
+                            "mData": "BrandCode",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "Transmission",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "ProductType1",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "DisPlacement",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "FuelType",
+                            "bVisible": false
+                        },
+                        {
+                            "mData": "ModelType",
+                            "bVisible": false
+                        },
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+            $("#product-list tbody").delegate("tr", "click", function () {
+                var data = oTable.fnGetData(this);
+                if (data != null) {
+                    $("#ProductCode").val(data.ProductCode);
+                    $("#ProductType").val(data.ProductType1);
+                    $("#ProductCategoryName").val(data.ProductCategory1);
+                    $("#ProductBrandCode").val(data.BrandCode);
+                    $("#BrandName").val(data.BrandName);
+                    $("#ModelCode").val(data.ModelCode);
+                    $("#ModelName").val(data.ModelName);
+                    $("#ModelType").val(data.ModelType);
+                    $("#ModelYear").val(data.ModelYear);
+                    $("#Transmission").val(data.Transmission);
+                    $("#FuelType").val(data.FuelType);
+                    $("#Displacement").val(data.DisPlacement);
+                } else {
+                    $("#ProductCode").val('');
+                    $("#ProductType").val('');
+                    $("#ProductCategoryName").val('');
+                    $("#ProductBrandCode").val('');
+                    $("#BrandName").val('');
+                    $("#ModelCode").val('');
+                    $("#ModelName").val('');
+                    $("#ModelType").val('');
+                    $("#ModelYear").val('');
+                    $("#Transmission").val('');
+                    $("#FuelType").val('');
+                    $("#Displacement").val('');
+                }
+
+                $('#productModal').modal('hide');
+                $("#product-list tbody").undelegate("tr", "click");
+            });
+        };
+
+        function LoadWorkshop() {
+            // datatable
+            var oTable = null;
+            $('#supplier-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("WorkshopListLookUp", "MaintenanceCalculation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "SupplierCode" },
+                        { "mData": "SupplierName" },
+                        { "mData": "Telephone" },
+                        { "mData": "BusinessEconomySector" },
+                        {
+                            "mData": "IdSupplier",
+                            "bVisible": false
+                        }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+
+            });
+
+
+            $("#supplier-lookup tbody").delegate("tr", "click", function () {
+                var data = oTable.fnGetData(this);
+                if (data != null) {
+                    $("#IdSupplier").val(data.IdSupplier);
+                    $("#Workshop").val(data.SupplierName);
+                } else {
+                    $("#IdSupplier").val('');
+                    $("#Workshop").val('');
+                }
+
+                $('#supplierModal').modal('hide');
+                $("#supplier-lookup tbody").undelegate("tr", "click");
+            });
+        };
+
+        function IsMainCatIdAlreadySelected(idMainCat) {
+            var mainCatIds = '';
+            $.each($('div[name="panelMainCat"]'), function () {
+                if (mainCatIds == '') {
+                    mainCatIds += '' + $(this).attr('id') + '';
+                } else {
+                    mainCatIds += ';' + $(this).attr('id') + '';
+                }
+            });
+            var splitted = mainCatIds.split(';');
+            var counter = 0;
+            $.each(splitted, function () {
+                if (this == idMainCat) {
+                    counter++;
+                }
+            });
+            if (counter > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function ShowDeleteMainCatConfirmation(id, name) {
+            $('#mainCat_label').text(name);
+            $('#mainCatIdDelete').val(id);
+            $('#deleteMainCatConfirmation').modal('show');
+        }
+
+        function RemoveMainCat(id) {
+            try {
+                $('div[name="panelMainCat"][id="' + id + '"]').remove();
+                $('#deleteMainCatConfirmation').modal('hide');
+                IsMainCalcDetChanged(true);
+            } catch (e) {
+                exception(e);
+            }
+        }
+
+        function LoadMainCat() {
+            // datatable
+            var oTable = null;
+            $('#mainCat-list').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("ActiveMainCatDatatable", "MaintenanceCalculation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "MaintenanceCategoryName" },
+                        { "mData": "Remarks" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+            $("#mainCat-list tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+                if (!IsMainCatIdAlreadySelected(data.IdMaintenanceCategory)) {
+                    var html = '<div name="panelMainCat" class="panel panel-default" id="' + data.IdMaintenanceCategory + '">' +
+                        '<div class="panel-heading">' +
+                        '<a data-toggle="collapse" data-target="#collapse_' + data.IdMaintenanceCategory + '"' +
+                        'href="#collapse_' + data.IdMaintenanceCategory + '" class="collapsed">&nbsp;' +
+                        data.MaintenanceCategoryName +
+                        '</a>' +
+                        '<button class="btn btn-danger btn-xs" type="button" title="Delete" onclick="ShowDeleteMainCatConfirmation(' + data.IdMaintenanceCategory + ', \'' + data.MaintenanceCategoryName + '\')" tabindex="1" style="float:right;"><i class="fa fa-times"></i></button>' +
+                        '</div>' +
+                        '<div id="collapse_' + data.IdMaintenanceCategory + '" class="panel-collapse collapse">' +
+                        '<div class="panel-footer">' +
+                        '<div class="row">' +
+                        '<div class="col-lg-2 col-md-2">' +
+                        '<input class="form-control" id="probability_' + data.IdMaintenanceCategory + '" type="text" placeholder="Probability (%)" class="form-control percentOnly" style="width:150px;" onchange = "IsMainCalcDetChanged(true)">' +
+                        '</div>' +
+                        '<div class="col-lg-2 col-md-2">' +
+                        '<span class="input-group-btn">' +
+                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#mainItemModal" type="button" onclick="LoadMainItem(' + data.IdMaintenanceCategory + ')" tabindex="1">Add Item</button>' +
+                        '</span>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="panel-body">' +
+                        '<div class="table-responsive">' +
+                        '<table id="mainItemList_' + data.IdMaintenanceCategory + '" class="table table-striped m-b-none table-calc">' +
+                        '<thead>' +
+                        '<tr>' +
+                        '<th width="100px">Item Code</th>' +
+                        '<th width="150px">Item Name</th>' +
+                        '<th width="100px">Harga Unit</th>' +
+                        '<th width="60px">Jumlah Unit</th>' +
+                        '<th width="100px">Labor Cost</th>' +
+                        '<th width="100px">Replacement Cycle</th>' +
+                        '<th width="100px">Replacement Unit</th>' +
+                        '<th width="50px">Is CSD</th>' +
+                        '<th width="50px">Action</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody role="alert" aria-live="polite" aria-relevant="all">' +
+                        '</tbody>' +
+                        '</table>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+
+                    $('#accordion_mainCalDet').append(html);
+                }
+                $('#mainCatModal').modal('hide');
+                $("#mainCat-list tbody").undelegate("tr", "click");
+                IsMainCalcDetChanged(true);
+                $('#probability_' + data.IdMaintenanceCategory + '').addClass('percentOnly');
+                $(".percentOnly").on('keydown', percentOnly);
+                $('.percentOnly').on('keydown keyup', function (e) {
+                    if ($(this).val() > 100
+                            && e.keyCode != 46 // delete
+                            && e.keyCode != 8 // backspace
+                    ) {
+                        e.preventDefault();
+                        $(this).val(0);
+                    }
+                });
+            });
+        };
+
+        function IsMainItemAlreadySelected(idMainCat, idMainItem) {
+            var mainItemIds = '';
+            $.each($('table[id="mainItemList_' + idMainCat + '"]').find('tr'), function () {
+                if (mainItemIds == '') {
+                    mainItemIds += '' + $(this).attr('id') + '';
+                } else {
+                    mainItemIds += ';' + $(this).attr('id') + '';
+                }
+            });
+            var splitted = mainItemIds.split(';');
+            var counter = 0;
+            $.each(splitted, function () {
+                if (this == idMainItem) {
+                    counter++;
+                }
+            });
+            if (counter > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function IsMainItemAlreadySelectedExceptOldId(idMainCat, idMainItem, idMainItemOld) {
+            var mainItemIds = '';
+            $.each($('table[id="mainItemList_' + idMainCat + '"]').find('tr'), function () {
+                if (mainItemIds == '') {
+                    mainItemIds += '' + $(this).attr('id') + '';
+                } else {
+                    mainItemIds += ';' + $(this).attr('id') + '';
+                }
+            });
+            var splitted = mainItemIds.split(';');
+            var counter = 0;
+            $.each(splitted, function () {
+                if (this == idMainItem && this != idMainItemOld) {
+                    counter++;
+                }
+            });
+            if (counter > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function ShowDeleteMainItemConfirmation(idMainCat, idMainItem, ItemName) {
+            $('#mainItem_label').text(ItemName);
+            $('#mainCatIdDelete').val(idMainCat);
+            $('#mainItemIdDelete').val(idMainItem);
+            $('#deleteMainItemConfirmation').modal('show');
+        }
+
+        function RemoveMainItem(idMainCat, idMainItem) {
+            $('table[id="mainItemList_' + idMainCat + '"]').find('tr[id="' + idMainItem + '"]').remove();
+            $('#deleteMainItemConfirmation').modal('hide');
+            IsMainCalcDetChanged(true);
+        }
+
+        function LoadMainItem(mainCatId) {
+            $('#IdMaintenanceItem').val('');
+            $('#MaintenanceItemCode').val('');
+            $('#MaintenanceItemName').val('');
+            $('#hargaUnit').val('');
+            $('#jumlahUnit').val('');
+            $('#laborCost').val('');
+            $('#replacementCycleAmount').val('');
+            $('#replacementCycleUnit').val('');
+            $('input:checkbox[name=IsCsd]').prop('checked', false);
+            $('#mainCatIdHidden').val(mainCatId);
+
+            var getUrlReplacementCycleUnitData = '@Url.Action("GetReplacementCycleUnit", "MaintenanceCalculation")';
+            $.ajax({
+                type: "GET",
+                url: getUrlReplacementCycleUnitData,
+                cache: false,
+                success: function (data) {
+                    $("#replacementCycleUnit option").remove();
+                    $.each(data.ReplacementCycleUnitList, function (i) {
+                        var optionhtml = '<option value="' +
+                            data.ReplacementCycleUnitList[i].Value + '">' + data.ReplacementCycleUnitList[i].Text + '</option>';
+                        $("#replacementCycleUnit").append(optionhtml);
+                    });
+                }
+            });
+
+            $('#mainItemModalLabel').text('Add Maintenance Item');
+            $('#mainItemSubmitId').text('Add');
+            $('#mainItemSubmitId').attr("onclick", "SubmitMainItem()");
+            $('#Maintenancebtn').focus();
+        }
+
+        $('#mainItemModal').on('shown.bs.modal', function () {
+            $('#Maintenancebtn').focus();
+        });
+
+        $('#mainItemModal').on('hidden.bs.modal', function () {
+            $('#mainItemForm').parsley('reset');
+        });
+
+        function ShowEditMainItem(idMainCat, idMainItem, maintenanceItem, maintenanceItemName, hargaUnit, jumlahUnit, laborCost, replacementCycleAmount, replacementCycleUnitId, isCsd, maintenanceCalculationDetailId) {
+            $('#hargaUnit').val(hargaUnit);
+            $('#hargaUnit').formatCurrency();
+            $('#jumlahUnit').val(jumlahUnit);
+            $('#laborCost').val(laborCost);
+            $('#laborCost').formatCurrency();
+            $('#replacementCycleAmount').val(replacementCycleAmount);
+            $('#mainCatIdHidden').val(idMainCat);
+            $('#mainItemIdOldHidden').val(idMainItem);
+            $('#MaintenanceItemCode').val(maintenanceItem);
+            $('#MaintenanceItemName').val(maintenanceItemName);
+            $('#mainCalculationDetailOldHidden').val(maintenanceCalculationDetailId);
+            $('input:checkbox[name=IsCsd]').prop('checked', isCsd);
+            $('#replacementCycleUnit option[value="' + replacementCycleUnitId + '"]').attr('selected', true);
+            $('#IdMaintenanceItem').val(idMainItem);
+            var getUrlReplacementCycleUnitData = '@Url.Action("GetReplacementCycleUnit", "MaintenanceCalculation")';
+            $.ajax({
+            type: "GET",
+                            url: getUrlReplacementCycleUnitData,
+                            cache: false,
+                            success: function (data) {
+                                $("#replacementCycleUnit option").remove();
+                                $.each(data.ReplacementCycleUnitList, function (i) {
+                                        var optionhtml = '<option value="' +
+                                        data.ReplacementCycleUnitList[i].Value + '">' + data.ReplacementCycleUnitList[i].Text + '</option>';
+                                        $("#replacementCycleUnit").append(optionhtml);
+                                    });
+                             $("#replacementCycleUnit").val(replacementCycleUnitId);
+                            }
+                    });
+
+            $('#mainItemModalLabel').text('Edit Maintenance Item');
+            $('#mainItemSubmitId').text('Edit');
+            $('#mainItemSubmitId').attr("onclick", "SubmitMainItem()");
+            $('#maintenanceItem').focus();
+        }
+
+        function SubmitMainItem() {
+            var mainCatId = $('#mainCatIdHidden').val();
+            var mainItemIdOld = $('#mainItemIdOldHidden').val();
+            var mainCalculationDetailOldHidden = 0;
+            var mainItemId = $('#IdMaintenanceItem').val();
+            var maintenanceItem = $('#MaintenanceItemCode').val();
+            var maintenanceItemName = $('#MaintenanceItemName').val();
+            var hargaUnit = parseFloat($('#hargaUnit').val().replace(/,/g, ''));
+            var jumlahUnit = parseFloat($('#jumlahUnit').val().replace(/,/g, ''));
+            var laborCost = parseFloat($('#laborCost').val().replace(/,/g, ''));
+            var replacementCycleAmount = parseFloat($('#replacementCycleAmount').val().replace(/,/g, ''));
+            var isCsd;
+            if ($('#IsCsd').is(":checked")) {
+                isCsd = 'Yes';
+            } else {
+                isCsd = 'No';
+            }
+
+            if ($.trim($('#hargaUnit').val()) == '') {
+                hargaUnit = 0;
+            }
+            if ($.trim($('#jumlahUnit').val()) == '') {
+                jumlahUnit = 0;
+            }
+            if ($.trim($('#laborCost').val()) == '') {
+                laborCost = 0;
+            }
+            if ($.trim($('#replacementCycleAmount').val()) == '') {
+                replacementCycleAmount = 0;
+            }
+            var replacementCycleUnitId = $('#replacementCycleUnit option:selected').val();
+            var replacementCycleUnit = $('#replacementCycleUnit option:selected').text();
+            if ($('#mainItemSubmitId').text() == "Add") {
+                if (!IsMainItemAlreadySelected(mainCatId, mainItemId)) {
+                    if ((mainItemId != null) && (mainItemId != undefined) && (mainItemId != '')) {
+                        var _html = '<tr id="' + mainItemId + '" class="">' +
+                        '<td id="td_idmaintenanceitem" class="maintenanceitem">' + maintenanceItem + '</td>' +
+                        '<td id="td_maintenanceitemname" class="maintenanceitemname">' + maintenanceItemName + '</td>' +
+                        '<td id="td_hargaUnit" class="currency" style="text-align:right">' + hargaUnit + '</td>' +
+                        '<td id="td_jumlahUnit" class="currency" style="text-align:right">' + jumlahUnit + '</td>' +
+                        '<td id="td_laborCost" class="currency" style="text-align:right">' + laborCost + '</td>' +
+                        '<td id="td_replacementCycleAmount" class="currency" style="text-align:right">' + replacementCycleAmount + '</td>' +
+                        '<td id="td_replacementCycleUnit" class="" style="text-align:right">' + replacementCycleUnit + '</td>' +
+                        '<td id="td_isCsd" class="" style="text-align:left">' + isCsd + '</td>' +
+                        '<td class="datatables_action">' +
+                        '<a id="a_Edit" title="Edit" data-toggle="modal" data-target="#mainItemModal"  onclick="ShowEditMainItem(' + mainCatId + ', ' + mainItemId + ', \'' + maintenanceItem + '\', \'' + maintenanceItemName + '\', ' + hargaUnit + ', ' + jumlahUnit + ', ' + laborCost + ', ' + replacementCycleAmount + ', ' + replacementCycleUnitId + ', ' + $('#IsCsd').is(":checked") + ',' + mainCalculationDetailOldHidden + ')" href="#" class="btn btn-info btn-xs"><i class="fa fa-edit"></i></a>&nbsp;' +
+                        '<a id="a_Delete" title="Delete" data-toggle="modal" onclick="ShowDeleteMainItemConfirmation(' + mainCatId + ', ' + mainItemId + ', \'' + maintenanceItem + '\')" href="#" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></a></td>' +
+                        '</tr>';
+                        $('table[id="mainItemList_' + mainCatId + '"]').find('tbody').append(_html);
+                        $('.currency').formatCurrency();
+                    }
+                }
+                $('#mainItemModal').modal('hide');
+            } else {
+                if (!IsMainItemAlreadySelectedExceptOldId(mainCatId, mainItemId, mainItemIdOld)) {
+                    if ((mainItemId != null) && (mainItemId != undefined) && (mainItemId != '')) {
+                        var _row = $('table[id="mainItemList_' + mainCatId + '"]').find('tr[id="' + mainItemIdOld + '"]');
+                        _row.find('td[class="maintenanceitem"]').html(maintenanceItem);
+                        _row.find('td[class="maintenanceitemname"]').html(maintenanceItemName);
+                        _row.find('td[id="td_hargaUnit"]').html(hargaUnit);
+                        _row.find('td[id="td_jumlahUnit"]').html(jumlahUnit);
+                        _row.find('td[id="td_laborCost"]').html(laborCost);
+                        _row.find('td[id="td_replacementCycleAmount"]').html(replacementCycleAmount);
+                        _row.find('td[id="td_replacementCycleUnit"]').html(replacementCycleUnit);
+                        _row.find('td[id="td_isCsd"]').html(isCsd);
+                        _row.find('a[id="a_Edit"]').attr('onclick', 'ShowEditMainItem(' + mainCatId + ', ' + mainItemId + ', \'' + maintenanceItem + '\', \'' + maintenanceItemName + '\', ' + hargaUnit + ', ' + jumlahUnit + ', ' + laborCost + ', ' + replacementCycleAmount + ', ' + replacementCycleUnitId + ', ' + $('#IsCsd').is(":checked") + ',' + mainCalculationDetailOldHidden + ')');
+                        _row.find('a[id="a_Delete"]').attr('onclick', 'ShowDeleteMainItemConfirmation(' + mainCatId + ', ' + mainItemId + ', \'' + maintenanceItem + '\')');
+                        _row.attr('id', mainItemId);
+                    }
+                }
+                $('#mainItemModal').modal('hide');
+                $('.currency').formatCurrency();
+            }
+            IsMainCalcDetChanged(true);
+        }
+
+        function IsMainCalcDetChanged(status) {
+            var _but = $('input[name="statusButton"]');
+            if (status) {
+                $('#btnCalculate').removeAttr('disabled');
+                $.each(_but, function () {
+                    $(this).attr('disabled', 'disabled');
+                });
+            } else {
+                $('#btnCalculate').attr('disabled', 'disabled');
+                $.each(_but, function () {
+                    $(this).removeAttr('disabled');
+                });
+            }
+        }
+
+        function MainCalcDo() {
+            var message = ValidateDataBeforeCalculate();
+            if (message.length < 1) {
+                var datas = [];
+                datas.push($('#MonthlyMileage').val().trim());
+                datas.push($('#InflationRate').val().trim());
+                var items = '';
+                $.each($('div[name="panelMainCat"]'), function () {
+                    var mainCatId = $(this).attr('id');
+                    var probability = $(this).find('input[id=probability_' + mainCatId + ']').val();
+                    $.each($('table[id="mainItemList_' + mainCatId + '"]').find('tbody').find('tr'), function () {
+                        if (items == '') {
+                            items += '' + mainCatId + '|'
+                                + $(this).attr('id') + '|'
+                                + probability + '|'
+                                + $(this).find('td[id="td_hargaUnit"]').text().trim() + '|'
+                                + $(this).find('td[id="td_jumlahUnit"]').text().trim() + '|'
+                                + $(this).find('td[id="td_laborCost"]').text().trim() + '|'
+                                + $(this).find('td[id="td_replacementCycleAmount"]').text().trim() + '|'
+                                + $(this).find('td[id="td_replacementCycleUnit"]').text().trim() + '|'
+                                + $(this).find('td[id="td_isCsd"]').text().trim() + '';
+                        } else {
+                            items += ';' + mainCatId + '|'
+                                + $(this).attr('id') + '|'
+                                + probability + '|'
+                                + $(this).find('td[id="td_hargaUnit"]').text().trim() + '|'
+                                + $(this).find('td[id="td_jumlahUnit"]').text().trim() + '|'
+                                + $(this).find('td[id="td_laborCost"]').text().trim() + '|'
+                                + $(this).find('td[id="td_replacementCycleAmount"]').text().trim() + '|'
+                                + $(this).find('td[id="td_replacementCycleUnit"]').text().trim() + '|'
+                                + $(this).find('td[id="td_isCsd"]').text().trim() + '';
+                        }
+                    });
+                });
+                datas.push(items);
+
+                var getUrlMainCalcDo = '@Url.Action("MaintenanceCalculationDetailDo", "MaintenanceCalculation")';
+                $.ajax({
+                    type: "POST",
+                    url: getUrlMainCalcDo,
+                    data: { data: datas },
+                    traditional: true,
+                    dataType: 'json',
+                    success: function (data) {
+                        var _tr = $('table[id="maincalc-list"]').find('tbody').find('tr');
+                        $.each(_tr, function () {
+                            $(this).remove();
+                        });
+                        for (var i = 0; i < (data.result.length - 1) ; i++) {
+                            if (i == 0) {
+                                $('#TotalMaintenanceCost12').val(data.result[i][1]);
+                                $('#TotalMaintenanceCost24').val(data.result[i][2]);
+                                $('#TotalMaintenanceCost36').val(data.result[i][3]);
+                                $('#TotalMaintenanceCost48').val(data.result[i][4]);
+                                $('#TotalMaintenanceCost60').val(data.result[i][5]);
+                                $('#TotalMaintenanceCost72').val(data.result[i][6]);
+                            }
+                            var _html = '<tr>' +
+                                '<td class="">' + data.result[i][0] + '</td>' +
+                                '<td class="currency" style="text-align:right">' + data.result[i][1] + '</td>' +
+                                '<td class="currency" style="text-align:right">' + data.result[i][2] + '</td>' +
+                                '<td class="currency" style="text-align:right">' + data.result[i][3] + '</td>' +
+                                '<td class="currency" style="text-align:right">' + data.result[i][4] + '</td>' +
+                                '<td class="currency" style="text-align:right">' + data.result[i][5] + '</td>' +
+                                '<td class="currency" style="text-align:right">' + data.result[i][6] + '</td>' +
+                                '</tr>';
+                            $('table[id="maincalc-list"]').find('tbody').append(_html);
+                            $('.currency').formatCurrency();
+                        }
+                        $('#MaintenanceCalculationDetails').val(datas[2]);
+                        $('#AdjMonthlyCost').val(data.result[2][0]);
+                        IsMainCalcDetChanged(false);
+
+                    }
+                });
+            } else {
+                //alert(message);
+                bootstrap_alert.error(message);
+            }
+        }
+
+        function ValidateDataBeforeCalculate() {
+            var message = '';
+
+            console.log('ActiveStartDate ', $('#ActiveStartDate').val());
+
+            if ($('#MonthlyMileage').val().trim().length < 1) {
+                return message = 'Monthly Mileage should not be less than 0 (zero)!';
+            }
+            if ($('#InflationRate').val().trim().length < 1) {
+                return message = 'Inflation Rate should not be less than 0 (zero)!';
+            }
+
+            if ($('#ActiveStartDate').val().trim().length < 1) {
+                return message = 'Active Start Date is required';
+            }
+
+            if ($('#ActiveEndDate').val().trim().length < 1) {
+                return message = 'Active End Date is required';
+            }
+
+            var probabilityZeroCounter = 0
+            var replacementCycleAmountZeroCounter = 0;
+            var itemCounter = 0;
+            $.each($('div[name="panelMainCat"]'), function () {
+                var mainCatId = $(this).attr('id');
+                if ($(this).find('input[id=probability_' + mainCatId + ']').val().trim() == '' || $(this).find('input[id=probability_' + mainCatId + ']').val().length < 1) {
+                    probabilityZeroCounter++;
+                }
+                if ($('table[id="mainItemList_' + mainCatId + '"]').find('tbody').find('tr').length == 0) {
+                    return message = 'Please add Maintenance Category with Maintenance Item first before do calculate!';
+                }
+                $.each($('table[id="mainItemList_' + mainCatId + '"]').find('tbody').find('tr'), function () {
+                    itemCounter++;
+                    if ($(this).find('td[id="td_replacementCycleAmount"]').text().trim() == '0') {
+                        replacementCycleAmountZeroCounter++;
+                    }
+                });
+            });
+            if (probabilityZeroCounter > 0) {
+                return message = 'Probability value should not be empty!';
+            }
+            if (itemCounter == 0) {
+                return message = 'Please add Maintenance Category and Item first before do calculate!';
+            }
+            if (replacementCycleAmountZeroCounter > 0) {
+                return message = 'Replacement Cycle Amount should not be less than 0 (zero)!';
+            }
+            return message;
+        }
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-success pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;" ><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Success!</b> ' + message + '</div>');
+        }
+
+        bootstrap_alert.error = function (message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger pull-right" role="alert" style="position: fixed; bottom: 0; z-index: 10000; right: 20px;"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>Failed!</b> ' + message + '</div>');
+        }
+
+        $(document).ready(function () {
+            $(".currenciesOnly").on('keydown', currenciesOnly)
+                .on('blur', function () { $(this).formatCurrency(); });
+            $(".numbersOnly").on('keydown', numbersOnly);
+            $(".decimalsOnly").on('keydown', decimalsOnly);
+            $(".percentOnly").on('keydown', percentOnly);
+
+            $('.percentOnly').on('keydown keyup', function (e) {
+                if ($(this).val() > 100
+                        && e.keyCode != 46 // delete
+                        && e.keyCode != 8 // backspace
+                ) {
+                    e.preventDefault();
+                    $(this).val(0);
+                }
+            });
+
+            IsMainCalcDetChanged(true);
+        });
+    </script>
+}

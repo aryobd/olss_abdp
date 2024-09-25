@@ -1,0 +1,617 @@
+﻿@model Dsf.Olss.Models.MaintenanceCalculationViewModel
+
+@{
+    ViewBag.Title = "Detail Maintenance Calculation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        .panel-heading a:after {
+            font-family: 'Glyphicons Halflings';
+            content: "\e114";
+            float: left;
+            color: grey;
+        }
+
+        .panel-heading a.collapsed:after {
+            content: "\e080";
+        }
+    </style>
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "MaintenanceCalculation")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsExpired)
+{
+    <label class="label label-warning label-lg pull-right">expired</label>
+}
+else
+{
+  if (Model.IsSubmitted == true && Model.IsDraft == false && Model.IsValid == false)
+  {
+    <label class="label label-info label-lg pull-right">submitted</label>
+  }
+
+    if (Model.IsSubmitted == false && Model.IsDraft == true && Model.IsValid == false)
+    {
+        <label class="label label-primary label-lg pull-right">draft</label>
+    }
+
+    if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == true)
+    {
+        <label class="label label-success label-lg pull-right">valid</label>
+    }
+
+    if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == false)
+    {
+        <label class="label label-default label-lg bg-light pull-right">invalid</label>
+    }
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("Detail", "MaintenanceCalculation", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Product Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Registration Code</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductCode)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Code</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductBrandCode)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ModelName)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Maintenance Calculation No</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MaintenanceCalculationNo)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Workshop Name</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.Workshop)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Maintenance Type</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MaintenanceType)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Monthly Mileage (Km)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MonthlyMileage)</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductType)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.BrandName)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Type</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductType)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Maintenance Handle By</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MaintenanceHandleBy)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Inflation Rate</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.InflationRate)</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductCategoryName)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Code</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ModelCode)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Year (yyyy/mm)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ModelYear)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Usage</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.Usage)</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.Location)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Maintenance Calculation Detail</header>
+        <div class="panel-body">
+            <div class="panel-group" id="accordion_mainCalDet">
+                @{
+    int i = 0;
+    var categoryId = new List<int>();
+                }
+                @if (Model.MaintenanceCalculationDetailsViewModel != null)
+                {
+                    foreach (var calculationdetails in Model.MaintenanceCalculationDetailsViewModel.GroupBy(o => o.IdMaintenanceCategory))
+                    {
+                        i++;
+                        <div name="panelMainCat" class="panel panel-default" id="@calculationdetails.FirstOrDefault().IdMaintenanceCategory">
+                            <div class="panel-heading">
+                                <a data-toggle="collapse" data-target="#collapse_@calculationdetails.FirstOrDefault().IdMaintenanceCategory" href="#collapse_@calculationdetails.FirstOrDefault().IdMaintenanceCategory" class="">&nbsp;@calculationdetails.FirstOrDefault().MaintenaceCategoryName</a>
+                            </div>
+                            <div id="collapse_@calculationdetails.FirstOrDefault().IdMaintenanceCategory" class="panel-collapse collapse in" style="height: auto;">
+                                <div class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-md-2">
+                                            <input value="@calculationdetails.FirstOrDefault().Probability" class="form-control" id=@("probability_"+calculationdetails.FirstOrDefault().IdMaintenanceCategory) type="text" placeholder="Probability (%)" style="width:150px;" disabled="disabled">
+                                        </div>
+                                    </div>
+                                </div><div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table id="mainItemList_@calculationdetails.FirstOrDefault().IdMaintenanceCategory" class="table table-striped m-b-none table-calc">
+                                            <thead>
+                                                <tr>
+                                                    <th width="100px">Item Code</th>
+                                                    <th width="150px">Item Name</th>
+                                                    <th width="100px">Harga Unit</th>
+                                                    <th width="60px">Jumlah Unit</th>
+                                                    <th width="100px">Labor Cost</th>
+                                                    <th width="100px">Replacement Cycle</th>
+                                                    <th width="100px">Replacement Unit</th>
+                                                    <th width="50px">Is CSD</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                                @foreach (var calculationdetail in calculationdetails)
+                                                {
+                                                    <tr id="@calculationdetail.IdMaintenanceItem" class="">
+                                                        <td id="td_idmaintenancedetail" class="" style="display: none;">@calculationdetail.IdMaintenanceCalculationDetail</td>
+                                                        <td id="td_idmaintenanceitem" class="maintenanceitem">@calculationdetail.MaintenanceItemCode</td>
+                                                        <td id="td_maintenanceitemname" class="maintenanceitemname">@calculationdetail.MaintenanceItemName</td>
+                                                        <td id="td_hargaUnit" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetail.HargaUnit)</td>
+                                                        <td id="td_jumlahUnit" class="" style="text-align:right">@calculationdetail.JumlahUnit</td>
+                                                        <td id="td_laborCost" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetail.LaborCost)</td>
+                                                        <td id="td_replacementCycleAmount" class="" style="text-align:right">@string.Format("{0:N0}", calculationdetail.ReplacementCycleAmount)</td>
+                                                        <td id="td_replacementCycleUnit" class="" style="text-align:right">@calculationdetail.ReplacementCycleUnitName</td>
+                                                        <td id="td_isCsd" class="" style="text-align:left">@(calculationdetail.IsServiceCsd ? "Yes" : "No")</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Maintenance Cost</header>
+        <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Active Start Date (mm/dd/yyyy)</label>
+                    <div class="input-group">
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ActiveStartDate)</p>
+                    </div>
+                    @Html.ValidationMessageFor(o => o.ActiveStartDate)
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Active End Date (mm/dd/yyyy)</label>
+                    <div class="input-group">
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ActiveEndDate)</p>
+                    </div>
+                    @Html.ValidationMessageFor(o => o.ActiveEndDate)
+                </div>
+            </div>
+        </div>
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <p class="form-control-static text-left">@Html.DisplayFor(o => o.Notes)</p>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px">Month</th>
+                        <th width="110px" style="text-align: right">12</th>
+                        <th width="110px" style="text-align: right">24</th>
+                        <th width="110px" style="text-align: right">36</th>
+                        <th width="110px" style="text-align: right">48</th>
+                        <th width="110px" style="text-align: right">60</th>
+                        <th width="110px" style="text-align: right">72</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="">Total Cost</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.TotalMaintenanceCost12)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", @Model.TotalMaintenanceCost24)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", @Model.TotalMaintenanceCost36)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", @Model.TotalMaintenanceCost48)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", @Model.TotalMaintenanceCost60)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", @Model.TotalMaintenanceCost72)</td>
+                    </tr>
+                    <tr class="even">
+                        <td class="">Average/Month</td>
+                        <td class="" style="text-align: right">@(Model.TotalMaintenanceCost12.HasValue ? string.Format("{0:N0}", Model.TotalMaintenanceCost12.Value/12) : "0")</td>
+                        <td class="" style="text-align: right">@(Model.TotalMaintenanceCost24.HasValue ? string.Format("{0:N0}", Model.TotalMaintenanceCost24.Value/24) : "0")</td>
+                        <td class="" style="text-align: right">@(Model.TotalMaintenanceCost36.HasValue ? string.Format("{0:N0}", Model.TotalMaintenanceCost36.Value/36) : "0")</td>
+                        <td class="" style="text-align: right">@(Model.TotalMaintenanceCost48.HasValue ? string.Format("{0:N0}", Model.TotalMaintenanceCost48.Value/48) : "0")</td>
+                        <td class="" style="text-align: right">@(Model.TotalMaintenanceCost60.HasValue ? string.Format("{0:N0}", Model.TotalMaintenanceCost60.Value/60) : "0")</td>
+                        <td class="" style="text-align: right">@(Model.TotalMaintenanceCost72.HasValue ? string.Format("{0:N0}", Model.TotalMaintenanceCost72.Value/72) : "0")</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Adjustment Monthly Cost</label>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list1" class="table table-striped m-b-none table-calc">
+                    <thead>
+                        <tr>
+                            <th width="110px" style="text-align: right">1</th>
+                            <th width="110px" style="text-align: right">2</th>
+                            <th width="110px" style="text-align: right">3</th>
+                            <th width="110px" style="text-align: right">4</th>
+                            <th width="110px" style="text-align: right">5</th>
+                            <th width="110px" style="text-align: right">6</th>
+                        </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                        <tr class="odd">
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma1)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma2)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma3)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma4)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma5)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma6)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list2" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">7</th>
+                        <th width="110px" style="text-align: right">8</th>
+                        <th width="110px" style="text-align: right">9</th>
+                        <th width="110px" style="text-align: right">10</th>
+                        <th width="110px" style="text-align: right">11</th>
+                        <th width="110px" style="text-align: right">12</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma7)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma8)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma9)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma10)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma11)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma12)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list3" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">13</th>
+                        <th width="110px" style="text-align: right">14</th>
+                        <th width="110px" style="text-align: right">15</th>
+                        <th width="110px" style="text-align: right">16</th>
+                        <th width="110px" style="text-align: right">17</th>
+                        <th width="110px" style="text-align: right">18</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma13)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma14)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma15)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma16)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma17)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma18)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list4" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">19</th>
+                        <th width="110px" style="text-align: right">20</th>
+                        <th width="110px" style="text-align: right">21</th>
+                        <th width="110px" style="text-align: right">22</th>
+                        <th width="110px" style="text-align: right">23</th>
+                        <th width="110px" style="text-align: right">24</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma19)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma20)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma21)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma22)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma23)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma24)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list5" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">25</th>
+                        <th width="110px" style="text-align: right">26</th>
+                        <th width="110px" style="text-align: right">27</th>
+                        <th width="110px" style="text-align: right">28</th>
+                        <th width="110px" style="text-align: right">29</th>
+                        <th width="110px" style="text-align: right">30</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma25)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma26)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma27)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma28)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma29)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma30)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list6" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">31</th>
+                        <th width="110px" style="text-align: right">32</th>
+                        <th width="110px" style="text-align: right">33</th>
+                        <th width="110px" style="text-align: right">34</th>
+                        <th width="110px" style="text-align: right">35</th>
+                        <th width="110px" style="text-align: right">36</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma31)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma32)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma33)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma34)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma35)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma36)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list7" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">37</th>
+                        <th width="110px" style="text-align: right">38</th>
+                        <th width="110px" style="text-align: right">39</th>
+                        <th width="110px" style="text-align: right">40</th>
+                        <th width="110px" style="text-align: right">41</th>
+                        <th width="110px" style="text-align: right">42</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma37)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma38)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma39)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma40)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma41)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma42)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list8" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">43</th>
+                        <th width="110px" style="text-align: right">44</th>
+                        <th width="110px" style="text-align: right">45</th>
+                        <th width="110px" style="text-align: right">46</th>
+                        <th width="110px" style="text-align: right">47</th>
+                        <th width="110px" style="text-align: right">48</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma43)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma44)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma45)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma46)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma47)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma48)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-responsive">
+                <table id="maincalc-list9" class="table table-striped m-b-none table-calc">
+                    <thead>
+                    <tr>
+                        <th width="110px" style="text-align: right">49</th>
+                        <th width="110px" style="text-align: right">50</th>
+                        <th width="110px" style="text-align: right">51</th>
+                        <th width="110px" style="text-align: right">52</th>
+                        <th width="110px" style="text-align: right">53</th>
+                        <th width="110px" style="text-align: right">54</th>
+                    </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                    <tr class="odd">
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma49)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma50)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma51)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma52)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma53)</td>
+                        <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma54)</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        <div class="table-responsive">
+            <table id="maincalc-list10" class="table table-striped m-b-none table-calc">
+                <thead>
+                <tr>
+                    <th width="110px" style="text-align: right">55</th>
+                    <th width="110px" style="text-align: right">56</th>
+                    <th width="110px" style="text-align: right">57</th>
+                    <th width="110px" style="text-align: right">58</th>
+                    <th width="110px" style="text-align: right">59</th>
+                    <th width="110px" style="text-align: right">60</th>
+                </tr>
+                </thead>
+                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                <tr class="odd">
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma55)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma56)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma57)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma58)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma59)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma60)</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-responsive">
+            <table id="maincalc-list11" class="table table-striped m-b-none table-calc">
+                <thead>
+                <tr>
+                    <th width="110px" style="text-align: right">61</th>
+                    <th width="110px" style="text-align: right">62</th>
+                    <th width="110px" style="text-align: right">63</th>
+                    <th width="110px" style="text-align: right">64</th>
+                    <th width="110px" style="text-align: right">65</th>
+                    <th width="110px" style="text-align: right">66</th>
+                </tr>
+                </thead>
+                <tbody role="alert" aria-live="polite" aria-relevant="all">
+                <tr class="odd">
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma61)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma62)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma63)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma64)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma65)</td>
+                    <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma66)</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+            <div class="table-responsive">
+                <table id="maincalc-list12" class="table table-striped m-b-none table-calc">
+                    <thead>
+                        <tr>
+                            <th width="110px" style="text-align: right">67</th>
+                            <th width="110px" style="text-align: right">68</th>
+                            <th width="110px" style="text-align: right">69</th>
+                            <th width="110px" style="text-align: right">70</th>
+                            <th width="110px" style="text-align: right">71</th>
+                            <th width="110px" style="text-align: right">72</th>
+                        </tr>
+                    </thead>
+                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                        <tr class="odd">
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma67)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma68)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma69)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma70)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma71)</td>
+                            <td class="" style="text-align: right">@string.Format("{0:N0}", Model.Ma72)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <div id="alert_placeholder"></div>
+        <footer class="panel-footer bg-light lter">
+            @Html.HiddenFor(o => o.IdMaintenanceCalculation)
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost12, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost24, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost36, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost48, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost60, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.TotalMaintenanceCost72, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.MaintenanceCalculationDetails, null, new {@type = "hidden"})
+            @Html.TextBoxFor(o => o.AdjMonthlyCost, null, new {@type = "hidden"})
+            @StateButton.MaintenanceCalculationStateButton("detail", Model.IsDraft, Model.IsValid, Model.IsSubmitted)
+        </footer>
+    </section>
+}
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts{
+    <script src="@Url.Content("~/Scripts/jsDate.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        $(document).ready(function () {
+            $(".currenciesOnly").on('keydown', currenciesOnly)
+                                          .on('blur', function () { $(this).formatCurrency(); });
+            $(".numbersOnly").on('keydown', numbersOnly);
+        });
+    </script>
+}

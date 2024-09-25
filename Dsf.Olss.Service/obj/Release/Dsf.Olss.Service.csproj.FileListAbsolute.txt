@@ -1,0 +1,17 @@
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\App.config
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Olss.Service.dll.config
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Olss.Service.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Olss.Service.pdb
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Lib.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Olss.Data.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\EntityFramework.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\EntityFramework.SqlServer.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Oracle.ManagedDataAccess.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Oracle.ManagedDataAccess.EntityFramework.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Olss.Data.pdb
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\Dsf.Lib.pdb
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\EntityFramework.xml
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\bin\Release\EntityFramework.SqlServer.xml
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\obj\Release\Dsf.Olss.Service.csprojResolveAssemblyReference.cache
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\obj\Release\Dsf.Olss.Service.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Olss.Service\obj\Release\Dsf.Olss.Service.pdb

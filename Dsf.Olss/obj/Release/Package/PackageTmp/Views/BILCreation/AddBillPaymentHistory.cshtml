@@ -1,0 +1,584 @@
+﻿@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@model Dsf.Olss.Models.AddBillPayHistViewModel
+@{
+    ViewBag.Title = "Add Billing & Payment History Inquiry";
+}
+<a href="@Url.Action("DetailBilling", "BILCreation", new { id = Model.IdTb_Bil_PaySchedule })" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div class="panel label-panel">
+    <table class="table">
+        <tr>
+            <td class="font-bold"><i class="fa fa-user text-danger"></i> Created by</td>
+            <td>
+                @Html.HiddenFor(o => o.CreatedBy)
+                @(Model.CreatedBy)
+            </td>
+            <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Created Date</td>
+            <td>
+                @Html.HiddenFor(o => o.CreatedDate)
+                @(String.Format("{0:MM/dd/yyyy}", Model.CreatedDate))
+            </td>
+            <td class="font-bold"><i class="fa fa-user text-danger"></i> Last Modified By</td>
+            <td>
+                @Html.HiddenFor(o => o.LastModifiedBy)
+                @(Model.LastModifiedBy)
+            </td>
+            <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Last Modified Date</td>
+            <td>
+                @Html.HiddenFor(o => o.LastModifiedDate)
+                @(String.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate))
+            </td>
+        </tr>
+    </table>
+</div>
+
+@using (Html.BeginForm("AddBillPaymentHistory", "BILCreation", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <!-- Contract Information -->
+    <section class="panel">
+        <header class="panel-heading">Contract Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.AgreementNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AgreementNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.PreviousAgreementNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.PreviousAgreementNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.AgreementDate)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group date inmod">
+                                @Html.TextBoxFor(x => x.AgreementDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+          <!-- Billing and Payment History -->
+    <section class="panel">
+        <header class="panel-heading">Billing and Payment History</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.FirstDueDateUsageUnit)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(x => x.FirstDueDateUsageUnit, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.FirstDueDatePayment)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(x => x.FirstDueDatePayment, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.TermOfPay)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.TermOfPay, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.NumberOfPay)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.NumberOfPay, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.DepositAmount)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.DepositAmount, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.DepositReturnDate)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(x => x.DepositReturnDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.DepositPaymentDate)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(x => x.DepositPaymentDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.IssueInvoiceDate)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(x => x.IssueInvoiceDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.BreakDownSpecialContract)</div>
+                        <div class="col-lg-6">
+                            @{
+    List<SelectListItem> items = new List<SelectListItem>();
+    items.Add(new SelectListItem { Text = "No", Value = "0" });
+    items.Add(new SelectListItem { Text = "Yes", Value = "1" });
+
+                            }
+                            @Html.DropDownListFor(x => x.BreakDownSpecialContract, items, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.MaintenanceAmount1)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.MaintenanceAmount1, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.BreakdownAdjustmentAmount)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.BreakdownAdjustmentAmount, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.MonthlyInstallment)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.MonthlyInstallment, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.InterestPenalty)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.InterestPenalty, null, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.VATAmount1)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.VATAmount1, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.PenaltyAmount1)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.PenaltyAmount1, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.PPHAmount1)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.PPHAmount1, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Condition -->
+    <section class="panel">
+        <header class="panel-heading">Payment Condition</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.PaymentTransaction)</div>
+                        <div class="col-lg-6">
+                            @{
+                                List<SelectListItem> payment_transaction = new List<SelectListItem>();
+                                payment_transaction.Add(new SelectListItem {Text = "Transfer", Value = "1"});
+                                payment_transaction.Add(new SelectListItem {Text = "Giro", Value = "2"});
+                            }
+                            @Html.DropDownListFor(x => x.PaymentTransaction, payment_transaction, new {@class = "form-control", @data_required = "true"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.GiroNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.GiroNumber, new {@class = "form-control text-left", @readonly = "readonly"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.CollectionDate)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(x => x.CollectionDate, new {@class = "form-control datepicker-input", @data_required = "true"})
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(x => x.CollectionDate, string.Empty, new {@id = "ErrorCollectionDate", @style = "color:red"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.InstallmentAmount)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.InstallmentAmount, "{0:N0}", new { @class = "form-control text-right money", @data_required = "true" })
+                            </div>
+                            @Html.ValidationMessageFor(x => x.InstallmentAmount, string.Empty, new {@id = "ErrorPaymentAmount", @style = "color:red"})
+                            @*@Html.HiddenFor(x => x.BillingAmount)*@
+                            @Html.HiddenFor(x => x.PaidAmountHistory)
+                            @Html.HiddenFor(x => x.PaymentScheduleDate)
+                            @Html.HiddenFor(x => x.FixedCollectionAmount)
+                            @Html.HiddenFor(x => x.FixedPenalty)
+                            @Html.HiddenFor(x => x.OverDueDays)
+                            @Html.HiddenFor(x => x.IsVATPaid)
+                            @Html.HiddenFor(x => x.IsPphPaid)
+                            @Html.HiddenFor(x => x.EndPeriodPayment, "{0:MM/dd/yyyy}")
+                            @Html.HiddenFor(x => x.LastPenalty)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.BreakdownAmount)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.BreakdownAmount, "{0:N0}", new { @class = "form-control text-right money"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.PenaltyAmount2)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.PenaltyAmount2, "{0:N0}", new {@class = "form-control text-right money"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.VATAmount2)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.VATAmount2, "{0:N0}", new {@class = "form-control text-right money"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.PPHAmount2)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.PPHAmount2, "{0:N0}", new {@class = "form-control text-right money"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.MaintenanceAmount2)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.MaintenanceAmount2, "{0:N0}", new {@class = "form-control text-right money"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6">@Html.LabelFor(x => x.CollectionAmount)</div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(x => x.CollectionAmount,"{0:N0}", new { @class = "form-control text-right money", @data_required = "true", @readonly = "readonly" })
+                            </div>
+                            @Html.ValidationMessageFor(x => x.CollectionAmount)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div>
+                <footer class="panel-footer bg-light lter">
+                    <a href="#" id="btn_save" class="btn btn-info disabled" onclick="ConfirmationAddBilling('Save'); return false;">Save</a>
+                </footer>
+            </div>
+        </div>
+    </section>
+}
+@{
+    Html.RenderPartial("ModalPopUp");
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/BillCreation.js")"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ($("#IsVATPaid").val() == "True") {
+                $("#VATAmount2").prop('readonly', true);
+                $("#VATAmount2").val(0);
+            }
+            if ($("#IsPphPaid").val() == "True") {
+                $("#PPHAmount2").prop('readonly', true);
+                $("#PPHAmount2").val(0);
+            }
+            $(".input-group.date.inmod").each(function() { $(this).datepicker("remove"); });
+            getPaymentTransactionType($("#PaymentTransaction").val());
+            Hitung();
+        });
+
+        $("#PaymentTransaction").change(function() {
+            getPaymentTransactionType($("#PaymentTransaction").val());
+        });
+
+        function getPaymentTransactionType(a) {
+            if (a == "1") {
+                $("#GiroNumber").prop('readonly', true);
+                $("#GiroNumber").val('');
+            } else if (a == "2") {
+                $("#GiroNumber").prop('readonly', false);
+            }
+        }
+
+        function ConfirmationAddBilling(a) {
+            $("#confirmationModal").modal("show");
+            $(".confirmationMessage").html(a);
+        }
+
+        $(".money").bind('input propertychange', function() {
+            if (isNaN($(this).val().replace(/,/gi, '')))
+                $(this).val("");
+            else {
+                AddThousandSeperator($(this));
+            }
+        });
+
+        //function AddThousandSeperator(jInputControl) {
+        //    var num0 = jInputControl.val().split(".");
+        //    var num = num0[0].replace(/,/gi, "").split("").reverse().join("");
+        //    var num2 = RemoveRougeChar(num.replace(/(.{3})/g, "$1,").split("").reverse().join(""));
+        //    if (num2.indexOf("-,") == 0) num2 = num2.replace("-,", "-");
+
+        //    if (num0[1] === undefined) {
+        //    }
+        //    else {
+        //        num2 += "." + num0[1];
+        //    }
+
+        //    jInputControl.val(num2);
+        //}
+
+        // X0098986 - Cannot Save Payment and Penalty Amount error
+        function AddThousandSeperator(jInputControl) {
+            var num0 = jInputControl.val().split(".");
+
+            if (num0[0] === undefined) {
+            }
+            else {
+                var num = num0[0].replace(/,/gi, "").split("").reverse().join("");
+                var num2 = RemoveRougeChar(num.replace(/(.{3})/g, "$1,").split("").reverse().join(""));
+                if (num2.indexOf("-,") == 0) num2 = num2.replace("-,", "-");
+
+                if (num0[1] === undefined) {
+                }
+                else {
+                    num2 += "." + num0[1];
+                }
+
+                jInputControl.val(num2);
+            }
+        }
+
+        // for removing rouge char
+        // parameter: string to remove rouge char
+        function RemoveRougeChar(convertString) {
+            if (convertString.substring(0, 1) === ",")
+                return convertString.substring(1, convertString.length);
+            return convertString;
+        }
+
+        $('#confirmModal').click(function(e) {
+            $('form:first').trigger('submit');
+        });
+
+        function Hitung() {
+            var date1 = new Date($("#CollectionDate").val());
+            var date2 = new Date($("#PaymentScheduleDate").val());
+            var overDueDays = (date1 - date2) / (1000 * 60 * 60 * 24);
+            if (!(isNaN(overDueDays))) {
+                if ((overDueDays <= 0)) {
+                    overDueDays = 0;
+                    $('#PenaltyAmount1').val(0);
+                } else if (overDueDays > 0) {
+                    var base = parseCurrency($('#MonthlyInstallment').val()) - parseCurrency($('#PaidAmountHistory').val());//parseCurrency($('#MonthlyInstallment').val()) - parseCurrency($('#BreakdownAmount').val()) - parseCurrency($('#PPHAmount2').val()) - parseCurrency($('#InstallmentAmount').val());
+                    var dendaSekarang = (parseCurrency($('#InterestPenalty').val())/100)* base * parseCurrency($('#OverDueDays').val());
+                    var dendaLalu = parseCurrency($('#LastPenalty').val());
+                    var jumlahDenda = dendaSekarang + dendaLalu;
+                    $('#PenaltyAmount1').val(jumlahDenda);
+                    AddThousandSeperator($('#PenaltyAmount1'));
+                }
+            } else {
+                overDueDays = 0;
+                $('#PenaltyAmount1').val(0);
+            }
+
+
+
+            var total = (($("#InstallmentAmount").val() == '') ? 0 : parseCurrency($("#InstallmentAmount").val()))
+                + (($("#BreakdownAmount").val() == '') ? 0 : parseCurrency($("#BreakdownAmount").val()))
+                + (($("#PenaltyAmount2").val() == '') ? 0 : parseCurrency($("#PenaltyAmount2").val()))
+                + (($("#VATAmount2").val() == '') ? 0 : parseCurrency($("#VATAmount2").val()))
+                - (($("#PPHAmount2").val() == '') ? 0 : parseCurrency($("#PPHAmount2").val()))
+                + (($("#MaintenanceAmount2").val() == '') ? 0 : parseCurrency($("#MaintenanceAmount2").val()));
+            if (isNaN(total)) {
+                total = 0;
+            }
+            $("#CollectionAmount").val(total);
+            AddThousandSeperator($("#CollectionAmount"));
+            $("#OverDueDays").val(overDueDays);
+            $("#FixedCollectionAmount").val(parseCurrency($("#InstallmentAmount").val()));
+            $("#FixedPenalty").val(parseCurrency($("#PenaltyAmount2").val()));
+            CheckPembayaran();
+        }
+
+        $("#CollectionDate, #InstallmentAmount, #BreakdownAmount,#PenaltyAmount2,#VATAmount2,#PPHAmount2,#MaintenanceAmount2").change(function() {
+            Hitung();
+        });
+
+        $("#CollectionDate, #InstallmentAmount, #BreakdownAmount,#PenaltyAmount2,#VATAmount2,#PPHAmount2,#MaintenanceAmount2").blur(function() {
+            Hitung();
+        });
+
+        function CheckPembayaran() {
+            var basePembayaran = parseCurrency($("#MonthlyInstallment").val());
+            var jumlahPembayaran = parseCurrency($("#FixedCollectionAmount").val()) + parseCurrency($("#PaidAmountHistory").val());
+            if (jumlahPembayaran > basePembayaran) {
+                $("#btn_save").addClass("disabled");
+                $("#ErrorPaymentAmount").html('Payment Amount greater than Monthly Amount');
+                $('#ErrorPaymentAmount').show();
+            } else if (jumlahPembayaran <= basePembayaran) {
+                $("#btn_save").removeClass("disabled");
+                $('#ErrorPaymentAmount').hide();
+            }
+        }
+
+        function parseCurrency(num) {
+            return parseFloat(num.replace(/,/g, ''));
+        }
+    </script>
+}

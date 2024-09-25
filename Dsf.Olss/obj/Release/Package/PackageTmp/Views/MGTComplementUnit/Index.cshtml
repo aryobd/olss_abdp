@@ -1,0 +1,678 @@
+﻿@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@using Dsf.Olss.Utility
+@{
+    ViewBag.Title = "Monitoring Document";
+    // Get loading image url
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+    var jsID = Guid.NewGuid().ToString();
+    var tSl = ViewBag.TabSelection;
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/select2/select2.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/select2-bootstrap.css") rel="stylesheet" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@using (Html.BeginForm("index", "MGTComplementUnit", FormMethod.Post, new { id = "complementForm" }))
+{
+    <div id="alert_placeholder"></div>
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label>Search Criteria</label>
+                        <div class="form-group">
+                            <select id="ddlSearchCriteria" class="form-control">
+                                <option value="4">Agreement Number</option>
+                                <option value="7">Chassis Number</option>
+                                <option value="5">Customer Name</option>
+                                <option value="8">Engine Number</option>
+                                <option value="3">Expired Date</option>
+                                <option value="1">Police Number</option>
+                                <option value="6">Product Type</option>
+                                <option value="2">Unit Type</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <label>Parameter</label>
+                        <div class="form-group">
+                            <input id="txtSearch" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label id="sDateParam">Start Expiration Date</label>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label id="eDateParam">End Expiration Date</label>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label></label>
+                        <div class="form-group">
+                            <input id="btnSearch" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#tabstnk" aria-controls="tabstnk" role="tab" data-toggle="tab">STNK</a></li>
+                    <li role="presentation"><a href="#tabkeur" aria-controls="tabkeur" role="tab" data-toggle="tab">KEUR</a></li>
+                    <li role="presentation"><a href="#tabpolicy" aria-controls="tabpolicy" role="tab" data-toggle="tab">Insurance Policy</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" id="tabstnk" class="tab-pane active">
+                        <div class="table-responsive table-stnk-responsive">
+                            <table id="table-list-stnk" class="table table-striped m-b-none display nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="header-grid-short">Agreement Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Customer Name</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Police No.</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Product Type</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Chassis Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Engine Number</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Status Unit</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">STNK Status</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-date">Expired Date</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-date">Renewal By</div>
+                                        </th>
+                                        <th class="text-center">
+                                            Select
+                                        </th>
+                                        <th class="text-center">
+                                            Progress Status
+                                        </th>
+                                        <th class="text-center">
+                                            New Police Number
+                                        </th>
+                                        <th class="text-center">
+                                            Start Date
+                                        </th>
+                                        <th class="text-center">
+                                            End Date
+                                        </th>                                        
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <hr />
+                        <div class="row padder">
+                            <section class="panel" id="panelBtn">
+                                <footer class="panel-footer bg-light lter">
+                                    <div id='loadingmessageSTNK' style='display: none'>
+                                        <img src='@Url.Content(ImgUrl)'/>
+                                    </div>
+                                    <input type="hidden" id="submitButtonText"/>
+                                    <input id="saveStnk" name="saveStnk" class="btn btn-info" type="button" value="Save" data-toggle="modal" data-target="#myModal">
+                                    <input id="btnPrintSTNK" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+                                </footer>
+                            </section>
+                        </div>
+                    </div>
+                    <div role="tabpanel" id="tabkeur" class="tab-pane">
+                        <div class="table-responsive table-keur-responsive">
+                            <table id="table-list-keur" class="table table-striped m-b-none display nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="header-grid-short">Agreement Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Customer Name</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Police No.</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Product Type</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Chassis Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Engine Number</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Status Unit</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-date">Expired Date</div>
+                                        </th>
+                                        <th class="text-center">
+                                            Select
+                                        </th>
+                                        <th class="text-center">
+                                            Progress Status
+                                        </th>
+                                        <th class="text-center">
+                                            Start Date
+                                        </th>
+                                        <th class="text-center">
+                                            End Date
+                                        </th>                                        
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <hr />
+                        <div class="row padder">
+                            <section class="panel" id="panelBtn">
+                                <footer class="panel-footer bg-light lter">
+                                    <div id='loadingmessageKEUR' style='display: none'>
+                                        <img src='@Url.Content(ImgUrl)' />
+                                    </div>
+                                    <input type="hidden" id="submitButtonText" />
+                                    <input id="saveKeur" name="saveKeur" class="btn btn-info" type="button" value="Save" data-toggle="modal" data-target="#myModal">
+                                    <input id="btnPrintKEUR" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+                                </footer>
+                            </section>
+                        </div>
+                    </div>
+                    <div role="tabpanel" id="tabpolicy" class="tab-pane">
+                        <div class="table-responsive table-polis-responsive">
+                            <table id="table-list-polis" class="table table-striped m-b-none display nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="header-grid-short">Agreement Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Customer Name</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Police No.</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Product Type</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Chassis Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Engine Number</div>
+                                        </th>
+
+
+                                        <th>
+                                            <div class="header-grid-short">Status Unit</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Insurance Company</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-short">Insurance Policy Number</div>
+                                        </th>
+                                        <th>
+                                            <div class="header-grid-date">Expired Date</div>
+                                        </th>
+                                        <th class="header-grid-date">
+                                            Start Date
+                                        </th>
+                                        <th class="header-grid-date">
+                                            End Date
+                                        </th>
+                                        <th class="text-center">
+                                            Select
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <hr />
+                        <div class="row padder">
+                            <section class="panel" id="panelBtn">
+                                <footer class="panel-footer bg-light lter">                                    
+                                    <input type="hidden" id="submitButtonText" />
+                                    <input id="savePolis" name="savePolis" class="btn btn-info" type="button" value="Save" data-toggle="modal" data-target="#myModal">
+                                    <div class="btn-group dropup">
+                                        <div id='loadingmessageIns' style='display: none'>
+                                            <img src='@Url.Content(ImgUrl)' />
+                                        </div>
+                                        <button id="btnPrintInsurance" class="btn btn-info buttonprint dropdown-toggle dropup" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Print Report
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul id="btnPrintInsuranceUl" class="dropdown-menu">
+                                            <li><a href="#">Print as Excel</a></li>
+                                            <li><a href="#">Print as Pdf</a></li>
+                                        </ul>                                     
+                                    </div>                                    
+                                    @*<input id="btnPrintInsurance" name="statusButton" class="btn btn-info buttonprint dropdown-toggle" value="Print Report" data-toggle="dropdown">*@
+                                </footer>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+<script src="@Url.Content("~/Content/js/Olss.js")"></script>
+<script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+<script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+<script src="@Url.Content("~/Content/js/MGTMonitoringDocument.js?" + jsID)"></script>
+    <script>
+        var CounterStart = -1;
+        var CounterEnd = -1;
+        var CounterSelect = -1;
+        var CounterOption = -1;
+        var CounterOptionKeur = -1;
+        var iActiveIndex = 1;
+        var CounterPoliceNumber = -1;
+        var config = null;
+        var oTable1;
+        var oTable2;
+        var oTable3;
+        var serverRoot = '@Url.Content("~")';
+        $(document).ready(function () {
+            datagridstnk(1);            
+            $("#saveStnk").prop("disabled", true);
+            $("#saveKeur").prop("disabled", true);
+            $("#savePolis").prop("disabled", true);  
+        });
+
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            } else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        bootstrap_alert = function () { };
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        };
+
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        };
+        
+        $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+            CounterEnd = -1;
+            CounterSelect = -1;
+            CounterStart = -1;
+            CounterOption = -1;
+            CounterOptionKeur = -1;
+            CounterPoliceNumber = -1;
+            switch ($(this).html()) {
+                case "STNK":                    
+                    iActiveIndex = 1;
+                    ComboReplace(false);
+                    if (typeof (oTable1) != "undefined") {
+                        $('#table-list-stnk').dataTable().fnDraw();
+                    }
+                    else {
+                        datagridstnk(1);
+                    }
+                    break;
+                case "KEUR":                    
+                    iActiveIndex = 2;
+                    ComboReplace(false);
+                    if (typeof (oTable2) != "undefined")
+                        $('#table-list-keur').dataTable().fnDraw();
+                    else
+                        datagridkeur(2);
+                    break;
+                case "Insurance Policy":
+                    iActiveIndex = 3;
+                    ComboReplace(true);
+                    if (typeof (oTable3) != "undefined")
+                        $('#table-list-polis').dataTable().fnDraw();
+                    else
+                        datagridpolis(3);
+                    break;
+            }
+        })       
+        
+        $('#confirmModal').click(function (e) {
+            $('form').trigger('submit');
+        });
+
+        function extractKeyValue(obj, value) {
+            var keyObj = "";
+            for (var i in obj) {
+                if (obj[i] == value) {
+                    keyObj = i;
+                }
+            }
+
+            return keyObj;
+        }
+
+        function ComboReplace(act) {
+            var NotInsurance = {
+                "4": "Agreement Number",
+                "7": "Chassis Number",
+                "5": "Customer Name",
+                "8": "Engine Number",
+                "3": "Expired Date",
+                "1": "Police Number",
+                "6": "Product Type",
+                "2": "Unit Type"
+            }
+
+            var Insurance = {
+                "4": "Agreement Number",
+                "7": "Chassis Number",
+                "5": "Customer Name",
+                "8": "Engine Number",
+                "3": "Expired Date",
+                "9": "Modified Date",
+                "1": "Police Number",
+                "6": "Product Type",
+                "2": "Unit Type"
+            }
+            var $select = $("#ddlSearchCriteria");
+            var JSONData = act ? Insurance : NotInsurance
+            var arrD = [];
+
+            for (var key in JSONData) {
+                if (JSONData.hasOwnProperty(key)) {
+                    arrD.push(JSONData[key]);
+                }
+            };
+
+            arrD = arrD.sort();
+
+            $select.empty();
+            for (var val in arrD) {
+                $select.append('<option value=' + extractKeyValue(JSONData, arrD[val]) + '>' + arrD[val] + '</option>');
+            };
+
+            $("#txtSearch").val(null);
+            $("#txtStartDate").val(null);
+            $("#txtEndDate").val(null);
+        }
+
+        $(function () {
+            var tSelect = '@tSl';
+            switch (tSelect) {
+                case "1":
+                    $('a[href="#tabstnk"').trigger('click');
+                    break;
+                case "2":
+                    $('a[href="#tabkeur"').trigger('click');
+                    break;
+                case "3":
+                    $('a[href="#tabpolicy"').trigger('click');
+                    break;
+            }
+            
+        });
+
+        //PrintReport
+        $('#btnPrintSTNK').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessageSTNK').show();
+            $('#btnPrintSTNK').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReportSTNK", "MGTComplementUnit")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                global:false,
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "./Base/Download?fileName=" + response + "&rptType=" + 7;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessageSTNK').hide();
+                    $('#btnPrintSTNK').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessageSTNK').hide();
+                    $('#btnPrintSTNK').show();
+                }
+            });
+        });
+        //PrintReport
+        $('#btnPrintKEUR').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessageKEUR').show();
+            $('#btnPrintKEUR').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReportKEUR", "MGTComplementUnit")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                global: false,
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "./Base/Download?fileName=" + response + "&rptType=" + 8;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessageKEUR').hide();
+                    $('#btnPrintKEUR').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessageKEUR').hide();
+                    $('#btnPrintKEUR').show();
+                }
+            });
+        });
+        //PrintReport
+        $('#btnPrintInsuranceUl').on('click', 'li', function (e) {
+            e.preventDefault();
+            var printAs = $(this).text();
+            var ext = printAs == "Print as Excel" ? "Excel" : "PDF";
+            var isSelect = false;
+
+            if (ext != "") {
+                var arrData = [];
+                $("#table-list-polis input[type=checkbox]:checked").each(function () {
+                    var row = $(this).closest("tr");
+
+                    var AgreementNumber = row[0].cells[0].innerHTML;
+                    var EngineNumber = row[0].cells[5].innerHTML;
+                    var IdTb_MGT_HistoryDoc = row.find('input[type="hidden"]').val();
+
+                    var obj = {};
+                    obj.AgreementNumber = AgreementNumber;
+                    obj.EngineNumber = EngineNumber;
+                    obj.IdTb_MGT_HistoryDoc = IdTb_MGT_HistoryDoc;
+
+                    if (AgreementNumber != "") {
+                        arrData.push(obj);
+                        isSelect = true;
+                    }
+                });
+
+                var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+                var txtSearch = $("#txtSearch").val();
+                var txtStartDate = $("#txtStartDate").val();
+                var txtEndDate = $("#txtEndDate").val();
+
+                // Ajax start animation progress
+                $('#loadingmessageIns').show();
+                $('#btnPrintInsurance').hide();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PrintReportInsurance", "MGTComplementUnit")',
+                    data: JSON.stringify({
+                        'ddlSearchCriteria': ddlSearchCriteria,
+                        'txtSearch': txtSearch,
+                        'txtStartDate': txtStartDate,
+                        'txtEndDate': txtEndDate,
+                        'ext' : ext,
+                        'isSelect': isSelect,
+                        'OPLUnitSelected': arrData
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'text',
+                    global: false,
+                    success: function (response, status, xhr) {
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                                response = filename;
+                            }
+                        }
+                        if (response !== "") {
+                            window.location = "./Base/Download?fileName=" + response + "&rptType=" + 9;
+                        }
+                        // Ajax stop animation progress
+                        $('#loadingmessageIns').hide();
+                        $('#btnPrintInsurance').show();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Cannot download file..! Error is occurs');
+                        // Ajax stop animation progress
+                        $('#loadingmessageIns').hide();
+                        $('#btnPrintInsurance').show();
+                    }
+                });
+            }            
+        });
+
+        function checkDate() {
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();            
+            if (checkDate() === false) {
+                CounterStart = -1; // TICKET X0102023 - Error Input STNK
+                CounterEnd = -1;
+                CounterSelect = -1;
+                CounterOption = -1;
+                CounterOptionKeur = -1;
+                CounterPoliceNumber = -1;
+
+                switch (iActiveIndex) {
+                    case 1:
+                        $('#table-list-stnk').dataTable().fnDraw();
+                        break;
+                    case 2:
+                        $('#table-list-keur').dataTable().fnDraw();
+                        break;
+                    case 3:
+                        $('#table-list-polis').dataTable().fnDraw();
+                        break;
+                }
+            }
+        });
+    </script>    
+}

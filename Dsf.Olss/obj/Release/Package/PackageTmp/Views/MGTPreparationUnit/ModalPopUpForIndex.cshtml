@@ -1,0 +1,176 @@
+﻿<div class="modal fade" id="BASTActualListModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <br />
+            <header class="panel-heading font-bold">
+                Bast Receiving Delivery
+                <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+            </header>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-responsive">
+                        <div class="table-responsive">
+                            <table id="BastActual-list" class="table table-striped m-b-none tablewrap">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">Bast Supplier No</th>
+                                        <th width="10%">Bast Customer No</th>
+                                        <th width="10%">Agreement No</th>
+                                        <th width="10%">Supplier Name</th>
+                                        <th width="10%">Customer Name</th>
+                                        <th width="10%">Unit Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PrepHistoryModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <section class="panel" style="margin-bottom: 0px;">
+                <header class="panel-heading font-bold">
+                    Unit Preparation Progress History
+                    <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+                </header>
+                <div class="panel-body" style="padding: 0px !important;">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>DSF Office</label></div>
+                                <div class="col-lg-8">: <label id="valDSFOffice"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>Agreement Number</label></div>
+                                <div class="col-lg-8">: <label id="valAgreementNumber"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>Customer Name</label></div>
+                                <div class="col-lg-8">: <label id="valCustomerName"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>PO Number</label></div>
+                                <div class="col-lg-8">: <label id="valPONumber"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>PO Creation Date</label></div>
+                                <div class="col-lg-8">: <label id="valPOCreationDate"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>PO Approved Date</label></div>
+                                <div class="col-lg-8">: <label id="valPOApprovedDate"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>Supplier Name</label></div>
+                                <div class="col-lg-8">: <label id="valSupplierName"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>Unit Description</label></div>
+                                <div class="col-lg-8">: <label id="valUnitDescription"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>Unit Status</label></div>
+                                <div class="col-lg-8">: <label id="valUnitStatus"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <div class="col-lg-4"><label>Qty</label></div>
+                                <div class="col-lg-8">: <label id="valQty"></label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="panel" style="margin-bottom: 0px;">
+                <div class="panel-body" style="padding: 0px 0px;">
+                    <div class="DocumentList">
+                        <div class="table-responsive history-responsive">
+                            <table id="history-list" class="table table-striped m-b-none tablewrap">
+                                <thead>
+                                    <tr>
+                                        <th>Update Date</th>
+                                        <th>Progress Status</th>
+                                        <th>Remark</th>
+                                        <th>Unit Readiness</th>
+                                        <th>Update By</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <span id="msgModal"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

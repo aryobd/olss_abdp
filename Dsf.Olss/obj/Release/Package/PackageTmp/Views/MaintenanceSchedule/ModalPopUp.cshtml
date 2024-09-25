@@ -1,0 +1,376 @@
+﻿@using System.Web.UI.WebControls
+@model Dsf.Olss.Models.MaintenanceScheduleViewModel
+<!-- Modal Update -->
+<div class="modal fade" id="updateMaintenanceModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update Maintenance Agreement</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Confirmation to Customer</label>
+                                <div>
+                                    <input type="text" hidden="hidden" id="IdMaintenance">
+                                    <input type="text" hidden="hidden" id="IdTb_MTN_WorkOrder">
+                                    <input type="text" hidden="hidden" id="ScheduleDate">
+                                    <input type="text" hidden="hidden" id="PoliceNumber">
+                                    <input type="checkbox" id="IsConfirmation">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Confirmation Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control  datepicker-input" data-date-format="mm/dd/yyyy" id="ChooseConfirmDate">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Confirmation to Workshop</label>
+                                <div>
+                                    <input type="checkbox" id="IsWorkshop">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Schedule Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control  datepicker-input" data-date-format="mm/dd/yyyy" id="ScheduleReqDate">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>List Workshop</label>
+                                <div class="input-group">
+                                    <input type="text" hidden="hidden" id="IdSupplier">
+                                    <input type="text" class="form-control mandatory" id="Workshop">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-white" type="button" data-toggle="modal" data-target="#supplierMaintenanceWorkshopModal" onclick='loadSupplierMaintenance()'>...</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Workshop Location</label>
+                                <input type="text" class="form-control" id="WorkshopLocation">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Start Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control  datepicker-input" data-date-format="mm/dd/yyyy" id="StartDate">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>End Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control  datepicker-input" data-date-format="mm/dd/yyyy" id="EndDate">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Actual Km</label>
+                                <input type="text" class="form-control" id="ActualKM">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Maintenance Category</label>
+                                @Html.DropDownListFor(o => o.MaintenanceCategory, ViewBag.MaintenanceCategory as List<SelectListItem>, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Maintenance Budget</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp</span>
+                                    <input type="text" class="form-control numeric currency" id="MaintenanceBudget">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <input type="button" name="updateMaintenanceSchedule" value="Save" class="btn btn-info" onclick="UpdateMaintenanceSchedule()" />
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Supplier Workshop Lookup-->
+<div class="modal fade" id="supplierMaintenanceWorkshopModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title"><strong>Supplier Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-supplier-responsive">
+                        <table id="supplierMaintenanceWorkshop-lookup" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th width="25%">Supplier Code</th>
+                                    <th width="25%">Supplier Name</th>
+                                    <th width="15%">Telephone</th>
+									<th width="25%">Address</th>							
+                                    <th width="20%">Business Economy Sector</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Confirmation Customer Update-->
+<div class="modal fade" id="myModalCtoC">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Confirmation to Customer</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Police Number</label>
+                                <input type="text" disabled="disabled" class="form-control" value="b 6569 wef">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Schedule Date</label>
+                                <div class="input-group date">
+                                    <input type="text" class="form-control  datepicker-input" data-date-format="mm/dd/yyyy">
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#save">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Maintenance Confirmation Popup-->
+<div class="modal fade" id="MaintenanceConfirmation">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Maintenance Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <input type="text" hidden="hidden" id="IdTb_MTN_UnderMT">
+                                <input type="text" hidden="hidden" id="PoliceNumberUnderMT">
+                                <label>Status</label>
+                                <select class="form-control" id="MTStatus">
+                                    <option value="Ongoing">Ongoing</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Need Replacement</label>
+                                <div class="input-group date">
+                                    <select class="form-control" id="IsReplacement">
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Confirmation to Customer</label>
+                                <div>
+                                    <input type="checkbox" id="IsCustConfirmation">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Confirmation to Replacement Car</label>
+                                <div>
+                                    <input type="checkbox" id="IsConfirmationReplacementCar">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <div>
+                                    <textarea class="form-control" rows="3" type="text" id="Remarks"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <input type="button" name="updateMaintenanceConfirmation" value="Save" class="btn btn-info" onclick="UpdateMaintenanceConfirmation()" />
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History Unit Maintenance Update -->
+<div class="modal fade" id="updateHistoryUnitModal">
+    <div class="modal-dialog" style="width: 1000px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Update Maintenance History Unit</h4>
+            </div>
+            <div class="modal-body" >
+                <div class="panel-body" style="-ms-overflow-x: auto;">
+                    <table class="table" id="item-table">
+                        <thead>
+                            <tr>
+                                <th width="150">Code</th>
+                                <th width="150">Name</th>
+                                <th width="200">Actual Cost</th>
+                                <th width="30">Quantity</th>
+                                <th width="100">Ppn</th>
+                                <th width="100">Pph</th>
+                                <th width="30">Service</th>
+                                <th width="5" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="panel-body">
+                    Billed to customer <input id="IsBilledToCustomer" name="IsBilledToCustomer" type="checkbox">
+                </div>
+                <div class="modal-footer">
+                    <a id="addItem" href="#" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Item</a>
+                    <input type="button" name="statusBtn" value="Save" class="btn btn-info" />
+                    <input type="button" name="statusBtn" value="Validate" class="btn btn-danger" />
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Maintenance Item Lookup-->
+<div class="modal fade" id="maintenanceItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h5 class="modal-title"><strong>Maintenance Item Data</strong></h5>
+            </div>
+            <div class="tab-pane" id="datatable">
+                <section class="panel">
+                    <div class="table-maintenance-responsive">
+                        <table id="maintenanceItem-lookup" class="table table-striped m-b-none">
+                            <thead>
+                            <tr>
+                                <th width="25%">Item Code</th>
+                                <th width="25%">Item Name</th>
+                            </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

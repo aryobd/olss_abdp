@@ -1,0 +1,88 @@
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions\Dsf.Lib\bin\Dsf.Lib.dll
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions - JMTI\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions - JMTI\Dsf.Lib\bin\Dsf.Lib.dll
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions - JMTI\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions - JMTI\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions - JMTI\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\WORK STUFF\BSI\OLSS\SVN\trunk\src\Dsf.Solutions - JMTI\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\wildan\projects\jmti\bsi\apps\OLSS Phase 1\Source Code\Dsf.Solutions - JMTI\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\wildan\projects\jmti\bsi\apps\OLSS Phase 1\Source Code\Dsf.Solutions - JMTI\Dsf.Lib\bin\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\OLSS Phase 1\Source Code\Dsf.Solutions - JMTI\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\OLSS Phase 1\Source Code\Dsf.Solutions - JMTI\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\OLSS Phase 1\Source Code\Dsf.Solutions - JMTI\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\olss-apps\trunk\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\olss-apps\trunk\Dsf.Lib\bin\Dsf.Lib.dll
+D:\olss-apps\trunk\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\olss-apps\trunk\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\olss-apps\trunk\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\olss-apps\trunk\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\wildan\projects\jmti\bsi\apps\MSUB1\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\wildan\projects\jmti\bsi\apps\MSUB1\Dsf.Lib\bin\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\MSUB1\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\MSUB1\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\MSUB1\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\svn_clean\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\wildan\projects\jmti\bsi\apps\svn_clean\Dsf.Lib\bin\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\svn_clean\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\svn_clean\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\wildan\projects\jmti\bsi\apps\svn_clean\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\svn_clean\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\OLSS_\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\wildan\projects\jmti\bsi\apps\OLSS_\Dsf.Lib\bin\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\OLSS_\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\OLSS_\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\OLSS_\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\git\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\wildan\projects\jmti\bsi\apps\git\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\git\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\wildan\projects\jmti\bsi\apps\git\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\wildan\projects\jmti\bsi\apps\git\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+C:\BSI-OLSS\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll.config
+C:\BSI-OLSS\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll
+C:\BSI-OLSS\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.pdb
+C:\BSI-OLSS\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+C:\BSI-OLSS\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll
+D:\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+C:\BSI-OLSS\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\BSI\OLSS_GIT\OLSS\OLSS_BACKUP\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\BSI\OLSS_GIT\OLSS\OLSS_BACKUP\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll
+D:\BSI\OLSS_GIT\OLSS\OLSS_BACKUP\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\BSI\OLSS_GIT\OLSS\OLSS_BACKUP\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\BSI\OLSS_GIT\OLSS\OLSS_BACKUP\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\project\OLSS\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\project\OLSS\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.dll
+D:\project\OLSS\OLSS_BACKUP\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\project\OLSS\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\project\OLSS\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\project\OLSS\OLSS_BACKUP\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\OLS\from SVN\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\OLS\from SVN\Dsf.Lib\bin\Dsf.Lib.dll
+D:\OLS\from SVN\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\OLS\from SVN\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\OLS\from SVN\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\OLS\from SVN\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\OLSS_Source_Combine_Developers\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\OLSS_Source_Combine_Developers\Dsf.Lib\bin\Dsf.Lib.dll
+D:\OLSS_Source_Combine_Developers\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\OLSS_Source_Combine_Developers\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\OLSS_Source_Combine_Developers\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Lib\bin\Dsf.Lib.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\Firmansyah\Source Code\OLSS\Trunk\OLSS\Dsf.Lib\obj\Debug\Dsf.Lib.pdb
+D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Lib\bin\Dsf.Lib.dll.config
+D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Lib\bin\Dsf.Lib.dll
+D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Lib\bin\Dsf.Lib.pdb
+D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Lib\obj\Debug\Dsf.Lib.csprojResolveAssemblyReference.cache
+D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Lib\obj\Debug\Dsf.Lib.dll
+D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Lib\obj\Debug\Dsf.Lib.pdb

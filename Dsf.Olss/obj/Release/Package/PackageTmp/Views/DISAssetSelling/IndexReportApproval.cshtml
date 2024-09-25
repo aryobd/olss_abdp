@@ -1,0 +1,256 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+@using System.Web.UI.WebControls;
+@using Dsf.Lib.Constant
+
+@{
+    ViewBag.Title = "Index Report Approval";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+<script>
+    var serverRoot = '@Url.Content("~")';
+</script>
+
+<a href="@Url.Action("IndexDetail", "DISAssetSelling")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br /><br />
+
+<section class="panel">
+    <header class="panel-heading font-bold">
+        <div>Select memo to be created as Report Approval</div>
+    </header>
+    <div class="table-responsive">
+        <table id="assetpayment-list" class="table table-striped table-input m-b-none text-sm">
+            <thead>
+                <tr>
+                    <th width="6%" colspan="2" style="text-align:center">Select</th>
+                    <th>Memo Number</th> 
+                    <th>Auction Company</th> 
+                    <th style="text-align:right">Total Payment</th>   
+                    <th>Payment Date</th>                
+                    <th>Created Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.MemoWithoutReports != null)
+                {
+                    string BranchName = string.Empty;
+                    int opt = -1;
+                    int subOpt = default(int);
+                    for (int i = 0; i < Model.MemoWithoutReports.Count; i++)
+                    {
+                        if (BranchName != @Model.MemoWithoutReports[i].Branch)
+                        {
+                            opt++;
+                            subOpt = 0;
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-control text-center option" id="@("option_" + opt)" onchange="@("checkOption( " + opt + ")")" />
+                                </td>
+                                <td colspan="6">
+                                    @Html.TextBoxFor(o => Model.MemoWithoutReports[i].Branch, new { @class = "form-control text-left subOption", @readonly = "readonly" })
+                                </td>
+                            </tr>
+                        }
+
+                        BranchName = @Model.MemoWithoutReports[i].Branch;
+                        <tr>
+                            <td>
+                                @Html.HiddenFor(o => Model.MemoWithoutReports[i].IdTb_DIS_AssetSelling, new { @class = "form-control", @Id = "subId_" + opt + subOpt })
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(o => Model.MemoWithoutReports[i].isSelected, new { @class = "form-control text-center subOption", @Id = "subOption_" + opt + subOpt, @onchange = "checkSubOption( " + opt +","+ subOpt + ")" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.MemoWithoutReports[i].MemoNumber, new { @class = "form-control text-left", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.MemoWithoutReports[i].AuctionCompany, new { @class = "form-control text-left", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.MemoWithoutReports[i].TotalNetReceived, "{0:N0}", new { @class = "form-control text-right subTotal", @Id = "subTotal_" + opt + subOpt, @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.MemoWithoutReports[i].PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control text-left", @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.MemoWithoutReports[i].MemoCreatedDate, "{0:dd MMM yyyy}", new { @class = "form-control text-left", @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        subOpt++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="col-lg-1"><label class="form-control no-border">Total</label></div>
+                <div class="col-lg-2"><input class="form-control" id="totalNetReceived" value="0" readonly/></div>
+                <div class="col-lg-2 pull-right"><a class="btn btn-primary btn-block" id="contBtn" onclick="getSelectedMemo()">Continue  <i class="fa fa-chevron-right"></i></a></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script>
+        function checkOption(param) {
+            var opt = document.getElementById("option_" + param);
+            var total = 0;
+
+            var i = 0;
+            while (document.getElementById("subOption_" + param + i) != null) {
+                if (opt.checked) {
+                    document.getElementById("subOption_" + param + i).checked = true;
+                    //total += parseFloat($('#subTotal_' + param + i).val().replace(/\,/g, ''));
+                } else {
+                    document.getElementById("subOption_" + param + i).checked = false;
+                }
+                i++;
+            }
+            //thousandSeparator2($('#totalNetReceived').val(total));
+
+            var j = 0;
+            while (document.getElementById("option_" + j) != null) {
+                if (param != j && (document.getElementById("option_" + j).checked == true || document.getElementById("option_" + j).indeterminate == true)) {
+                    document.getElementById("option_" + j).indeterminate = false;
+                    document.getElementById("option_" + j).checked = false;
+
+                    var k = 0;
+                    while (document.getElementById("subOption_" + j + k) != null) {
+                        if (param != j && document.getElementById("subOption_" + j + k).checked == true) {
+                            document.getElementById("subOption_" + j + k).checked = false;
+                            //total = parseFloat($('#totalNetReceived').val().replace(/\,/g, '')) - parseFloat($('#subTotal_' + j + k).val().replace(/\,/g, ''));
+                        }
+                        k++;
+                    }
+
+                }
+                j++;
+            }
+            sumTotal();
+        };
+
+        function checkSubOption(param1, param2) {
+            var total = 0;
+            var j = 0;
+            while (document.getElementById("option_" + j) != null) {
+                if (param1 != j && (document.getElementById("option_" + j).checked == true || document.getElementById("option_" + j).indeterminate == true)) {
+                    document.getElementById("option_" + j).indeterminate = false;
+                    document.getElementById("option_" + j).checked = false;
+
+                    var k = 0;
+                    while (document.getElementById("subOption_" + j + k) != null) {
+                        if (param1 != j && document.getElementById("subOption_" + j + k).checked == true) {
+                            document.getElementById("subOption_" + j + k).checked = false;
+                            //total = parseFloat($('#totalNetReceived').val().replace(/\,/g, '')) - parseFloat($('#subTotal_' + j + k).val().replace(/\,/g, ''));
+                        }
+                        k++;
+                    }
+
+                }
+                j++;
+            }
+
+            //var total = 0;
+            //var subOpt = document.getElementById("subOption_" + param1 + param2);
+            //if (subOpt.checked)
+            //{
+            //    total = parseFloat($('#totalNetReceived').val().replace(/\,/g, '')) + parseFloat($('#subTotal_' + param1 + param2).val().replace(/\,/g, ''));
+            //} else
+            //{
+            //    total = parseFloat($('#totalNetReceived').val().replace(/\,/g, '')) - parseFloat($('#subTotal_' + param1 + param2).val().replace(/\,/g, ''));
+            //}
+            
+            //thousandSeparator2($('#totalNetReceived').val(total));
+
+            var x = 0;
+            var y = 0;
+            var n = 0;
+            
+            while (document.getElementById("subOption_" + param1 + x) != null) {
+                if (document.getElementById("subOption_" + param1 + x).checked) {
+                    y += 1;
+                } else {
+                    n += 1;
+                }
+                x++;
+            }
+
+            if (y == 0) {
+                document.getElementById("option_" + param1).indeterminate = false;
+                document.getElementById("option_" + param1).checked = false;
+            } else if (n == 0) {
+                document.getElementById("option_" + param1).indeterminate = false;
+                document.getElementById("option_" + param1).checked = true;
+            } else {
+                document.getElementById("option_" + param1).indeterminate = true;
+            }
+
+            sumTotal();
+        };
+
+        function getSelectedMemo() {
+            var x = 0;
+            var y = 0;
+            var url = '';
+            while (document.getElementById("subOption_" + x + y) != null) {
+                while (document.getElementById("subOption_" + x + y) != null) {
+                    if (document.getElementById("subOption_" + x + y).checked) {
+                        url += document.getElementById("subId_" + x + y).value;
+                        url += 'O';
+                    }
+                    y++;
+                }
+                x++;
+                y = 0;
+            }
+
+            if (url == '') {
+                alert('Please choose memo to be processed!');
+            } else {
+                document.location.href = serverRoot + "DISAssetSelling/AddReportApproval/" + url;
+            }
+        };
+
+        function thousandSeparator2(param) {
+            param.each(function () {
+                let v = $(this).val();
+
+                v = v.replace(/[^-\d]/g, '');
+                v = v.replace(/(\d{3,3})$/g, ',$1');
+                v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+
+                v = v ? v : '';
+                $(this).val(v);
+
+            });
+        }
+
+        function sumTotal() {
+            var j = 0;
+            var total = 0;
+            while (document.getElementById("option_" + j) != null) {
+                var k = 0;
+                while (document.getElementById("subOption_" + j + k) != null) {
+                    if (document.getElementById("subOption_" + j + k).checked == true) {
+                        total += parseFloat($('#subTotal_' + j + k).val().replace(/\,/g, ''));
+                    }
+                    k++;
+                }
+                j++;
+            }
+            thousandSeparator2($('#totalNetReceived').val(total));
+        }
+        
+    </script>
+
+}

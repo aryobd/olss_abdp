@@ -1,0 +1,817 @@
+﻿@model Dsf.Olss.Models.SalesCalculationViewModel
+@using System.Web.UI.WebControls
+
+@{
+    ViewBag.Title = "Edit Refinance Calculation";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Index", "SalesCalculation")" class=" btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+
+@if (Model.IsSubmitted == true && Model.IsDraft == false && Model.IsValid == false)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == true && Model.IsValid == false)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+
+@if (Model.IsSubmitted == false && Model.IsDraft == false && Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("Edit", "SalesCalculation", FormMethod.Post, new { @id = "Maintenance", @data_validate = "parsley" }))
+{
+    @Html.HiddenFor(o => o.IdCalculationOfSales)
+    @Html.TextBoxFor(o => o.ConnId, null, new { @type = "hidden" })
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        @Html.HiddenFor(o => o.CustomerCode)
+                        @Html.HiddenFor(o => o.CustomerCodeReff)
+                        @Html.HiddenFor(o => o.COSNumber)
+                        @Html.HiddenFor(o => o.CreateBy)
+                        @Html.HiddenFor(o => o.CreateDate)
+                        <label>Refinance Calc. Number</label>
+                        @Html.TextBoxFor(o => o.COSNumber, null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Refinance Calc. Number", @data_maxlength = "50", @data_required = "true" })
+                        @Html.ValidationMessageFor(o => o.COSNumber)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="form-group">
+                        <label>Customer Name / Buyer</label>
+                        <div class="input-group">
+                            @Html.TextBox("CustomerName", null, new { @class = "form-control", @readonly = "readonly", @data_maxlength = "200", @placeholder = "Customer Name / Buyer", @data_required = "true", @parsley_error_container = "input-group", @tabindex = "1" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#customerModal" type="button" onclick="LoadCustomer()" tabindex="1">...</button>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.CustomerName)
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <header class="panel-heading">Agreement Basic Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Agreement Number Reff.</label>
+                        @Html.TextBoxFor(o => o.ContractNumberReff, null, new { @class = "form-control", @data_maxlength = "100", @placeholder = "Agreement Number Reff.", @data_required = "true", @tabindex = "2" })
+                        @Html.ValidationMessageFor(o => o.ContractNumberReff)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Customer Name Reff</label>
+                        <div class="input-group">
+                            @Html.TextBox("CustomerNameReff", null, new { @class = "form-control", @readonly = "readonly", @placeholder = "Customer Name Reff", @data_required = "true", @parsley_error_container = "input-group" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#customerreffModal" type="button" onclick="LoadCustomerReff()" tabindex="3">...</button>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.CustomerNameReff)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Maintenance Type</label>
+                        @{
+    var maintenancelistItems = new List<ListItem>
+                                {
+                                      new ListItem { Text = "Full Maintenance", Value = "1" },
+                                      new ListItem { Text = "Limited", Value = "2" },
+                                      new ListItem { Text = "Customer Service Desk", Value = "3" },
+                                      new ListItem { Text = "Non Maintenance", Value = "4" },
+                                };
+                        }
+                        @Html.DropDownListFor(o => o.MaintenanceType, new SelectList(maintenancelistItems, "Value", "Text"), new { @class = "form-control", @tabindex = "4" })
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Monthly Mileage</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.MonthlyMileage, null, new { @class = "form-control text-right numbersOnly", @data_maxlength = "20", @placeholder = "Monthly Mileage", @data_required = "true", @tabindex = "5" })
+                            <span class="input-group-addon">Km</span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.MonthlyMileage)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Expected Mileage</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ExpectedMileage, null, new { @class = "form-control text-right numbersOnly", @data_maxlength = "20", @placeholder = "Expected Mileage", @data_required = "true", @tabindex = "6" })
+                            <span class="input-group-addon">Km</span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ExpectedMileage)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Expiration Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ExpirationDate, string.Format("{0:MM/dd/yyyy}", Model.ExpirationDate), new { @class = "form-control datepicker-input", @readonly = "readonly", @placeholder = "Expiration Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @tabindex = "7" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ExpirationDate)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Purchase Requirement After Lease</label>
+                        @{
+    var yesno = new List<ListItem>
+                                {
+                                      new ListItem { Text = "Yes", Value = "true" },
+                                      new ListItem { Text = "No", Value  = "false" }
+                                };
+                        }
+                        @Html.DropDownListFor(o => o.PurchaseAfterLease, new SelectList(yesno, "Value", "Text"), new { @class = "form-control", @tabindex = "8" })
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Residual Value</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.ResidualValueAmount, string.Format("{0:N0}", Model.ResidualValueAmount), new { @class = "form-control currenciesOnly", @data_maxlength = "18", @placeholder = "Residual Value", @data_required = "true", @tabindex = "9" })
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ResidualValueAmount)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Product Basic Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4 col-md-4">
+                    <div class="form-group">
+                        <label>Product Registration Code</label>
+                        <div class="input-group">
+                            @Html.TextBox("ProductCode", null, new { @class = "form-control", @readonly = "readonly", @data_required="true", @placeholder = "Product Registration Code", @parsley_error_container = "input-group" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#productModal" type="button" onclick="LoadProductCategory()" tabindex="10">...</button>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ProductCode)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Code</label>
+                        @Html.TextBoxFor(o => o.BrandCode, null, new { @class = "form-control", @data_maxlength = "50", @readonly = "readonly", @placeholder = "Product Brand Code", @data_required = "true" })
+                        @Html.ValidationMessageFor(o => o.BrandCode)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Name</label>
+                        @Html.TextBoxFor(o => o.ModelName, null, new { @class = "form-control", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Product Model Name", @data_required = "true" })
+                        @Html.ValidationMessageFor(o => o.ModelName)
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        @Html.TextBoxFor(o => o.Transmission, null, new { @class = "form-control", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Transmission" })
+                        @Html.ValidationMessageFor(o => o.Transmission)
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        @Html.TextBoxFor(o => o.ProductType, null, new { @class = "form-control", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Product Type" })
+                        @Html.ValidationMessageFor(o => o.ProductType)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Brand Name</label>
+                        @Html.TextBoxFor(o => o.BrandName, null, new { @class = "form-control", @data_maxlength = "200", @readonly = "readonly", @placeholder = "Product Brand Name" })
+                        @Html.ValidationMessageFor(o => o.BrandName)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Type</label>
+                        @Html.TextBoxFor(o => o.ModelType, null, new { @class = "form-control", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Product Model Type" })
+                        @Html.ValidationMessageFor(o => o.ModelType)
+                    </div>
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        @Html.TextBoxFor(o => o.FuelType, null, new { @class = "form-control", @data_maxlength = "200", @readonly = "readonly", @placeholder = "Fuel Type" })
+                        @Html.ValidationMessageFor(o => o.FuelType)
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4">
+
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        @Html.TextBoxFor(o => o.ProductCategory1, null, new { @class = "form-control", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Product Category" })
+                        @Html.ValidationMessageFor(o => o.ProductCategory1)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Code</label>
+                        @Html.TextBoxFor(o => o.ProductCode, null, new { @class = "form-control", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Product Model Code" })
+                        @Html.ValidationMessageFor(o => o.ProductCategory1)
+                    </div>
+                    <div class="form-group">
+                        <label>Product Model Year (yyyy/mm)</label>
+                        @Html.TextBoxFor(o => o.ModelYear, string.Format("{0:yyyy/MM}", Model.ModelYear), new { @class = "form-control", @readonly = "readonly", @placeholder = "Product Model Year" })
+                        @Html.ValidationMessageFor(o => o.ModelYear)
+                    </div>
+                    <div class="form-group">
+                        <label>Displacement (CC)</label>
+                        @Html.TextBoxFor(o => o.DisPlacement, null, new { @class = "form-control text-right", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Displacement (CC)" })
+                        @Html.ValidationMessageFor(o => o.DisPlacement)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Maximum Loading Capacity</label>
+                        @Html.TextBoxFor(o => o.MaxLoadingCapacity, null, new { @class = "form-control text-right", @data_maxlength = "50", @readonly = "readonly", @placeholder = "Maximum Loading Capacity" })
+                        @Html.ValidationMessageFor(o => o.MaxLoadingCapacity)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Riding Capacity</label>
+                        @Html.TextBoxFor(o => o.RidingCapacity, null, new { @class = "form-control text-right", @data_maxlength = "100", @readonly = "readonly", @placeholder = "Riding Capacity" })
+                        @Html.ValidationMessageFor(o => o.RidingCapacity)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number Plat Color</label>
+                        @Html.DropDownListFor(o => o.NumberPlatColor, ViewBag.NumberPlatColor as SelectList, new { @class = "form-control", @data_required = "true", @tabindex = "11" })
+                        @Html.ValidationMessageFor(o => o.NumberPlatColor)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Registration Date (mm/dd/yyyy)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.RegistrationDate, string.Format("{0:MM/dd/yyyy}", Model.RegistrationDate), new { @class = "form-control datepicker-input", @readonly = "readonly", @placeholder = "Registration Date (mm/dd/yyyy)", data_date_format = "mm/dd/yyyy", @tabindex = "12" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.RegistrationDate)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Usage</label>
+                        @Html.DropDownList("Usage", ViewBag.Usage as SelectList, new { @class = "form-control", @data_required = "true", @tabindex = "13" })
+                        @Html.ValidationMessageFor(o => o.Usage)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Location</label>
+                        @Html.TextBoxFor(o => o.Location, null, new { @class = "form-control", @data_maxlength = "100", @placeholder = "Location", @data_required = "true", @tabindex = "14" })
+                        @Html.ValidationMessageFor(o => o.Location)
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Engine Number</label>
+                        @Html.TextBoxFor(o => o.EngineNumber, null, new { @class = "form-control", @data_maxlength = "200", @placeholder = "Engine Number", @data_required = "true", @tabindex = "15" })
+                        @Html.ValidationMessageFor(o => o.EngineNumber)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Police Number</label>
+                        @Html.TextBoxFor(o => o.PoliceNumber, null, new { @class = "form-control", @data_maxlength = "100", @placeholder = "Police Number", @tabindex = "16" })
+                        @Html.ValidationMessageFor(o => o.PoliceNumber)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Special Options</label>
+                        @Html.TextBoxFor(o => o.SpecialOptions, null, new { @class = "form-control", @data_maxlength = "200", @placeholder = "Special Options", @tabindex = "17" })
+                        @Html.ValidationMessageFor(o => o.SpecialOptions)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading">Calculation</header>
+        <table class="table table-striped table-input m-b-none text-sm">
+            <tbody>
+                <tr>
+                    <td class="font-bold" width="400px">
+                        Sales Price
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.ActualResidualValue, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "0", @tabindex = "18" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="font-bold" width="400px">
+                        Unit Quantity
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(o => o.UnitQuantity, null, new { @class = "form-control numbersOnly", @placeholder = "0", @tabindex = "19" })
+                    </td>
+                </tr>
+                <tr>
+                    <td class="font-bold" width="400px">
+                        Comission
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.Comission, "{0:N0}", new { @class = "form-control number_count currenciesOnly", @placeholder = "0", @tabindex = "20" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="400px">
+                        @Html.TextBox("COSOtherExpense", null, new { @class = "form-control", @placeholder = "Input Other Expense 1", @tabindex = "21" })
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.COSOtherExpenseValue, "{0:N0}", new { @class = "form-control number_count currenciesOnly", @placeholder = "0", @tabindex = "22" })
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="400px">
+                        @Html.TextBox("COSOtherExpense1", null, new { @class = "form-control", @placeholder = "Input Other Expense 2", @tabindex = "23" })
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.COSOtherExpenseValue1, "{0:N0}", new { @class = "form-control number_count currenciesOnly", @placeholder = "0", @tabindex = "24" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="400px">
+                        @Html.TextBox("COSOtherExpense2", null, new { @class = "form-control", @placeholder = "Input Other Expense 3", @tabindex = "25" })
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.COSOtherExpenseValue2, "{0:N0}", new { @class = "form-control number_count currenciesOnly", @placeholder = "0", @tabindex = "26" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="400px">
+                        @Html.TextBox("COSOtherExpense3", null, new { @class = "form-control", @placeholder = "Input Other Expense 4", @tabindex = "27" })
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.COSOtherExpenseValue3, "{0:N0}", new { @class = "form-control number_count currenciesOnly", @placeholder = "0", @tabindex = "28" })
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="400px" class="font-bold">
+                        Net Sales
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.TotalAmount, "{0:N0}", new { @class = "form-control text-right", @readonly = "readonly", @placeholder = "0" })
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section class="panel">
+        <header class="panel-heading">Profits</header>
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <table class="table table-stripped table-input" style="border:none; !important">
+                    <td class="font-bold">Profit Amount</td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(o => o.ProfitAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @readonly = "readonly", @placeholder = "0", @tabindex = "29" })
+                        </div>
+                    </td>
+                </table>
+            </div>
+        </div>
+        <div class="panel-footer bg-light lter">
+
+            @StateButton.CalculationStateButton("edit", Model.IsDraft, Model.IsValid, Model.IsSubmitted)
+        </div>
+    </section>
+}
+@{Html.RenderPartial("ModalPopUp");}
+@{Html.RenderPartial("CustModalPopUp");}
+@{Html.RenderPartial("CustReffModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <script>
+        $footer = $('.panel-footer');
+        $button = $footer.find("[name='statusButton']");
+        var SalesQuotationHub = $.connection.SalesQuotation;
+        var SalesCalculationHub = $.connection.SalesCalculation;
+        var confirm = false;
+
+        SalesQuotationHub.client.OnStatusValidateCalcLock = function (id) {
+            if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status of quotation has been changes (validated) by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "SalesCalculation")';
+                });
+            }
+        };
+
+        SalesQuotationHub.client.OnStatusInvalidateCalcLock = function (id) {
+            if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status of quotation has been changes (validated) by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "SalesCalculation")';
+                });
+            }
+        };
+
+        SalesCalculationHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "SalesCalculation")';
+                });
+            }
+        };
+
+        SalesCalculationHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdCalculationOfSales' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                    confirm = false;
+                });
+            }
+        };
+
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+
+
+        function disableValue($object, $objectAmount) {
+            var value = $object.val();
+            if (value == '') {
+                $objectAmount.val(0);
+                $objectAmount.attr('readonly', 'readonly');
+            }
+            else {
+                $objectAmount.val('');
+                $objectAmount.removeAttr('readonly');
+            }
+            $('#TotalAmount').change();
+        }
+
+        $('#COSOtherExpense').change(function () {
+            var $object = $('#COSOtherExpense');
+            var $objectAmount = $('#COSOtherExpenseValue');
+            disableValue($object, $objectAmount);
+        });
+
+        $('#COSOtherExpense1').change(function () {
+            var $object = $('#COSOtherExpense1');
+            var $objectAmount = $('#COSOtherExpenseValue1');
+            disableValue($object, $objectAmount);
+        });
+
+        $('#COSOtherExpense2').change(function () {
+            var $object = $('#COSOtherExpense2');
+            var $objectAmount = $('#COSOtherExpenseValue2');
+            disableValue($object, $objectAmount);
+        });
+
+        $('#COSOtherExpense3').change(function () {
+            var $object = $('#COSOtherExpense3');
+            var $objectAmount = $('#COSOtherExpenseValue3');
+            disableValue($object, $objectAmount);
+        });
+
+
+        //function calculate() {
+        //    var $form = $('#Maintenance'),
+        //    $summands = $form.find('.number_count'),
+        //    $sumDisplay = $('#TotalAmount');
+        //    var sum = 0;
+        //    $summands.each(function () {
+        //        var value = Number($(this).val().replace(/,/g, ''));
+        //        if (!isNaN(value)) sum += value;
+        //        $(this).formatCurrency();
+        //    });
+
+        //    $sumDisplay.val(Number($('#ActualResidualValue').val().replace(/,/g, '')) * $('#UnitQuantity').val() - sum);
+        //    $sumDisplay.formatCurrency();
+        //    //$summands.formatCurrency();
+
+        //    $("#ProfitAmount").val(Number($sumDisplay.val().replace(/,/g, '')) - Number($('#ResidualValueAmount').val().replace(/,/g, '')) * $('#UnitQuantity').val()).formatCurrency();
+        //}
+
+        var $form = $('#Maintenance'),
+        $summands = $form.find('.number_count'),
+        $sumDisplay = $('#TotalAmount');
+
+        //$('.number_count').on('blur', function () {
+        //    var sum = 0;
+        //    $summands.each(function () {
+        //        var value = Number($(this).val().replace(/,/g, ''));
+        //        if (!isNaN(value)) sum += value;
+        //        $(this).formatCurrency();
+        //    });
+
+        //    //$sumDisplay.val(sum * $('#UnitQuantity').val());
+        //    $sumDisplay.val(Number($('#ActualResidualValue').val().replace(/,/g, '')) * $('#UnitQuantity').val() - sum);
+        //    $sumDisplay.formatCurrency();
+        //    //$summands.formatCurrency();
+
+
+        //    $("#ProfitAmount").val(Number($sumDisplay.val().replace(/,/g, '')) - Number($('#ResidualValueAmount').val().replace(/,/g, '')) * $('#UnitQuantity').val()).formatCurrency();
+        //});
+
+        $(document).ready(function () {
+            var totalResidual = 0;
+            GetTotalResidual();
+            function GetTotalResidual() {
+                var residual = Number($('#ResidualValueAmount').val().replace(/,/g, ''));
+                var qty = Number($('#UnitQuantity').val().replace(/,/g, ''));
+                if (!isNaN(qty)) { totalResidual = residual * qty; }
+                else { totalResidual = residual; }
+            };
+            for (i = 0 ; i < $button.length; i++) {
+                $button[i].tabIndex = 30 + i;
+            }
+            $(".numbersOnly").on('keydown', numbersOnly);
+            $('#UnitQuantity').change(function () {
+                $('#ResidualValueAmount').change();
+                $('#ActualResidualValue').change();
+                //  calculate();
+            });
+
+            $('#ActualResidualValue').change(function () {
+                //  calculate();
+                $('#TotalAmount').change();
+            });
+
+            $('#TotalAmount').change(function () {
+                var actualResidualValue = Number($('#ActualResidualValue').val().replace(/,/g, ''));
+                var qty = Number($('#UnitQuantity').val().replace(/,/g, ''));
+                var otherExpense = 0;
+                $summands.each(function () {
+                    var value = Number($(this).val().replace(/,/g, ''));
+                    if (!isNaN(value)) otherExpense += value;
+                });
+                if (isNaN(actualResidualValue)) actualResidualValue = 0;
+                if (isNaN(qty)) actualResidualValue = 0;
+
+                var total = (actualResidualValue * qty) - (otherExpense);
+
+                $('#TotalAmount').val(total).formatCurrency();;
+                CalculateProfitAmount();
+            });
+            function CalculateProfitAmount() {
+                var netProfit = Number($('#TotalAmount').val().replace(/,/g, ''));
+                $('#ProfitAmount').val(netProfit - totalResidual).formatCurrency();
+            };
+            $('#ResidualValueAmount').change(function () {
+                var residual = Number($(this).val().replace(/,/g, ''));
+                var qty = Number($('#UnitQuantity').val().replace(/,/g, ''));
+                if (!isNaN(qty)) { totalResidual = residual * qty; }
+                else { totalResidual = residual; }
+                //   calculate();
+                CalculateProfitAmount();
+            });
+
+            $("input[type=text].number_count").on('keydown', currenciesOnly)
+                                         .on('blur', function () { $(this).formatCurrency(); });
+            $("input[type=text].currenciesOnly").on('keydown', currenciesOnly)
+                               .on('blur', function () {
+                                   $(this).formatCurrency();
+                                   $('#TotalAmount').change();
+                               });
+        });
+        function LoadProductCategory() {
+            // datatable
+            var oTable = null;
+            $('#prod-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("ProductModalDataTable", "SalesCalculation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                    { "mData": "ProductCode" },
+                    { "mData": "ProductCategory1" },
+                    { "mData": "BrandName" },
+                    { "mData": "ModelName" },
+                    {
+                        "mData": "ModelYear"
+
+                    },
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+
+            });
+
+
+            $("#prod-lookup tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                if (data.ModelYear) {
+                    $("#ModelYear").val(data.ModelYear);
+                }
+
+                if (data.ScheduleDateForRegistration != null) {
+                    var SchDateForRegistration = new Date(parseInt(data.ScheduleDateForRegistration.substr(6)));
+                    var ScheduleDate = (SchDateForRegistration.getMonth() + 1) + "/" + SchDateForRegistration.getFullYear();
+                    $("#ScheduleDateForRegistration").val(ScheduleDate)
+                }
+
+                if (data.RegistrationDate) {
+                    var RegistrationDate = new Date(parseInt(data.RegistrationDate.substr(6)));
+                    var RegDate = (RegistrationDate.getMonth() + 1) + "/" + RegistrationDate.getFullYear();
+                    $("#RegistrationDate").val(RegDate);
+                }
+
+                $("#ProductCode").val(data.ProductCode);
+                $("#BrandCode").val(data.BrandCode);
+                $("#BrandName").val(data.BrandName);
+                $("#ModelName").val(data.ModelName);
+                $("#DisPlacement").val(data.DisPlacement);
+                $("#Transmission").val(data.Transmission);
+                $("#FuelType").val(data.FuelType);
+                $("#MaxLoadingCapacity").val(data.MaxLoadingCapacity);
+                $("#ProductCategory1").val(data.ProductCategory1);
+                $("#SpecialOptions").val(data.SpecialOptions);
+                $("#Usage").val(data.Usage);
+                $("#Location").val(data.Location);
+                $("#NumberPlatColor").val(data.NumberPlatColor);
+                $("#ProductType").val(data.ProductType1)
+
+                $('#productModal').modal('hide');
+            });
+        };
+
+        function LoadCustomer() {
+            // datatable
+            var oTable = null;
+            $('#customer-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("CustomerModalDataTable", "SalesCalculation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                    { "mData": "CustomerCode" },
+                    { "mData": "CustomerName" },
+                    { "mData": "Address" },
+                    { "mData": "Telephone" }
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+
+            });
+
+
+            $("#customer-lookup tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                if (data.ModelYear) {
+                    var modYear = new Date(parseInt(data.ModelYear.substr(6)));
+                    var modeldate = modYear.getFullYear() + "/" + (modYear.getMonth() + 1);
+                    $("#ModelYear").val(modeldate);
+                }
+
+                if (data.ScheduleDateForRegistration != null) {
+                    var SchDateForRegistration = new Date(parseInt(data.ScheduleDateForRegistration.substr(6)));
+                    var ScheduleDate = (SchDateForRegistration.getMonth() + 1) + "/" + SchDateForRegistration.getFullYear();
+                    $("#ScheduleDateForRegistration").val(ScheduleDate)
+                }
+
+                if (data.RegistrationDate) {
+                    var RegistrationDate = new Date(parseInt(data.RegistrationDate.substr(6)));
+                    var RegDate = (RegistrationDate.getMonth() + 1) + "/" + RegistrationDate.getFullYear();
+                    $("#RegistrationDate").val(RegDate);
+                }
+
+                $("#CustomerName").val(data.CustomerName);
+                $("#CustomerCode").val(data.CustomerCode);
+
+                $('#customerModal').modal('hide');
+            });
+        };
+
+        function LoadCustomerReff() {
+            // datatable
+            var oTable = null;
+            $('#customerreff-lookup').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("CustomerModalDataTable", "SalesCalculation")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                    { "mData": "CustomerCode" },
+                    { "mData": "CustomerName" },
+                    { "mData": "Address" },
+                    { "mData": "Telephone" },
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+
+            });
+
+            $("#customerreff-lookup tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                $("#CustomerNameReff").val(data.CustomerName);
+                $("#CustomerCodeReff").val(data.CustomerCode);
+
+                $('#customerreffModal').modal('hide');
+            });
+        }
+    </script>
+}

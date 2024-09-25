@@ -1,0 +1,20 @@
+{ "aaData": [
+	{
+		"id" : "1",
+		"brandcode": "A01",
+		"brand": "Mitsubishi",
+		"vehiclename": "Colt Diessel",
+		"model": "FE71C",
+		"year": "2011/3",
+		"action"  : "<a href='vehicle_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='vehicle_add.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+	},
+	{
+		"id" : "2",
+		"brandcode": "A02",
+		"brand": "Mitsubishi",
+		"vehiclename": "Colt Diessel 2",
+		"model": "FE71D",
+		"year": "2011/3",
+		"action"  : "<a href='vehicle_detail.html' class='btn btn-info btn-sm'><i class='fa fa-bars'></i></a>&nbsp;<a href='vehicle_add.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+	}
+] }

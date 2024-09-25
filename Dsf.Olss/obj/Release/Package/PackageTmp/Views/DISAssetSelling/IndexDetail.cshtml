@@ -1,0 +1,455 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@{
+    ViewBag.Title = "Manage Report Approval";
+    // Get loading image url
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+}
+
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/js/datatables/datatables.css")" type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+@*Update Firman 02122019 - S0147214*@
+<a href="@Url.Action("IndexReportApproval", "DISAssetSelling")" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a><br><br>	
+																															 
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+<div id="printsuccess"></div>
+
+<div class="tab-pane" id="datatable">
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">Report Number</option>
+                            <option value="2">Memo Number</option>
+                            <option value="3">Disposal Number</option>
+                            <option value="4">Created By</option>
+                            <option value="5">Next Action</option>
+                            <option value="6">Memo Type</option>
+                            <option value="7">Memo Status</option>
+                            <option value="8">Agreement Number</option>
+                            <option value="9">Asset Code</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-2">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Start Payment Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>End Payment Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Display Mode</label>
+                    <div class="form-group">
+                        <select id="ddlDisplayMode" class="form-control">
+                            <option value="1">Report Number</option>
+                            <option value="2">Agreement Number</option>
+                            <option value="3">Asset Code</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSatus" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            List of Disposal
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table id="table-list" class="table table-striped m-b-none display nowrap">
+                            <thead>
+                                <tr>
+                                    <th>Report Number</th>
+                                    <th>Memo Number</th>
+                                    <th>Disposal Number</th>
+                                    <th>Agreement Number</th>
+                                    <th>Asset Code</th>
+                                    <th>Payment Date</th>
+                                    <th>Next Action</th>
+                                    <th width="5%" style="text-align:center">Type</th>
+                                    <th width="10%" style="text-align:center">Memo Status</th>
+                                    <th width="8%" style="text-align:center">Action</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <div id='loadingmessage' style='display:none'>
+                <img src='@Url.Content(ImgUrl)' />
+            </div>
+            <a id="btnPrintReport" name="statusButton" class="btn btn-info" href="javascript:printReport();">Print Report</a>
+        </footer>
+    </section>
+</div>
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+
+    <script>
+    $(document).ready(function () {
+
+        // datatable
+        var oTable;
+        $('#table-list').each(function () {
+            oTable = $(this).dataTable({
+                "bServerSide": true,
+                "bProcessing": true,
+                "aaSorting": [[3, "desc"]],
+                "sScrollXInner": "100%",
+                "sAjaxSource": "@Url.Action("AjaxHandlerDetail", "DISAssetSelling")",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "ddlSearchCriteria", "value": $("#ddlSearchCriteria").val() },
+                        { "name": "txtSearch", "value": $("#txtSearch").val() },
+                        { "name": "txtStartDate", "value": $("#txtStartDate").val() },
+                        { "name": "txtEndDate", "value": $("#txtEndDate").val() },
+                        { "name": "ddlDisplayMode", "value": $("#ddlDisplayMode").val() }
+
+                    );
+                },
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "full_numbers",
+                "bAutoWidth": false,
+                "aoColumns": [
+                    { "mData": "ReportNumber" },
+                    { "mData": "MemoNumber" },
+                    { "mData": "DisposalNumber" },
+                    { "mData": "AgreementNumber" },
+                    { "mData": "AssetCode" },
+                    { "mData": "PaymentDate" },
+                    {
+                        "mData": "NextActionBy",
+                        "sPaginationType": "full_numbers",
+                        "bAutoWidth": false,
+                        "fnRender": function (oObj) {
+                            var nextActionBy = oObj.aData["NextActionBy"];
+                            var nextApprovalCode = oObj.aData["NextApprovalCode"];
+                            var isPaid = oObj.aData["IsPaid"];
+                            var BPKBReleased = oObj.aData["BPKBReleased"];
+                            var AssetReleased = oObj.aData["AssetReleased"];
+                            var status = oObj.aData["MemoStatus"];
+                            var IsRejected = oObj.aData["IsRejected"];
+                            var IsDeleted = oObj.aData["IsDeleted"];
+
+                            if (status === "Rejected" || status === "Deleted") {
+                                return "<label class='font-bold'>COMPLETED</label>";
+                            }
+
+                            if (nextActionBy === '') {
+
+                                if (!isPaid) {
+                                    return "<label class='text-info' style='font-style:italic'>Waiting payment from MFAPPL</label>";
+                                }
+
+                                return "<label class='font-bold'>COMPLETED</label>";
+                            }
+
+                            return nextActionBy;
+                        }
+                    },
+                    {
+                        "mData": "MemoType",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "sClass": "text-center",
+                        "fnRender": function (oObj) {
+                            var type = oObj.aData["MemoType"];
+
+                            if (type === 'DIS') {
+                                return "<span class='label label-direct-selling'>DIS</span>";
+                            }
+
+                            if (type === 'COP') {
+                                return "<span class='label label-cop'>COP</span>";
+                            }
+
+                            if (type === 'AUC') {
+                                return "<span class='label label-auction'>AUC</span>";
+                            }
+
+                            return "<span class='label label-default'>NULL</span>";
+                        }
+                    },
+                    {
+                        "mData": "MemoStatus",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "sClass": "text-center",
+                        "fnRender": function (oObj) {
+                            var status = oObj.aData["MemoStatus"];
+                            var BPKBReleased = oObj.aData["BPKBReleased"];
+                            var AssetReleased = oObj.aData["AssetReleased"];
+                            var IsPaid = oObj.aData["IsPaid"];
+                            if (BPKBReleased && AssetReleased) {
+                                return "<span class='label label-default'>Closed</span>";
+                            }
+
+                            if (status === 'Generated') {
+                                return "<span class='label label-danger'>Generated</span>";
+                            }
+
+                            if (status === 'Draft') {
+                                return "<span class='label label-danger'>Draft</span>";
+                            }
+
+                            if (status === 'Submitted') {
+                                return "<span class='label label-info'>Submitted</span>";
+                            }
+
+                            if (status === 'Approved' && IsPaid) {
+                                return "<span class='label label-success'>Paid</span>";
+                            }
+                            else if (status === 'Approved') {
+                                return "<span class='label label-success'>Approved</span>";
+                            }
+
+                            if (status === 'Checked') {
+                                return "<span class='label label-danger'>Checked</span>";
+                            }
+
+                            if (status === 'Signed') {
+                                return "<span class='label label-primary'>Signed</span>";
+                            }
+
+                            if (status === 'Revised') {
+                                return "<span class='label label-danger'>Revised</span>";
+                            }
+
+                            if (status === 'Rejected') {
+                                return "<span class='label label-default'>Rejected</span>";
+                            }
+
+                            if (status === 'Deleted') {
+                                return "<span class='label label-default'>Deleted</span>";
+                            }
+
+                            if (status === 'Created') {
+                                return "<span class='label label-default'>Created</span>";
+                            }
+
+                            if (status === 'Paid') {
+                                return "<span class='label label-info'>Paid</span>";
+                            }
+
+                            if (status === 'Closed') {
+                                return "<span class='label label-default'>Closed</span>";
+                            }
+
+                            return "<span class='label label-default'>NULL</span>";
+                        }
+                    },
+                    {
+                        "mData": "IdTb_DIS_AssetSelling",
+                        "bSearchable": false,
+                        "bSortable": false,
+                        "sClass": "text-center",
+                        "fnRender": function (oObj) {
+                            var id = oObj.aData["IdTb_DIS_AssetSellingDetail"];
+                            var urlEdit = "";
+                            var urlDetail = "";
+                            var isDraft = oObj.aData["IsDraft"];
+                            var status = oObj.aData["MemoStatus"];
+                            var htmlButtonAction = "<center>";
+                            var CreatedBy = oObj.aData["CreatedBy"];
+
+                            if (CreatedBy == '@SimpleSessionPersister.Username' && isDraft) {
+                                urlEdit = " <a title='Edit' href='@Url.Action("EditReportApproval", "DISAssetSelling")/" + id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>";
+                            } else {
+                                urlEdit = " <a title='Edit' href='#' class='btn btn-primary btn-xs' disabled><i class='fa fa-edit'></i></a>";
+                            }
+
+                            urlDetail = " <a title='Detail' href='@Url.Action("DetailReportApproval", "DISAssetSelling")/" + id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>";
+
+                            htmlButtonAction += urlEdit + ' ' + urlDetail;
+                            htmlButtonAction += "</center>";
+
+                            return htmlButtonAction;
+                        }
+                    }
+                ],
+                "aoColumnDefs": [
+                { "sClass": "center", "aTargets": [1] }
+                ],
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        "dataType": 'json',
+                        "type": "POST",
+                        "url": sSource,
+                        "data": aoData,
+                        "success": fnCallback,
+                        "timeout": 0,
+                        "error": handleAjaxError
+                    });
+                }
+            });
+        });
+
+        var htmlTemp = '<div class="dataTables_wrapper row">';
+        var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+        var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+        $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+        htmlTemp += fakePagination + '</div>';
+        $('.table-responsive').append(htmlTemp);
+        $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+        $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+        $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+    });
+
+    //handling Error
+    function handleAjaxError(textStatus) {
+        if (textStatus === 'timeout') {
+            bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+        }
+        else {
+            bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+        }
+    }
+
+    // Searching
+    $('#btnSatus').on('click', function (e) {
+        e.preventDefault();
+
+        if (checkDate() === false) {
+            $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+        }
+    });
+
+    //Print Report
+    $('#btnPrintAll').on('click', function (e) {
+        e.preventDefault();
+        var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+        var txtSearch = $("#txtSearch").val();
+        var txtStartDate = $("#txtStartDate").val();
+        var txtEndDate = $("#txtEndDate").val();
+
+        // Ajax start animation progress
+        $('#loadingmessage').show();
+        $('#btnPrintAll').hide();
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Report", "DISAssetSelling", new { reportName = "SellingAsset", ddlSearchCriteria = "ddlSearchCriteria", txtSearch = "txtSearch", txtStartDate = "txtStartDate", txtEndDate = "txtEndDate" })',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'text',
+            success: function (response, status, xhr) {
+                // check for a filename
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) {
+                        filename = matches[1].replace(/['"]/g, '');
+                        response = filename;
+                    }
+                }
+                if (response !== "") {
+                    window.location = "./Base/Download?fileName=" + response + "&rptType=" + 2;
+                }
+                // Ajax stop animation progress
+                $('#loadingmessage').hide();
+                $('#btnPrintAll').show();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert('Cannot download file..! Error is occurs');
+                // Ajax stop animation progress
+                $('#loadingmessage').hide();
+                $('#btnPrintAll').show();
+                var printreport = response.substr(response.length - 34);
+                $("#printsuccess").html('<div class="alert alert-success" role="success">Print Report ' + printreport + ' has been successfully printed</div>').show();
+
+            }
+        });
+    });
+
+    bootstrap_alert = function () { }
+    bootstrap_alert.success = function (header, message) {
+        $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+    }
+    bootstrap_alert.error = function (header, message) {
+        $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+    }
+
+    // Checking range date
+    function checkDate() {
+
+        var resultCheck = false;
+        var startDate = $('#txtStartDate').val();
+        var endDate = $('#txtEndDate').val();
+        startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+        endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+        if (startDate > endDate) {
+            resultCheck = true;
+            alert('Start Date should be less than End Date..!');
+        }
+        return resultCheck;
+    }
+
+    // Convert string to Date
+    function strToDate(date, format, delimiter) {
+        var formatLowerCase = format.toLowerCase();
+        var formatItems = formatLowerCase.split(delimiter);
+        var dateItems = date.split(delimiter);
+        var monthIndex = formatItems.indexOf("mm");
+        var dayIndex = formatItems.indexOf("dd");
+        var yearIndex = formatItems.indexOf("yyyy");
+        var month = parseInt(dateItems[monthIndex]);
+        month -= 1;
+        var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+        return formatedDate;
+    }
+
+    function printReport() {
+        window.location.href = "././ReportIndex/" + '?ddlSearchCriteria=' + $('#ddlSearchCriteria').val() + '&txtSearch=' + $('#txtSearch').val() + '&txtStartDate=' + $('#txtStartDate').val() + '&txtEndDate=' + $('#txtEndDate').val();
+    }
+    </script>
+}

@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Role Management";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Add", "Role")" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            Role List
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="role-list" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th width="7%">RoleName</th>
+                        <th width="25%">Remarks</th>
+                        <th width="10%">Status</th>
+                        <th width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        $(function() {
+            // datatable
+            @*var roleHub = $.connection.roles;
+
+            roleHub.client.lockRole = function(id) {
+                //alert('Locked!!!');
+                $('#Edit' + id).css("background", "#999");
+                $('#Edit' + id).css("border", "#999");
+                $('#Edit' + id).attr("href", "#");
+
+            };
+            roleHub.client.unlockRole = function(id) {
+                //alert('Locked!!!');
+               // $('#Edit' + id).show();
+                $('#Edit' + id).css("background", "#594f8d");
+                $('#Edit' + id).attr("href", "@Url.Action("Edit", "Role")/" + id + "");
+
+            };
+
+            $.connection.hub.start();*@
+            //$.connection.hub.start().done(function() {
+               
+            //    });
+            //}); 
+
+            //window.onbeforeunload = function(e) {
+            //    $.connection.hub.stop();
+            //};
+
+            var oTable = null;
+            $('#role-list').each(function() {
+                 oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "Role")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {
+                            "mData": "RoleName",
+                            "fnRender": function(oObj) {
+                                var Id = oObj.aData["IdRole"];
+                                return "<span id=" + Id + ">" + oObj.aData["RoleName"] + "</span>"
+                            }
+                        },
+                        { "mData": "Remarks" },
+                        {
+                            "mData": "IsActive",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function(oObj) {
+                                var IsActive = oObj.aData["IsActive"];
+                                var IsDraft = oObj.aData["IsDraft"];
+                                var IsSubmit = oObj.aData["IsSubmit"];
+                                if (IsDraft) {
+                                    return "<span class='label label-info'>draft</span>"
+                                }
+                                else if (IsSubmit) {
+                                    return "<span class='label label-info'>submitted</span>"
+                                }
+                                if (IsActive) {
+                                    return "<span class='label label-success'>active</span>"
+                                }
+                                else {
+                                     return "<span class='label label-default'>inactive</span>"
+                                }
+                            }
+                        },
+                        {
+                            "mData": "IdRole",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "bUseRendered": false,
+                            "fnRender": function(oObj) {
+                                var Id = oObj.aData["IdRole"];
+                                return "<a title='Detail' href='@Url.Action("Detail", "Role")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a id='Edit"+ Id +"' title='Edit' href='@Url.Action("Edit", "Role")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>"
+                            }
+                        }
+                    ]
+                 });
+            });
+        });
+
+     
+    </script>
+}
+
+

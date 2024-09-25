@@ -1,0 +1,975 @@
+﻿@model Dsf.Olss.Models.OPLCInsuranceCashflowViewModel
+@using System.Web.UI.WebControls;
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<style type="text/css">
+    body {
+        color: black;
+    }
+</style>
+
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    var step = 4;
+    var isInsurance = (bool)Model.Insurance;
+    ViewBag.Title = "Calculation of Operating Lease - Step 4";
+    var success = ViewBag.Success ?? TempData["Success"];
+    var error = ViewBag.Error ?? TempData["Error"];
+}
+@Message.Display(success, error)
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 4, remark, x => @Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@if (!isInsurance)
+{
+    <section class="panel">
+        <header class="panel-heading font-bold">Info</header>
+        <div class="panel-body">
+            <p class="h6 text-center">You choose no insurance for this calculation. You can continue to next step or you can change the value of insurance on step 1</p>
+        </div>
+        <div class="panel-footer bg-light lter">
+            <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "3", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+            <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "5", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+        </div>
+    </section>
+}
+else
+{
+    using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Insurace", @data_validate = "parsley" }))
+    {
+        @Html.HiddenFor(o => o.ConnId)
+        @Html.HiddenFor(o => o.IdOPLCalculation)
+        @Html.HiddenFor(o => o.OPLRemarks)
+        @Html.HiddenFor(o => o.Insurance)
+    <section class="panel">
+        <header class="panel-heading font-bold">Insurance Basic Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Start Date of Insurance (mm/dd/yyyy)</label>
+                        @Html.TextBoxFor(o => o.StartPeriodPlan, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "Start Date Usage Unit Plan (mm/dd/yyyy)", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>End Date of Insurance (mm/dd/yyyy)</label>
+                        @Html.HiddenFor(o => o.EndPeriodPlan)
+                        @Html.TextBoxFor(o => o.EndInsurance, "{0:MM/dd/yyyy}", new { @class = "form-control", @placeholder = "End Date Usage Unit Plan (mm/dd/yyyy)", @readonly = "readonly" })
+                    </div>
+                </div>
+                @*<div class="col-lg-3">
+                        <div class="form-group">
+                            <label>Lease Period Plan (Months)</label>
+                            @Html.TextBoxFor(o => o.LeasePeriod, null, new { @class = "form-control text-right", @placeholder = "Lease Period Plan (Months)", @readonly = "readonly" })
+                        </div>
+                    </div>*@
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Coverage Period (Months)</label>
+                        @Html.TextBoxFor(o => o.CoveragePeriod, null, new { @class = "form-control text-right", @placeholder = "Coverage Period", @readonly = "readonly" })
+                        @Html.HiddenFor(o=> o.LeasePeriod)
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance Company</label>
+                        @Html.TextBoxFor(o => o.InsuranceCompanyName, null, new { @class = "form-control", @placeholder = "Insurance Company", @data_maxlength = "100", @tabindex = "1" })
+                    </div>
+                    <div class="form-group">
+                        <label>Class of Insurance</label>
+                        @Html.TextBoxFor(o => o.ClassOfInsurance, null, new { @class = "form-control", @placeholder = "Class of Insurance", @data_maxlength = "50", @tabindex = "5" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance Agent</label>
+                        @Html.TextBoxFor(o => o.InsuranceAgent, null, new { @class = "form-control", @placeholder = "Insurance Agent", @data_maxlength = "23", @tabindex = "2" })
+                    </div>
+                    <div class="form-group">
+                        <label>Commission Rate (%)</label>
+                        @Html.TextBoxFor(o => o.CommissionRate, null, new { @class = "form-control percentOnly", @placeholder = "Commission Rate (%)", @tabindex = "6" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Insurance of Payment Cycle</label>
+                        @Html.DropDownListFor(o => o.InsurancePaymentCycle, ViewBag.InsurancePaymentCycle as SelectList, new { @class = "form-control", @tabindex = "4" })
+                    </div>
+                    <div class="form-group">
+                        <label>Seat Capacity</label>
+                        @Html.TextBoxFor(o => o.SeatCapacity, new { @class = "form-control numbersOnly", @tabindex = "8", @placeholder = "Seat Capacity of Product" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Region</label>
+                        @Html.DropDownListFor(o => o.Region, ViewBag.Region as SelectList, new { @class = "form-control", @tabindex = "4" })
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Remarks</label>
+                        @Html.TextBoxFor(o => o.Remarks, null, new { @class = "form-control", @placeholder = "Remarks", @data_maxlength = "100", @tabindex = "9" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Product</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Model Name</label>
+                        @Html.TextBoxFor(o => o.ModelName, null, new { @class = "form-control", @placeholder = "Model Name", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        @Html.TextBoxFor(o => o.ProductType, null, new { @class = "form-control", @placeholder = "Product Type", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        @Html.TextBoxFor(o => o.ProductCategoryName, null, new { @class = "form-control", @placeholder = "Product Category", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Model Year (yyyy/mm)</label>
+                        @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new { @class = "form-control", @placeholder = "Model Year (yyyy/mm)", @readonly = "readonly" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+        <div class="panel">
+            <header class="panel-heading font-bold">Insurance Condition & Cost</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Basic Premium</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRatePremium, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "9", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRatePremium, null, new { @class = "form-control percentOnly", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "10" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.PremiumAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "11" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Third Party Liability (TPL)</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRateTPL, "{0:N0}", new { @class = "form-control currenciesOnly comperTPL", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "12" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRateTPL, null, new { @class = "form-control percentOnly comperTPLRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "13" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.TPLAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "14" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Passenger Legal Liability (PLL)</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRatePPL, "{0:N0}", new { @class = "form-control currenciesOnly comperPPL", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "15" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRatePPL, null, new { @class = "form-control percentOnly comperPPLRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "16" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.PPLAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "17" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Personal Accident for Passenger (PAP)</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRatePAP, "{0:N0}", new { @class = "form-control currenciesOnly comperPAP", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "18" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRatePAP, null, new { @class = "form-control percentOnly comperPAPRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "19" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.PAPAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "20" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Personal Accident for Driver (PAD)</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRatePAD, "{0:N0}", new { @class = "form-control currenciesOnly comperPAD", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "21" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRatePAD, null, new { @class = "form-control percentOnly comperPADRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "22" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.PADAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "23" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Strike, Riots & Civil Commotion (SRCC) </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRateSRCC, "{0:N0}", new { @class = "form-control currenciesOnly comperSRCC", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "24", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRateSRCC, null, new { @class = "form-control percentOnly comperSRCCRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "25" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.SRCCAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "26" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Terrorism & Sabotage (TS)</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRateTS, "{0:N0}", new { @class = "form-control currenciesOnly comperTS", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "27", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRateTS, null, new { @class = "form-control percentOnly comperTSRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "28" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.TSAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "29" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Flood & Windstorm (FLD)</div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRateFLD, "{0:N0}", new { @class = "form-control currenciesOnly comperFLD", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "30", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRateFLD, null, new { @class = "form-control percentOnly comperFLDRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "31" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.FLDAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "32" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Earthquake & Tsunami (EAQ) </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRateEAQ, "{0:N0}", new { @class = "form-control currenciesOnly comperEAQ", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "33", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRateEAQ, null, new { @class = "form-control percentOnly comperEAQRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "34" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.EAQAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "35" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-3 font-bold">Authorized Workshop </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.ComprehensiveRateAW, "{0:N0}", new { @class = "form-control currenciesOnly comperAW", @placeholder = "Comprehensive", @data_maxlength = "23", @tabindex = "36", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            @Html.TextBoxFor(o => o.BasicRateAW, null, new { @class = "form-control percentOnly comperAWRate", @placeholder = "Basic Rate (%)", @data_maxlength = "22", @tabindex = "37" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.AWAmount, "{0:N0}", new { @class = "form-control currenciesOnly income_count", @placeholder = "Gross Premium", @data_maxlength = "23", @tabindex = "38" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="line line-dashed line-xs pull-in"></div>
+                <div class="row">
+                    <div class="col-lg-9"></div>
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label>Total Gross Premium</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.TotalGrossPremium, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Gross Premium", @data_maxlength = "23", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Commission Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.ComissionAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Commission Amount", @data_maxlength = "23", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Mediator Fee Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.MediatorFeeAmount, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Mediator Fee Amount", @data_maxlength = "23", @tabindex = "39" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Net Premium (incl. VAT and PPh of Commision)</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.NetPremium, "{0:N0}", new { @class = "form-control currenciesOnly", @placeholder = "Net Premium", @data_maxlength = "23", @readonly = "readonly" })
+                            </div>
+                            @Html.ValidationMessageFor(o => o.NetPremium)
+                        </div>
+                        @*<div class="form-group">
+                                <label>Net Premium COBA</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp</span>
+                                    @Html.TextBoxFor(o => o.DaysAfterYears, new { @class = "form-control currenciesOnly", @placeholder = "Net Premium", @data_maxlength = "23", @readonly = "readonly" })
+                                </div>
+                                @Html.ValidationMessageFor(o => o.DaysAfterYears)
+                            </div>*@
+                    </div>
+                </div>
+
+            </div>
+            @Html.HiddenFor(o => o.IsValid)
+            @Html.HiddenFor(o => o.IsSubmitted)
+            @Html.HiddenFor(o => o.IsDraft)
+            @Html.HiddenFor(o => o.DaysAfterYears)
+            <footer class="panel-footer bg-light lter">
+                @if (remark < step)
+                {
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "3", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                    <input type="submit" class="btn btn-info" value="Save Changes" name="step_4" />
+                }
+                else
+                {
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "3", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+                    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.SuperUser || Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.Admin)
+                    {
+                        if (Model.IsDraft)
+                        {
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_4" />
+                        }
+                        else if (Model.IsSubmitted)
+                        {
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_4" />
+                        }
+                    }
+                    if (Session["Role"].ToString() == Dsf.Lib.Constant.OlssRole.User)
+                    {
+                        if (Model.IsDraft)
+                        {
+
+                            <input type="submit" class="btn btn-info" value="Save Changes" name="step_4" />
+                        }
+                    }
+
+                    <a href="@Url.RouteUrl("OPLCalculationCashflow", new { Controller = "OPLCalculationCashflow", Action = "Edit", step = "5", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+                }
+
+            </footer>
+        </div>
+    }
+    @section Scripts{
+        <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+        <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+        <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+        <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+        <script src="~/signalr/hubs"></script>
+        <script>
+            var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+            var confirm = false;
+            $footer = $('.panel-footer');
+            $button = $footer.find("[type='submit']");
+            OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+                if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks'&& !confirm) {
+                    confirm = true;
+                    bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                        if (result != false) {
+                            location.href = location.href;
+                        }
+                        confirm = false;
+                    });
+                }
+            };
+
+            OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+                if (id == '@Model.IdOPLCalculation'&& !confirm) {
+                    confirm = true;
+                    bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                        window.location.href = '@Url.Action("Index", "OPLCalculationCashflow")';
+                    });
+                }
+            };
+
+            $.connection.hub.start().done(function () {
+                var myClientId = $.connection.hub.id;
+                $('#ConnId').val(myClientId);
+            });
+            var $form = $('#Insurace'),
+            $summands = $form.find('.income_count'),
+            $sumDisplay = $('#TotalGrossPremium');
+
+            $(document).ready(function () {
+                for (var i = 0 ; i < $button.length; i++) {
+                    $button[i].tabIndex = 39 + i;
+                }
+
+                $('.income_count').change(function () {
+                    var sum = 0;
+                    $summands.each(function () {
+                        var value = Number($(this).val().replace(/,/g, ''));
+                        if (!isNaN(value)) sum += value;
+                    });
+
+                    $sumDisplay.val(sum).formatCurrency().change();
+                });
+
+                $sumDisplay.change(function () {
+                    var totalGross = Number($(this).val().replace(/,/g, ''));
+                    var commisionRate = 0;
+
+                    var commisionAmount = 0;
+                    if (!isNaN($('#CommissionRate').val()))
+                        commisionRate = Number($('#CommissionRate').val());
+                    commisionAmount = (totalGross * commisionRate) / 100;
+                    $('#ComissionAmount').val(commisionAmount).formatCurrency();
+
+                    CalculateTotal();
+                });
+
+                $('#CommissionRate').change(function () {
+                    $sumDisplay.change();
+                });
+
+                $('#MediatorFeeAmount').change(function () {
+                    CalculateTotal();
+                });
+
+
+                //$('#BasicRateAW').change(function () {
+                //    CalculateAW();
+                //});
+                //$('#ComprehensiveRateAW').change(function () {
+                //    CalculateAW();
+                //});
+
+                //$('#BasicRatePPL').change(function () {
+                //    CalculatePPL();
+                //});
+                //$('#ComprehensiveRatePPL').change(function () {
+                //    CalculatePPL();
+                //});
+                //$('#BasicRatePremium').change(function () {
+                //    CalculateBasicRate();
+                //});
+                //$('#ComprehensiveRatePremium').change(function () {
+                //    CalculateBasicRate();
+                //});
+
+                //$('#SeatCapacity').change(function () {
+
+                //    CalculatePAP();
+                //});
+                //$('#BasicRatePAP').change(function () {
+
+                //    CalculatePAP();
+                //});
+                //$('#ComprehensiveRatePAP').change(function () {
+
+                //    CalculatePAP();
+                //});
+
+                //$('#BasicRatePAD').change(function () {
+                //    CalculatePAD();
+                //});
+                //$('#ComprehensiveRatePAD').change(function () {
+                //    CalculatePAD();
+                //});
+
+                //$('#BasicRateTPL').change(function () {
+                //    CalculateTPL();
+                //});
+                //$('#ComprehensiveRateTPL').change(function () {
+                //    CalculateTPL();
+                //});
+
+                //$('#BasicRateSRCC').change(function () {
+                //    CalculateSRCC();
+                //});
+                //$('#ComprehensiveRateSRCC').change(function () {
+                //    CalculateSRCC();
+                //});
+
+                //$('#BasicRateTS').change(function () {
+                //    CalculateTS();
+                //});
+                //$('#ComprehensiveRateTS').change(function () {
+                //    CalculateTS();
+                //});
+
+                //$('#BasicRateFLD').change(function () {
+                //    CalculateFLD();
+                //});
+                //$('#ComprehensiveRateFLD').change(function () {
+                //    CalculateFLD();
+                //});
+                //$('#BasicRateEAQ').change(function () {
+                //    CalculateEAQ();
+                //});
+                //$('#ComprehensiveRateEAQ').change(function () {
+                //    CalculateEAQ();
+                //});
+
+
+                $(".currenciesOnly").on('keydown', currenciesOnly)
+                                          .on('blur', function () { $(this).formatCurrency(); });
+                $(".numbersOnly").on('keydown', numbersOnly);
+                $(".decimalsOnly").on('keydown', decimalsOnly);
+                $(".percentOnly").on('keydown', percentOnly);
+
+
+            });
+
+                function CalculateTotal() {
+                    var totalGross = Number($('#TotalGrossPremium').val().replace(/,/g, ''));
+                    var commisionAmount = Number($('#ComissionAmount').val().replace(/,/g, ''));
+                    var mediatorAmount = Number($('#MediatorFeeAmount').val().replace(/,/g, ''));
+                    
+                    if (!isNaN(totalGross) && totalGross > 0) {
+                        var whTax = commisionAmount * 2 / 100;
+                        var vat = commisionAmount * 10 / 100;
+                        $('#NetPremium').val(totalGross - (commisionAmount + vat - whTax)).formatCurrency();
+                    }
+
+                    //contraint condition for value of Mediator Fee Amount <= Commision Amount
+                    if (mediatorAmount > commisionAmount) {
+                        $('#MediatorFeeAmount').val(commisionAmount).formatCurrency();
+                    }
+                };
+                //var depre = [];
+
+                @*@foreach (var d in Model.DepreciationRate)
+                {
+                    @:depre.push("@d");
+            }*@
+
+                @*var daysafteryears = @Model.DaysAfterYears;
+
+                function CalculateBasicRate() {
+                    var rate = Number($('#BasicRatePremium').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRatePremium').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result = amount * rate / 100 * depre[i - 1] / 100 * daysafteryears / 365;
+                                totalAmount += result;
+                            }
+                            else {
+                                var result1 = amount * rate / 100 * depre[i] / 100;
+                                totalAmount += result1;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#PremiumAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#PremiumAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculateTPL()
+                {
+                    var rate = Number($('#BasicRateTPL').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRateTPL').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result = amount * rate / 100  * daysafteryears / 365;
+                                totalAmount += result;
+                            }
+                            else {
+                                var result1 = amount * rate / 100;
+                                totalAmount += result1;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#TPLAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#TPLAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculatePPL()
+                {
+                    var rate = Number($('#BasicRatePPL').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRatePPL').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result = amount * rate / 100  * daysafteryears / 365;
+                                totalAmount += result;
+                            }
+                            else {
+                                var result1 = amount * rate / 100;
+                                totalAmount += result1;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#PPLAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#PPLAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculatePAP()
+                {
+
+                    var rate = Number($('#BasicRatePAP').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRatePAP').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    var seatcapacity = Number($('#SeatCapacity').val());
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if(!isNaN(seatcapacity)){
+                        if (!isNaN(rate)) {
+                            for (var i = 0; i < period; i++) {
+                                if (i === period - 1 && daysafteryears > 0) {
+                                    var result = seatcapacity * amount * rate / 100  * daysafteryears / 365;
+                                    totalAmount += result;
+                                }
+                                else {
+                                    var result1 = seatcapacity * amount * rate / 100;
+                                    totalAmount += result1;
+                                }
+                            }
+                            if (totalAmount > 0) {
+                                $('#PAPAmount').val(totalAmount).change().formatCurrency();
+                            } else {
+                                $('#PAPAmount').val(0);
+                            }
+                        }
+                    }
+                };
+
+                
+                function CalculatePAD()
+                {
+                    var rate = Number($('#BasicRatePAD').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRatePAD').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result = amount * rate / 100  * daysafteryears / 365;
+                                totalAmount += result;
+                            }
+                            else {
+                                var result1 = amount * rate / 100;
+                                totalAmount += result1;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#PADAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#PADAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculateSRCC() {
+                    var rate = Number($('#BasicRateSRCC').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRateSRCC').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result = amount * rate / 100 * depre[i - 1] / 100 * daysafteryears / 365;
+                                totalAmount += result;
+                            }
+                            else {
+                                var result1 = amount * rate / 100 * depre[i] / 100;
+                                totalAmount += result1;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#SRCCAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#SRCCAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculateTS() {
+                    var rate = Number($('#BasicRateTS').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRateTS').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result = amount * rate / 100 * depre[i - 1] / 100 * daysafteryears / 365;
+                                totalAmount += result;
+                            }
+                            else {
+                                var result1 = amount * rate / 100 * depre[i] / 100;
+                                totalAmount += result1;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#TSAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#TSAmount').val(0);
+                        }
+                    }
+                };
+
+
+                
+                function CalculateFLD() {
+                    var rate = Number($('#BasicRateFLD').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRateFLD').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result1 = amount * rate / 100 * depre[i - 1] / 100 * daysafteryears / 365;
+                                totalAmount += result1;
+                            }
+                            else {
+                                var result = amount * rate / 100 * depre[i] / 100;
+                                totalAmount += result;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#FLDAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#FLDAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculateEAQ() {
+                    var rate = Number($('#BasicRateEAQ').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRateEAQ').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result1 = amount * rate / 100 * depre[i - 1] / 100 * daysafteryears / 365;
+                                totalAmount += result1;
+                            }
+                            else {
+                                var result = amount * rate / 100 * depre[i] / 100;
+                                totalAmount += result;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#EAQAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#EAQAmount').val(0);
+                        }
+                    }
+                };
+
+                
+                function CalculateAW() {
+                    var rate = Number($('#BasicRateAW').val());
+                    var totalAmount = 0;
+                    var amount = Number($('#ComprehensiveRateAW').val().replace(/,/g, ''));
+                    var period = Math.floor(Number($('#LeasePeriod').val()) /12);
+                    if(daysafteryears > 0) period += 1 ;
+
+                    if (!isNaN(rate)) {
+                        for (var i = 0; i < period; i++) {
+                            if (i === period - 1 && daysafteryears > 0) {
+                                var result1 = amount * rate / 100 * depre[i - 1] / 100 * daysafteryears / 365;
+                                totalAmount += result1;
+                            }
+                            else {
+                                var result2 = amount * rate / 100 * depre[i] / 100;
+                                totalAmount += result2;
+                            }
+                        }
+                        if (totalAmount > 0) {
+                            $('#AWAmount').val(totalAmount).change().formatCurrency();
+                        } else {
+                            $('#AWAmount').val(0);
+                        }
+                    }
+                  
+                };*@
+
+                
+        </script>
+
+
+
+        <script src="@Url.Content("~/Content/ui-framework/js/currencyformat/jquery.formatCurrency-1.4.0.js")"></script>
+    }
+}

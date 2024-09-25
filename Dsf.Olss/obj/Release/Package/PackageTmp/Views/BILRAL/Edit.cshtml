@@ -1,0 +1,292 @@
+﻿@using Dsf.Lib.Constant
+@model Dsf.Olss.Models.BILRALViewModel
+
+@{
+    ViewBag.Title = "Edit RAL";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+<a href="@Url.Action("Index","BILRAL")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+@using (Html.BeginForm("Edit", "BILRAL", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-2">@Html.LabelFor(x => x.RALNo)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.RALNo, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-2">@Html.LabelFor(x => x.AgreementNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AgreementNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-2">@Html.LabelFor(x => x.RALIssueDate)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.RALIssueDate, "{0:" + localeDateFormat + "}", new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Endorser</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-2">@Html.LabelFor(x => x.EndorserName)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.EndorserName, new { @class = "form-control mandatory", @maxlength = "50" })
+                            @Html.ValidationMessageFor(x => x.EndorserName)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-2">@Html.LabelFor(x => x.EndorserPosition)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.EndorserPosition, new { @class = "form-control mandatory", @maxlength = "50" })
+                            @Html.ValidationMessageFor(x => x.EndorserPosition)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Endorsee</header>
+        <div class="panel-body">
+            <div class="row">
+                <header class="panel-heading" style="padding-top: 0px;">
+                    <button class="btn btn-primary" type="button" onclick="AddRowEndorsee()" id="additemendorsee"><i class="fa fa-plus"></i>Add Item</button>
+                </header>
+                <div class="responsive">
+                    <table class="table table-striped m-b-none" id="endorseetable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Identity Number</th>
+                                <th>Address</th>
+                                <th>Phone Number</th>
+                                <th style="width: 50px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.RALEndorseeDtl.Count; i++)
+                            {
+                                <tr>
+                                    <td>@Html.TextBoxFor(x => x.RALEndorseeDtl[i].EndorseeName, new { @class = "form-control mandatory EndorseeName", @maxlength = "50" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseeName)</td>
+                                    <td>@Html.TextBoxFor(x => x.RALEndorseeDtl[i].EndorseeID, new { @class = "form-control mandatory EndorseeID", @maxlength = "30" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseeID)</td>
+                                    <td>@Html.TextAreaFor(x => x.RALEndorseeDtl[i].EndorseeAddress, new { @class = "form-control mandatory EndorseeAddress", @maxlength = "100" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseeAddress)</td>
+                                    <td>@Html.TextBoxFor(x => x.RALEndorseeDtl[i].EndorseePhone, new { @class = "form-control mandatory EndorseePhone", @maxlength = "25" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseePhone)</td>
+                                    <td style="text-align: center;">
+                                        @Html.HiddenFor(x => x.RALEndorseeDtl[i].IdTb_BIL_RALEndorseeDtl, new { @class = "IdTb_BIL_RALEndorseeDtl" })
+                                        <button class='btn btn-danger deleterow' type='button' style="height: 30px; padding-top: 4px;" onclick="DeleteRowEndorsee(this)"><i class="fa fa-minus"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Object List</header>
+        <div class="panel-body">
+            <div class="row">
+                <header class="panel-heading" style="padding-top: 0px;">
+                    <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#objectListModal" onclick="LoadObjectList(@Model.IdTb_BIL_PaySchedule)"><i class="fa fa-plus"></i> Add Object</button>
+                </header>
+                <div class="responsive">
+                    <table class="table table-striped table-input m-b-none text-sm" id="objecttable">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;" class="text-right">Number</th>
+                                <th>Object Type</th>
+                                <th>Chassis No</th>
+                                <th>Engine No</th>
+                                <th>Police No </th>
+                                <th style="width: 80px;">Year</th>
+                                <th>Colour</th>
+                                <th style="width: 50px;" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="object-list-container">
+                            @for (int i = 0; i < Model.RALObjectDtl.Count; i++)
+                            {
+                                <tr>
+                                    <td class="font-bold text-right">@(i + 1)</td>
+                                    <td>@Html.TextBoxFor(x => x.RALObjectDtl[i].ObjectType, new { @class = "form-control RALObjectDtlObjectType", @readonly = "readonly", @style = "background-color: white;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.RALObjectDtl[i].ChassisNumber, new { @class = "form-control RALObjectDtlChassisNumber", @readonly = "readonly", @style = "background-color: white;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.RALObjectDtl[i].EngineNumber, new { @class = "form-control RALObjectDtlEngineNumber", @readonly = "readonly", @style = "background-color: white;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.RALObjectDtl[i].PoliceNumber, new { @class = "form-control RALObjectDtlPoliceNumber", @readonly = "readonly", @style = "background-color: white;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.RALObjectDtl[i].Year, new { @class = "form-control RALObjectDtlYear", @readonly = "readonly", @style = "background-color: white;" })</td>
+                                    <td>@Html.TextBoxFor(x => x.RALObjectDtl[i].Colour, new { @class = "form-control RALObjectDtlColour", @readonly = "readonly", @style = "background-color: white;" })</td>
+                                    <td style="text-align: center;">
+                                        @Html.HiddenFor(x => x.RALObjectDtl[i].IdTb_BIL_RALObjectDtl, new { @class = "IdTb_BIL_RALObjectDtl" })
+                                        <button class='btn btn-danger deleterow' type='button' onclick="DeleteObjectList(@(i + 1))"><i class="fa fa-minus"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-footer bg-light lter">
+            @Html.HiddenFor(x => x.IdTb_BIL_RAL)
+            @Html.HiddenFor(x => x.IdTb_BIL_PaySchedule)
+            <input type="hidden" id="submitButtonText" />
+            <input type="submit" name="statusButton" class="btn btn-info" value="Save Changes" />
+            <input type="submit" name="statusButton" class="btn btn-primary" value="Submit" />
+        </div>
+    </section>
+}
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/BILRAL.js")"></script>
+    <script type="text/javascript">
+        var serverRoot = '@Url.Content("~")';
+        var endorseeDtlCount = @Html.Raw(Json.Encode(Model.RALEndorseeDtl.Count));
+        var payScheduleId = @Html.Raw(Json.Encode(Model.IdTb_BIL_PaySchedule));
+        var selectedInvoiceNo = [];
+        var serverRoot = '@Url.Content("~")';
+
+        $(document).ready(function () {
+            $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#confirmationModal');
+            if ($('#endorseetable tbody tr').length > 1)
+                $('#endorseetable tbody tr:first td:last button').removeAttr('disabled').attr('onclick', 'DeleteRowEndorsee(this)');
+            else
+                $('#endorseetable tbody tr:first td:last button').attr('disabled', 'disabled').removeAttr('onclick');
+
+            $("#objecttable > tbody > tr").each(function() {
+                var ChassisNumber = $(this).find(".RALObjectDtlChassisNumber").val();
+                var EngineNumber = $(this).find(".RALObjectDtlEngineNumber").val();
+                var PoliceNumber = $(this).find(".RALObjectDtlPoliceNumber").val();
+                var Year = $(this).find(".RALObjectDtlYear").val();
+                var Colour = $(this).find(".RALObjectDtlColour").val();
+                var dataArray = { "ChassisNumber": ChassisNumber, "EngineNumber": EngineNumber, "PoliceNumber": PoliceNumber, "Year": Year.toString(), "Colour": Colour };
+                SelectedRow.push(dataArray);
+            });
+        });
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+            var submitvalue = $(this).val();
+            var msg = "";
+            var cm = "";
+            if (submitvalue === 'Save Changes') {
+                msg = 'Save Changes';
+                cm = "save RAL changes";
+            } else if (submitvalue === 'Submit') {
+                msg = 'Submit';
+                cm = "submit RAL";
+            }
+
+            $('.msgModal').text(msg);
+            $('.confirmationMessage').text(cm);
+            $('#submitButtonText').val(submitvalue);
+        });
+
+        $('#confirmModal').click(function (e) {
+            var submitvalue = $('#submitButtonText').val();
+            EndorseeNaming();
+            ObjectNaming();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            $(this).prop('disabled', true);
+        });
+
+        function EndorseeNaming() {
+            var i = 0;
+            $("#endorseetable > tbody > tr").each(function () {
+                $(this).find(".IdTb_BIL_RALEndorseeDtl").attr("name", "RALEndorseeDtl[" + i + "].IdTb_BIL_RALEndorseeDtl");
+                $(this).find(".EndorseeName").attr("name", "RALEndorseeDtl[" + i + "].EndorseeName");
+                $(this).find(".EndorseeID").attr("name", "RALEndorseeDtl[" + i + "].EndorseeID");
+                $(this).find(".EndorseeAddress").attr("name", "RALEndorseeDtl[" + i + "].EndorseeAddress");
+                $(this).find(".EndorseePhone").attr("name", "RALEndorseeDtl[" + i + "].EndorseePhone");
+                i++;
+            });
+        }
+
+        function ObjectNaming(){
+            var i = 0;
+            $("#objecttable > tbody > tr").each(function () {
+                $(this).find(".IdTb_BIL_RALObjectDtl").attr("name", "RALObjectDtl[" + i + "].IdTb_BIL_RALObjectDtl");
+                $(this).find(".RALObjectDtlObjectType").attr("name", "RALObjectDtl[" + i + "].ObjectType");
+                $(this).find(".RALObjectDtlChassisNumber").attr("name", "RALObjectDtl[" + i + "].ChassisNumber");
+                $(this).find(".RALObjectDtlEngineNumber").attr("name", "RALObjectDtl[" + i + "].EngineNumber");
+                $(this).find(".RALObjectDtlPoliceNumber").attr("name", "RALObjectDtl[" + i + "].PoliceNumber");
+                $(this).find(".RALObjectDtlYear").attr("name", "RALObjectDtl[" + i + "].Year");
+                $(this).find(".RALObjectDtlColour").attr("name", "RALObjectDtl[" + i + "].Colour");
+                i++;
+            });
+        }
+
+        function AddRowEndorsee() {
+            var newtr = "<tr>"
+            + "<td><input type='text' class='form-control mandatory EndorseeName' maxlength='50' /></td>"
+            + "<td><input type='text' class='form-control mandatory EndorseeID' maxlength='30' /></td>"
+            + "<td><textarea class='form-control mandatory EndorseeAddress' maxlength='100'></textarea></td>"
+            + "<td><input type='text' class='form-control mandatory EndorseePhone' maxlength='25' /></td>"
+            + "<td style='text-align: center;'>"
+            + "<input type='hidden' class='IdTb_BIL_RALEndorseeDtl' />"
+            + "<button class='btn btn-danger deleterow' type='button' style='height: 30px; padding-top: 4px;' onclick='DeleteRowEndorsee(this)'><i class='fa fa-minus'></i></button></td>"
+            + "</tr>";
+            $("#endorseetable > tbody").append(newtr);
+            if ($('#endorseetable tbody tr').length > 1)
+                $('#endorseetable tbody tr:first td:last button').removeAttr('disabled').attr('onclick', 'DeleteRowEndorsee(this)');
+            else
+                $('#endorseetable tbody tr:first td:last button').attr('disabled', 'disabled').removeAttr('onclick');
+        }
+
+        function DeleteRowEndorsee(s) {
+            $tr = $(s).parent().parent();
+            $tr.remove();
+            var rowTotal = $('#endorseetable tbody tr').length;
+            if (rowTotal == 1)
+                $('#endorseetable tbody tr:first td:last button').attr('disabled', 'disabled').removeAttr('onclick');
+        }
+    </script>
+}

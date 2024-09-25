@@ -1,0 +1,97 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+<section class="panel">
+    <header class="panel-heading font-bold">Report</header>
+    <div class="panel-body">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <div class="col-lg-6">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <label>Jurnal Asset Selling (.xls)</label>&nbsp;
+                            <a href="@Url.Action("JurnalAssetSellingExcel", "DISAssetSelling", new { Id = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                        </li>
+                        <li class="list-group-item">
+                            <label>Laporan Hasil Investasi</label>&nbsp;
+                            <a href="@Url.Action("Report", "DISAssetSelling", new { id = Model.IdTb_DIS_AssetSelling, reportName = "HasilInvestasi", idDetail = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                        </li>
+                        @*<li class="list-group-item" hidden>
+                            <label>Memo Auction</label>&nbsp;
+                            <a href="@Url.Action("Report", "DISAssetSelling", new { id = Model.IdTb_DIS_AssetSelling, reportName = "MemoAuctionReport", idDetail = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                        </li>*@
+                        @if (Model.MemoType == "DIS" || Model.MemoType == "COP")
+                        {
+                            <li class="list-group-item">
+                                <label>Report Disposal</label>&nbsp;
+                                <a href="@Url.Action("Report", "DISAssetSelling", new { id = Model.IdTb_DIS_AssetSelling, reportName = "DisposalReport", idDetail = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                                @*Begin Add by fadilah S0200996 29/04/2020*@
+                                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                @Ajax.ActionLink("Update", "UpdateDispEmp",
+                                    new { IdTb_DIS_AssetSellingDetail = (ViewContext.RouteData.Values["id"]).ToString() },
+                                    new AjaxOptions
+                                    {
+                                        UpdateTargetId = "detailsDispEmp",
+                                        InsertionMode = InsertionMode.Replace,
+                                        OnSuccess = "popupDispEmp()"
+                                    }, new { @class = "Update text-info" })
+                                @*End by fadilah 29/04/2020*@
+                            </li>
+                        }
+                        else if (Model.MemoType == "AUC")
+                        {
+                            <li class="list-group-item">
+                                <label>Report Disposal Auction</label>&nbsp;
+                                <a href="@Url.Action("Report", "DISAssetSelling", new { id = Model.IdTb_DIS_AssetSelling, reportName = "DisposalReportAuction", idDetail = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                                @*Begin Add by fadilah S0200996 29/04/2020*@
+                                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                @Ajax.ActionLink("Update", "UpdateDispEmp",
+                                    new { IdTb_DIS_AssetSellingDetail = (ViewContext.RouteData.Values["id"]).ToString() },
+                                    new AjaxOptions
+                                    {
+                                        UpdateTargetId = "detailsDispEmp",
+                                        InsertionMode = InsertionMode.Replace,
+                                        OnSuccess = "popupDispEmp()"
+                                    }, new { @class = "Update text-info" })
+                                @*End by fadilah 29/04/2020*@
+                            </li>
+                        }
+                        
+                        
+                    </ul>
+                </div>
+
+                <div class="col-lg-6">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <label>Jurnal Asset Selling (.txt)</label>&nbsp
+                            <a href="@Url.Action("JurnalAssetSellingTxt", "DISAssetSelling", new { Id = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                        </li>
+                        <li class="list-group-item">
+                            <label>Lampiran Laporan Hasil Investasi</label>&nbsp;
+                            <a href="@Url.Action("Report", "DISAssetSelling", new { id = Model.IdTb_DIS_AssetSelling, reportName = "HasilInvestasiLampiran", idDetail = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                        </li>
+                        @*<li class="list-group-item" hidden>
+                            <label>Lampiran Memo Auction</label>&nbsp;
+                            <a href="@Url.Action("Report", "DISAssetSelling", new { id = Model.IdTb_DIS_AssetSelling, reportName = "MemoAuctionReportLampiran", idDetail = (ViewContext.RouteData.Values["id"]).ToString() })" class="pull-right islink text-info text-sm">Download</a>
+                        </li>*@
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="detailsDispEmp">
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery-multiple.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="@Url.Content("~/Content/js/DISAssetSelling.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.maskedinput.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery.unobtrusive-ajax.min.js")"></script>
+}

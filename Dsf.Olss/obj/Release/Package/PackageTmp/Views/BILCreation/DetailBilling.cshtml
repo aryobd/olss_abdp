@@ -1,0 +1,449 @@
+﻿@model Dsf.Olss.Models.BILPaymentHistoryInquiryViewModel
+@{
+    ViewBag.Title = "Billing & Payment History Inquiry";
+
+    //var backUrl = ViewBag.rController != null ? Request.UrlReferrer.ToString() : Url.Action("Index", "BILSchedule");
+    String newid = Guid.NewGuid().ToString(); //added by Sonny (20 Apr 2018) agar js selalu terefresh ditambahkan karakter ini
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <style>
+        tr.selectedrow td {
+            background-color: lightgreen;
+        }
+    </style>
+}
+@Html.HiddenFor(o => o.CurrentIdBilPaySchedule)
+
+@if (ViewBag.rController != null)
+{
+    <a href="@Url.Action("Index", ViewBag.rController)" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back </a><br><br>
+}
+else
+{
+    <a href="@Url.Action("Index", "BILSchedule")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@Html.Hidden("DetailBillingId", (string)ViewBag.DetailBillingId)
+
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreatedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(Model.CreatedDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedDate)</div>
+        </div>
+    </div>
+</div>
+<!-- Contract Information -->
+<section class="panel">
+    <header class="panel-heading font-bold">Contract Information</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Agreement Number</label></div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.AgreementNumber ?? "-")"></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Previous Agreement Number</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.PreviousAgreementNumber ?? "")"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Agreement Date (mm/dd/yyyy)</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group" disabled="disabled">
+                            <input type="text" class="form-control" readonly="readonly" value="@(Model.AgreementDate ?? "-")">
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Billing and Payment History -->
+<section class="panel">
+    <header class="panel-heading font-bold">Billing and Payment History</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Sales PIC Name</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.SalesPICName ?? "")"> </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Sales PIC Position</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.SalesPICPosition ?? "")"> </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Customer Name</label> </div>
+                    <div class="col-lg-6"><input type="text" class="form-control" disabled="disabled" value="@(Model.CustomerName ?? "")"> </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Product Brand Name</label> </div>
+                    <div class="col-lg-6"><input type="text" class="form-control" disabled="disabled" value="@(Model.ProductBrandName ?? "")"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Product Model Name</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.ProductModelName ?? "")"> </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Model Year</label> </div>
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control" readonly="readonly" value="@(Model.ModelYear)">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Lease Category</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.LeaseCategory ?? "")"> </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Maintenance Type</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.MaintenanceType ?? "")"> </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Insurance</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.Insurance ?? "")"> </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Purchase Required</label> </div>
+                    <div class="col-lg-6"> <input type="text" class="form-control" disabled="disabled" value="@(Model.PurchaseRequired ?? "")"> </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Contract Start Date</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" disabled value="@(Model.ContractStartDate ?? "")">
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Contract Expired Date</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" disabled value="@(Model.ContractExpiredDate ?? "")">
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Lease Period (Months)</label> </div>
+                    <div class="col-lg-6">
+                        <input type="text" disabled="disabled" class="form-control" value="@(Model.LeasePeriod)">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Usage</label> </div>
+                    <div class="col-lg-6"> <input type="text" disabled="disabled" class="form-control" value="@(Model.Usage ?? "")"> </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Expectation Collection Amount</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(x => x.ExpectationCollectionAmount, null, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"><label>Payment Amount</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(x => x.CollectionAmount, null, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Overdue Amount</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(x => x.TotalOverdueAmount, null, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Billing Total</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(x => x.BillingTotal, null, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Overdue Penalty Amount</label> </div>
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">Rp</span>
+                            @Html.TextBoxFor(x => x.TotalOverduePenaltyAmount, null, new { @class = "form-control text-right", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-6"> <label>Overdue (Days)</label> </div>
+                    <div class="col-lg-6">
+                        <input type="text" disabled="disabled" class="form-control" value="@(Model.TotalOverdueDays)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<section class="panel dataTables_wrapper" role="grid" style="overflow: auto;">
+    <table class="table table-striped2" id="payScheduleTable-list">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>End Period</th>
+                <th>Payment Schedule</th>
+                <th>Invoice No</th>
+                <th>Payment Date</th>
+                <th>Bill Amount</th>
+                <th>DCNS Number</th>
+                <th>Breakdown</th>
+                <th>Maintenance Amount</th>
+                <th>VAT (10%)</th>
+                <th>PPh (2%)</th>
+                <th>Penalty Amount</th>
+                <th>Bill Payment</th>
+                <th>Maintenance Payment</th>
+                <th>VAT Payment</th>
+                <th>Penalty Payment</th>
+                <th>Overdue (Days)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.BilPayScheduleDetailList.Count > 0)
+            {
+                for (var index = 0; index < Model.BilPayScheduleDetailList.Count; index++)
+                {
+                    <tr>
+                        <td>
+                            <p class="form-control-static text-center">@(index + 1)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-left">@(Model.BilPayScheduleDetailList[index].EndPeriod)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-left">@(Model.BilPayScheduleDetailList[index].PaymentSchedule)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-left">@(Model.BilPayScheduleDetailList[index].InvoiceNoInstalment)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-left">@(Model.BilPayScheduleDetailList[index].PaymentDate)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].BillAmount)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].DCNSNumber)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].BreakdownAmt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].MaintenanceAmnt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].VAT10Amt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].PPH2Amt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].PenaltyAmt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].BillPaymentAmt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].MaintenancePaymentAmt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].VATPaymentAmt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right thousandSeparator">@(Model.BilPayScheduleDetailList[index].PenaltyPaymentAmt)</p>
+                        </td>
+                        <td>
+                            <p class="form-control-static text-right">@(Model.BilPayScheduleDetailList[index].OverdueDays)</p>
+                        </td>
+                        <td>
+                            <div style="width:100px">
+                                @if (Model.BilPayScheduleDetailList[index].Action)
+                                {
+                                    <a href="@Url.Action("AddBillPaymentHistory", "BILCreation", new { id = Model.BilPayScheduleDetailList[index].IdBillPayScheduleDtl })" class="btn btn-info btn-xs"><i class="fa fa-plus"></i></a>
+
+                                }
+                                else
+                                {
+                                    <a href="#" class="btn btn-white btn-xs" disabled><i class="fa fa-plus"></i></a>
+                                }
+                                @if (Convert.ToDateTime(Model.BilPayScheduleDetailList[index].PaymentSchedule, new System.Globalization.CultureInfo("en-US")).Date <= DateTime.Now.Date)
+                                {
+                                    <a href="#" title='Edit Invoice Receipt' class='btn btn-danger btn-xs' onclick="LoadEditInvoiceReceipt(@(Model.BilPayScheduleDetailList[index].IdBillPayScheduleDtl));"><i class='fa fa-edit'></i></a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>
+
+@*Added by Sonny 5 Feb 2018*@
+<div class="modal fade" id="myModalEdit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h3>Update Invoice Receipt</h3>
+            </div>
+            <div class="modal-body" id="myModalContent1">
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Added by Sonny 6 Feb 2018, untuk dialog confirm*@
+<div class="modal fade" id="InvoiceReceiptSaveConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p style="font-size:medium;"><span class="msgModal"></span>Save Confirmation</p>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="panel-footer bg-light lter modal-body">
+                <p>Do you want to update this Invoice Receipt?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal" onclick="saveConfirmInvoiceReceipt();">Yes</button> <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/js/BillCreation.js?"+newid)"></script> @*Updated by Sonny (20 Apr 2018) agar perubahan js selalu terefresh*@
+    <script>
+        var serverRoot = '@Url.Content("~")';
+        $(document).ready(function () {
+            // Set thousand separator for disabled input text
+            var thousandSeparatorField = $('span:contains("Rp")').next();
+            ThousandSeparatorSetUp(thousandSeparatorField);
+            $.ajaxSetup({ cache: false });
+            $(".thousandSeparator").each(function () {
+                $(this).autoNumeric('init', { lZero: 'deny', aSep: ',', mDec: 0, vMin: '-999999999999999999.99', vMax: '999999999999999999.99' });
+            });
+
+            //var table = $('#payScheduleTable-list').DataTable();
+
+            $('#payScheduleTable-list tbody').on('click', 'tr', function () {
+                //alert("Baris diklik");
+                if ($(this).hasClass('selectedrow')) {
+                    $(this).removeClass('selectedrow');
+                }
+                else {
+                    $('#payScheduleTable-list tr.selectedrow').removeClass('selectedrow');
+                    $(this).addClass('selectedrow');
+                }
+            });
+
+
+        });
+    </script>
+}

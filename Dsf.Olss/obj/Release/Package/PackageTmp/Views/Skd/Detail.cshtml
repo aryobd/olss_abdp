@@ -1,0 +1,1580 @@
+﻿@using Dsf.Lib.Constant
+@model Dsf.Olss.Models.SKDViewModel
+@{
+	ViewBag.Title = "View SKD";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+    var jsID = Guid.NewGuid().ToString();
+    int iRow = 0;
+}
+@section Styles{
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/css/style.css")" type="text/css" />
+    <link rel="stylesheet" href="@Url.Content("~/Content/ui-framework/js/datatables/datatables.css")" type="text/css" />
+}
+
+<a href="@Url.Action("Index", "Skd")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<hr>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;">
+                <i class="fa fa-user text-danger"></i> Created by
+            </div>
+            <div style="float:left; padding-left:15px;">
+                @(Model.CreatedBy)
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;">
+                <i class="fa fa-calendar text-danger"></i> Created Date
+            </div>
+            <div style="float: left; padding-left: 15px;">
+                @(string.Format("{0:MM/dd/yyyy}", Model.CreatedDate))
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;">
+                <i class="fa fa-user text-danger"></i> Last Modified By
+            </div>
+            <div style="float: left; padding-left: 15px;">
+                @(Model.LastModifiedBy)
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;">
+                <i class="fa fa-calendar text-danger"></i> Last  Modified Date
+            </div>
+            <div style="float: left; padding-left: 15px;">
+                @(string.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate))
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("Detail", "Skd", FormMethod.Post))
+{ 
+    <section class="panel">
+        <header class="panel-heading font-bold">Customer Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>SKD Number</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.RowVersion)
+							@Html.HiddenFor(o => o.IdTb_MKT_SKD)
+                            @Html.TextBoxFor(o => o.SKDNumber, null, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Customer Name</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.CustomerName, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Quotation Number</label></div>
+                        <div class="col-lg-6">
+							@Html.TextBoxFor(o => o.QuotationNumber, null, new { @class = "form-control", @disabled = "disabled" })
+							@Html.HiddenFor(o => o.IdOPLQuotation)
+						</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Group</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.Group, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Address</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.Address, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>SKD Date</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.SkdDate, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Previous Agreement Number</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.PrevAgreementNumber, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Supplier Maintenance</label></div>
+                        <div class="col-lg-6">
+                            @Html.HiddenFor(o => o.IdSupplier)
+                            @Html.TextBoxFor(o => o.SupplierName, null, new { @class = "form-control", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(o => o.IdSupplier)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            <div>Description of Financial Object Information</div>
+            <br>
+        </header>
+        <div class="table-responsive">
+            <table class="table table-striped table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th width="20%">Model Name</th>
+                        <th width="5%">Model Year</th>
+                        <th width="5%">New / Used</th>
+                        <th width="20%">Supplier Name</th>
+                        <th width="15%">Address</th>
+                        <th width="5%">Qty</th>
+                        <th width="15%">Unit Price</th>
+                        <th width="15%">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.SkdDetailViewModels != null)
+                    {
+                        for (int i = 0; i < Model.SkdDetailViewModels.Count; i++)
+                        {
+
+                            if (Model.SkdDetailViewModels[i].Type == EnSkdType.Unit.ToString())
+                            {
+                                <tr class="rowUnit" id="rUnit">
+                                    <td>
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].IdTb_MKT_SKD_Dtl, new { @class = "form-control" })
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].Type, new { @class = "form-control" })
+										@Html.HiddenFor(o => Model.SkdDetailViewModels[i].Name)
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].ModelName, null, new { @class = "form-control modName", @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].ModelYear, null, new { @class = "form-control modYear", @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].NewUsed, null, new { @class = "form-control newUsed", @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].IdSupplier, new { @id = "IdSupplier", @class = "idSupplier_" + i, @disabled = "disabled" })
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Suppliername, null, new { @class = "form-control supplierName_" + i, @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => o.SkdDetailViewModels[i].SupplierAddress, null, new { @class = "form-control supplierAddress_" + i, @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Qty, null, new { @class = "form-control qty_" + i, @id = "Qty", @onkeyup = "countTotalPricePer(" + i + ")", @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                Rp
+                                            </span>
+                                            @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Price, "{0:0}", new { @class = "form-control text-right unitPrice uPrice_" + i, @readonly = "true" })
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                Rp
+                                            </span>
+                                            @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].TotalPrice, "{0:0}", new { @class = "form-control text-right totalPrice_" + i, @readonly = "true" })
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            if (Model.SkdDetailViewModels[i].Type == EnSkdType.Accessories.ToString())
+                            {
+                                <tr class='rowAcc' id="rAcc">
+                                    <td colspan="3">
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].IdTb_MKT_SKD_Dtl, new { @class = "form-control" })
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].Type, new { @class = "form-control" })
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Name, null, new { @class = "form-control", @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].IdSupplier, new { @id = "IdSupplier", @class = "idSupplier_" + i })
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Suppliername, null, new { @class = "form-control supplierName_" + i, @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => o.SkdDetailViewModels[i].SupplierAddress, null, new { @class = "form-control supplierAddress_" + i, @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Qty, null, new { @class = "form-control qty_" + i, @id = "Qty", @onkeyup = "countTotalPricePer(" + i + ")", @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                Rp
+                                            </span>
+                                            @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Price, "{0:0}", new { @class = "form-control text-right unitPrice uPrice_" + i, @onkeyup = "countTotalPricePer(" + i + ")", @disabled = "disabled" })
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                Rp
+                                            </span>
+                                            @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].TotalPrice, "{0:0}", new { @class = "form-control text-right totalPrice_" + i, @readonly = "true" })
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            if (Model.SkdDetailViewModels[i].Type == EnSkdType.Carroseries.ToString())
+                            {
+                                <tr class='rowCarro' id="rCarro">
+                                    <td colspan="3">
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].IdTb_MKT_SKD_Dtl, new { @class = "form-control" })
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].Type, new { @class = "form-control" })
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Name, null, new { @class = "form-control", @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        @Html.HiddenFor(o => Model.SkdDetailViewModels[i].IdSupplier, new { @id = "IdSupplier", @class = "idSupplier_" + i })
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Suppliername, null, new { @class = "form-control supplierName_" + i, @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => o.SkdDetailViewModels[i].SupplierAddress, null, new { @class = "form-control supplierAddress_" + i, @readonly = "true" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Qty, null, new { @class = "form-control qty_" + i, @id = "Qty", @onkeyup = "countTotalPricePer(" + i + ")", @disabled = "disabled" })
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                Rp
+                                            </span>
+                                            @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].Price, "{0:0}", new { @class = "form-control text-right unitPrice uPrice_" + i, @onkeyup = "countTotalPricePer(" + i + ")", @disabled = "disabled" })
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                Rp
+                                            </span>
+                                            @Html.TextBoxFor(o => Model.SkdDetailViewModels[i].TotalPrice, "{0:0}", new { @class = "form-control text-right totalPrice_" + i, @readonly = "true" })
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                    <tr>
+                        <td colspan=5 class="font-bold" style="text-align:right;">
+                            Total Cost of Product
+                        </td>
+                        <td colspan=2></td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalCostOfProduct, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=5 class="font-bold">
+                            @string.Format("COMPENSATION VAT IN OF [ {0} ]", Model.ProductName)
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.QtyUnitForCompensation, null, new { @class = "form-control ", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.VatInUnit, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalPriceVatInUnit, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan=5 class="font-bold">
+                            @string.Format("COMPENSATION VAT IN OF [ {0} ] ", Model.AccesoriesName)
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.QtyUnitForCompensation, "{0:0}", new { @class = "form-control", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.VatInAccessories, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalPriceVatInAccessories, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan=5 class="font-bold">
+                            @string.Format("COMPENSATION VAT IN OF [ {0} ]", Model.CarroseriesName)
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.QtyUnitForCompensation, "{0:0}", new { @class = "form-control", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.VatInCarroserries, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalPriceVatInCarroserries, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan=5 class="font-bold" style="text-align:right;">
+                            Total Compensation VAT IN of Product
+                        </td>
+                        <td colspan=2></td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalCompensationVatInOfProduct, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan=5 class="font-bold" style="text-align:right;">
+                            Total Net Investment
+                        </td>
+                        <td colspan=2></td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => o.TotalNetInvestment, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <section class="panel">
+                <header class="panel-heading font-bold">Operating Lease Income (For <i>n</i> Unit)</header>
+                <div class="table-responsive">
+                    <table class="table table-striped table-input m-b-none text-sm">
+                        <tbody>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Price List ( Unit & Carroserie )
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.ProductPriceWithVAT, "{0:0}", new { @class = "form-control text-right", @readonly = "true", @disabled = "disabled" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Net Investment
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.NetInvestment, "{0:0}", new { @class = "form-control text-right", @readonly = "true", @disabled = "disabled" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Residual Value (% x unit price)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => o.ResidualValuePercentUnit, null, new { @class = "form-control", @readonly = "true", @disabled = "disabled" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="RVWithVat" class="font-padding-no-bold col-lg-6">
+                                    @if (Model.IsNewCalculation == true)
+                                    {
+                                        <text>Residual Value With VAT</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Residual Value With VAT</text>
+                                    }                                    
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.ResidualValueUnit, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Lease Term
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => o.LeaseTerm, null, new { @class = "form-control", @disabled = "disabled" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Monthly Operating Lease
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.MonthlyOperatingLease, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    VAT 10% (+)
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.Vat, null, new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Billing
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.Billing, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Withholding Tax Art 23 (2%)
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.WithholdingTaxArt23, null, new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold col-lg-6">
+                                    Net Payment
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.NetPayment, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-lg-6">
+            <section class="panel">
+                <header class="panel-heading font-bold">
+				Budget Cost Period For <i>n</i> Month 
+                @if (Model.IsNewCalculation == true)
+                {
+                    <i id="TextNewCalculation" class="pull-right">New Calculation</i>
+                }
+                </header>
+                <div class="table-responsive">
+                    <table class="table table-striped table-input m-b-none text-sm">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="font-bold">
+                                    <i>Income</i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Installment Income
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.InstallmentIncome, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Insurance Income
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.InsuranceIncome, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    KTB Discount Direct To DSF
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.KtbDiscDirectToDsf, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="RVWithoutVat" class="font-padding-no-bold col-lg-6">
+                                    @if (Model.IsNewCalculation == true)
+                                    {
+                                        <text>Residual Value Without VAT</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Residual Value With VAT</text>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.ResidualValue, "{0:0}", new { @id = "ResidualValue2", @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Total Lease Income
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalLeaseIncome, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold">
+                                    <i>Cost</i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Product Price
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.ProductPrice, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Registration
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.Registration, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Maintenance
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.Maintenance, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Replacement
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.Replacement, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Insurance Cost
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.InsuranceCost, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Mediator Fee
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.MediatorFee, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Mobilization
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.Mobilization, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    DeMobilization
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.DeMobilization, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Interest Cost
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.InterestCost, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Term of Payment Cost
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TermofPaymentCost, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Interest Cost Before BAST
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.InterestCostBeforeBAST, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Total Lease Cost
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalLeaseCost, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold">
+                                    <i>Total Profit</i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Income - Cost
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.IncomeCost, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                <td colspan="2" class="font-bold">
+                                    <i>Compensation VAT IN with VAT OUT</i>
+                                </td>
+                            </tr>
+
+                            <tr hidden>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Vat In Unit
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalPriceVatInUnit, "{0:0}", new { @class = "form-control text-right", @readonly = "true", @id = "VatInUnitTwo" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Vat In Karoseri
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalPriceVatInCarroserries2, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Vat In Aksesoris
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalPriceVatInAccessories2, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Vat In Maintenance
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalPriceVatInMaintenance, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr hidden>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Total Compensation
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalCompensation, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr hidden>
+                                <td class="font-bold col-lg-6">
+                                    Total Profit After Compensation
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.TotalProfitAfterCompensation, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Per Year
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.NetIncomeWithVatTaxPerYear, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    Average Asset
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => o.AverageAsset, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="font-padding-no-bold col-lg-6">
+                                    ROA
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(o => o.ROA, "{0:N1}", new { @class = "form-control text-right", @readonly = "true" })
+                                        <span class="input-group-addon">
+                                            %
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Landing Rate</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.LandingRate, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+                <div class="col-lg-6" hidden>
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>IRR (without compensation Vat In)</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.IRRWithoutCompensationVat, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Borrowing Rate</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.BorrowingRate, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+                <div class="col-lg-6" hidden>
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>IRR (with compensation Vat In)</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.IRRWithCompensationVat, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Spread Rate (without compensation vat in)</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.SpreadRate, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Payment Method</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Payment Type</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.PaymentType, null, new { @class = "form-control", @disabled = "disabled" })</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Payment Mode</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.PaymentMode, null, new { @class = "form-control", @readonly = "true", ViewBag.PaymentTransactionTypeName })</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Is Include PPH</label></div>
+                        <div class="col-lg-6">@Html.TextBoxFor(o => o.IsPPH, null, new { @class = "form-control", @readonly = "true", ViewBag.PaymentTransactionTypeName })</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+				<div class="form-group">
+					<div class="col-md-12">
+						<div class="col-lg-12"><label>Note</label></div>
+						@Html.TextBoxFor(o => o.Note, null, new { @class = "form-control", @readonly = "true", @disabled = "disabled" })
+					</div>
+				</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Remarks (Revise / Reject)</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        @if(ViewBag.IsPassed == true)
+                        {
+                            @Html.TextAreaFor(o => o.Remarks, new { @class = "form-control", @rows = "3", @maxlength="500"})
+                        }else																																   
+                        { 
+                            @Html.TextAreaFor(o => o.Remarks, new { @class = "form-control", @rows = "3", @disabled = "disabled" })
+                        }
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">
+            <div>O/S Net Investment</div>
+        </header>
+        <div class="table-responsive">
+            <table class="table table-striped table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th width="25%">Description</th>
+                        <th width="10%">Status</th>
+                        <th width="15%">Customer Name</th>
+                        <th width="15%">Price</th>
+                        <th width="15%">RV</th>
+                        <th width="20%">Net</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.SkdNetInvestmentViewModels != null)
+                    {
+                        for (int i = 0; i < Model.SkdNetInvestmentViewModels.Count; i++)
+                        {
+                            @Html.HiddenFor(o => Model.SkdNetInvestmentViewModels[@i].IdTb_MKT_SKDNetInvestment, new { @class = "form-control" })
+                            <tr>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].Description, null, new { @class = "form-control", @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].StatusDescription, null, new { @class = "form-control", @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].CustomerName, null, new { @class = "form-control", @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].Price, "{0:0}", new { @class = "form-control text-right", @disabled = "disabled" })
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @if (Model.IsNewCalculation == true)
+                                        {
+                                            @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].RvNoVat, "{0:0}", new { @class = "form-control text-right", @disabled = "disabled" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].Rv, "{0:0}", new { @class = "form-control text-right", @disabled = "disabled" })
+                                        }
+                                        
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            Rp
+                                        </span>
+                                        @if (Model.IsNewCalculation == true)
+                                        {
+                                            @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].NetNoVat, "{0:0}", new { @class = "form-control text-right", @disabled = "disabled" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(o => Model.SkdNetInvestmentViewModels[i].Net, "{0:0}", new { @class = "form-control text-right", @disabled = "disabled" })
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                    <tr>
+                        <td colspan="3" class="font-bold">
+                            Total O/S Net Investment
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => Model.NTotalPrice, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => Model.NTotalRv, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Rp
+                                </span>
+                                @Html.TextBoxFor(o => Model.NTotalNet, "{0:0}", new { @class = "form-control text-right", @readonly = "true" })
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <header class="panel-heading font-bold">Revision History</header>
+        <div class="panel-body">
+            <table class="table table-striped table-input m-b-none text-sm">
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var histories in Model.RevHistories)
+                    {
+                        <tr>
+                            <td width="20">
+                                <label class="form-control">@histories.CreateBy</label>
+                            </td>
+                            <td width="20">
+                                <label class="form-control">@histories.CreateDate</label>
+                            </td>
+                            <td width="20">
+                                <label class="form-control">@histories.Action</label>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </section>
+    
+if (ViewBag.IsCreator != 1)
+{
+    if (ViewBag.ApprovalLevelCode == StatusCode.Approve || ViewBag.ApprovalLevelCode == StatusCode.Check)
+	{
+        <section class="panel">
+            <header class="panel-heading font-bold">Check & Approval List</header>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-3"><label>Approval Date</label></div>
+                            <div class="col-lg-5">
+                                @if (ViewBag.ApprovalLevelCode == StatusCode.Check && Model.IdTb_OPL_Status != 3)
+                                {
+                                 <div class="input-group">
+                                    @Html.TextBoxFor(o => o.ApproveDate, "{0:MM/dd/yyyy}", new { @class = "form-control datepicker-input" })
+                                    <span class="input-group-addon">
+                                        <span class="fa fa-calendar"></span>
+                                    </span>
+                                </div>
+                                }
+                                else if (ViewBag.ApprovalLevelCode == StatusCode.Approve)
+                                {
+                                    @Html.HiddenFor(o => o.ApproveDate)
+                                    
+                                    <div class="input-group">
+                                        @(string.Format("{0:MM/dd/yyyy}", Model.ApproveDate))
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-input m-b-none text-sm" id="apptable">
+                    <thead>
+                        <tr>
+                            <th width="20">Name</th>
+                            <th width="20">Role</th>
+                            <th width="20">Check</th>
+                            <th width="30">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ApprovalList != null)
+                        {
+                            for (int i = 0; i < Model.ApprovalList.Count; i++)
+                            {
+                                if (Model.ApprovalList[i].ApprovalLevelCode == "Proposed")
+                                {
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].TaskId)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].OrderNumber)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].CheckName)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].CheckRole)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].IsPassed)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].RemarksSys)
+                             
+                            }
+                            else
+                            {
+                                @Html.HiddenFor(o => Model.ApprovalList[i].TaskId)
+                                @Html.HiddenFor(o => Model.ApprovalList[i].OrderNumber)
+                                <tr>
+                                    <td >
+                                        @Html.TextBoxFor(o => Model.ApprovalList[i].CheckName, null, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.ApprovalList[i].CheckRole, null, new { @class = "form-control", @readonly = "readonly" })
+                                    </td>
+                                    @if (ViewBag.ApprovalLevelCode == StatusCode.Approve)
+			                        {
+                                        <td>
+                                            @Html.CheckBoxFor(o => o.ApprovalList[i].IsPassed, new { @checked = "checked", @disabled = "disabled", @Style = "margin-left:15px;" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(o => Model.ApprovalList[i].RemarksSys, null, new { @class = "form-control", @readonly = "readonly", placeholder = "add comment..." })
+                                        </td>
+                                        
+                                    }
+                                    else if (ViewBag.ApprovalLevelCode == StatusCode.Check)
+                                    {
+                                        <td>
+                                            @Html.CheckBoxFor(o => o.ApprovalList[i].IsPassed, new { @checked = "checked", @Style = "margin-left:15px;" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(o => Model.ApprovalList[i].RemarksSys, null, new { @class = "form-control", placeholder = "add comment..." })
+                                        </td>
+                                    }
+                                   
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        </section>
+    }
+    else if (ViewBag.ApprovalLevelCode == null)
+	{
+        <section class="panel">
+            <header class="panel-heading font-bold">Check & Approval List</header>
+            <div class="panel-body">
+                <div class="row">
+                        <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-3"><label>Approval Date</label></div>
+                            <div class="col-lg-5">
+                                @if (Model.ApproveDate == null)
+                                {
+                                    <div class="input-group">
+                                        @Html.TextBoxFor(o => o.ApproveDate, new { @class = "form-control datepicker-input" })
+                                        <span class="input-group-addon">
+                                            <span class="fa fa-calendar"></span>
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="input-group">
+                                        @(string.Format("{0:MM/dd/yyyy}", Model.ApproveDate))
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped table-input m-b-none text-sm" id="apptable">
+                    <thead>
+                        <tr>
+                            <th width="20">Name</th>
+                            <th width="20">Role</th>
+                            <th width="20">Check</th>
+                            <th width="30">Remark</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ApprovalList != null)
+                        {
+                            for (int i = 0; i < Model.ApprovalList.Count; i++)
+                            {
+                                if (Model.ApprovalList[i].ApprovalLevelCode == "Proposed")
+                                {
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].TaskId)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].OrderNumber)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].CheckName)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].CheckRole)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].IsPassed)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].RemarksSys)
+                             
+                                }
+                                else
+                                {
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].TaskId)
+                                    @Html.HiddenFor(o => Model.ApprovalList[i].OrderNumber)
+                                    <tr>
+                                        <td >
+                                            @Html.TextBoxFor(o => Model.ApprovalList[i].CheckName, null, new { @class = "form-control", @readonly = "readonly" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(o => Model.ApprovalList[i].CheckRole, null, new { @class = "form-control", @readonly = "readonly" })
+                                        </td>
+                                        <td>
+                                            @Html.CheckBoxFor(o => o.ApprovalList[i].IsPassed, new { @checked = "checked", @Style = "margin-left:15px;", @disabled = "disabled" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(o => Model.ApprovalList[i].RemarksSys, null, new { @class = "form-control", placeholder = "add comment...", @disabled = "disabled" })
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+}
+
+   
+    if (ViewBag.IsCreator != 1)
+    {
+        if (ViewBag.ApprovalLevelCode == StatusCode.Approve || ViewBag.ApprovalLevelCode == StatusCode.Check)
+		{
+        <section class="panel">
+        <footer class="panel-footer bg-light lter">
+	        <div class="row">
+		        <div class="col-lg-6">
+			        @if (ViewBag.ApprovalLevelCode == StatusCode.Approve)
+			        {
+ 					    <input name="statusButton" class="btn btn-info" value="Approve" type="submit" id="Approvebtn"/>
+				        <input name="statusButton" class="btn btn-primary" value="Reject" type="submit"/>
+                        if (ViewBag.IsCreator == 1)
+                        { //edited by Sonny (30 Jan 2019) untuk yg approval terakhir di cancel, ini jangan muncul
+                            <input name="statusButton" class="btn btn-primary" value="Cancel" type="submit" />
+                        }
+                        <input name="statusButton" class="btn btn-danger" value="Revise" type="submit" />
+                    }
+                    else if (ViewBag.ApprovalLevelCode == StatusCode.CancelApproval)
+                    {
+                        <input name="statusButton" class="btn btn-info" value="Approve Cancellation" type="submit" />
+                        <input name="statusButton" class="btn btn-primary" value="Reject Cancellation" type="submit" />
+
+			            }
+			            else if (ViewBag.ApprovalLevelCode == StatusCode.Check)
+			            {
+				            <input name="statusButton" class="btn btn-info" value="Check" id="chkbtn" type="submit"/>
+				            <input name="statusButton" class="btn btn-danger" value="Revise" type="submit"/>
+			            }
+		            </div>
+	            </div>
+		        <input type="hidden" id="submitButtonText" />
+            </footer>
+            
+    </section>
+	}
+    
+    }
+}
+
+@{Html.RenderPartial("ModalPopUpQuotation");}
+
+<script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+<script src="@Url.Content("~/Content/js/Skd.js?" + jsID)"></script>
+
+<script>
+
+   
+
+	//Field Remarks Validation
+	$('input[name="statusButton"]').on('click', function (e) {
+	    debugger;
+		// This must be applied to a form (or an object inside a form).
+		jQuery.fn.addHidden = function (name, value) {
+			return this.each(function () {
+				var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+				$(this).append($(input));
+			});
+		};
+		
+		var submitvalue = $(this).val();
+		var msg = '';
+		if (submitvalue === 'Revise') {
+			msg = 'Revise';
+		} else if (submitvalue === 'Reject') {
+			msg = 'Reject';
+		} else if (submitvalue === 'Check') {
+			msg = 'Check';
+		} else if (submitvalue === 'Approve') {
+			msg = 'Approve';
+		}
+
+		$('#msgModal').text(msg);
+		$('#submitButtonText').val(submitvalue);
+		
+		$(".btn .btn-info").prop('disabled', true);
+		$(".btn .btn-primary").prop('disabled', true);
+		$(".btn .btn-danger").prop('disabled', true);
+
+		if ($(this).val() == "Revise" || $(this).val() == "Reject") {
+			if (!ValidationRemarks()) {
+			    $(".btn .btn-info").prop('disabled', false);
+			    $(".btn .btn-primary").prop('disabled', false);
+			    $(".btn .btn-danger").prop('disabled', false);
+
+			    e.preventDefault();
+				goToTop();
+				return false;
+			}
+		}
+		return true;
+	});
+	
+	$('#confirmModal').click(function (e) {
+	    var htmlAlert = '';
+
+	    $(this).prop('disabled', true);
+	    var submitvalue = $('#submitButtonText').val();
+	    var checkall;
+        debugger
+	    if (submitvalue === 'Check' || submitvalue === 'Approve') {
+	        checkall = OnChangeCheck();
+	    }
+
+	    if (checkall == true) {
+	        debugger
+	      
+	        $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+
+	        return true;
+	    } else {
+
+	        $('#myModal').modal('hide');
+
+	        $(this).prop('disabled', false);
+
+	        htmlAlert +=
+                 '<div class="alert alert-danger" role="alert">' +
+                     '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' +
+                     'Please Fill All Approval list & Approval Date...'
+             '</div>';
+             $('form').before(htmlAlert);
+             goToTop();
+	        return false;
+
+	        //alert("Please Fill All Approval list & Approval Date...");
+
+	        return false;
+	    }
+	});
+	
+	//only 1 winner for 1 asset 
+	function OnChangeApprove(param) {
+        debugger
+
+        var table = document.getElementById("apptable");
+
+        var vchecked = false;
+
+        $("#ApprovalList_1__IsPassed").prop('checked', this.value == 0);
+
+        for (var i = 0, row; row = table.rows[i]; i++) {
+            var initCb = document.getElementById("ApprovalList_" + i + "__IsPassed");
+            var initRm = document.getElementById("ApprovalList_" + i + "__RemarksSys");
+
+            if (initCb != null) {
+                if (i != 0) {
+                    if (initCb.checked == false) {
+                        if (initRm.textContent != "") {
+                            vchecked = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        document.getElementById("Approvebtn").disabled = vchecked;
+	}
+
+	//only 1 winner for 1 asset 
+	function OnReadyApproveList() {
+	    debugger
+
+	    var table = document.getElementById("apptable");
+
+	    var vchecked = false;
+
+	    for (var i = 0, row; row = table.rows[i]; i++) {
+	        var initRm = $("#ApprovalList_" + i + "__RemarksSys").val();
+	        
+	        if (i != 0) {
+	            if (initRm != "") {
+	                $("#ApprovalList_" + i + "__IsPassed").prop('checked', this.value == 0);
+	            }   
+	        }
+	    }
+	}
+
+	//only 1 winner for 1 asset 
+	function OnChangeCheck() {
+	    debugger
+
+	    var table = document.getElementById("apptable");
+	    var appdate = document.getElementById('ApproveDate').value;
+	    var vchecked = false;
+
+	    for (var i = 0, row; row = table.rows[i]; i++) {
+	        var initCb = document.getElementById("ApprovalList_" + i + "__IsPassed");
+	        var initRm = document.getElementById("ApprovalList_" + i + "__RemarksSys").value;
+
+	        if (initCb != null) {
+	            if (i != 0) {
+	                if (appdate != "") {
+	                    if (initCb.checked == false) {
+	                        if (initRm != "") {
+	                            vchecked = true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+    	                } else {
+    	                    vchecked = true;
+    	                }
+	                }
+	            }
+	        }
+	    }
+
+	    return vchecked;
+	}
+
+	$(document).ready(function () {
+		//change type submit to button to provide modal popup
+		$('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#myModal');
+		
+		// Set thousand separator for disabled input text
+		var thousandSeparatorField = $('span:contains("Rp")').next();
+		ThousandSeparatorSetUp(thousandSeparatorField);
+
+		OnReadyApproveList();
+	});
+</script>

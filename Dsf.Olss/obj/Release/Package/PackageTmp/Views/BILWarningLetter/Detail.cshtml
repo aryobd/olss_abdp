@@ -1,0 +1,285 @@
+﻿@using Dsf.Lib.Constant
+@using NPOI.SS.Formula.Functions
+@model Dsf.Olss.Models.BILWarningLetterViewModel
+
+@{
+    ViewBag.Title = "Warning Letter Approval";
+    var isPassed = ViewBag.IsPassed;
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+<a href="@Url.Action("Index","BILWarningLetter")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+<hr>
+@using (Html.BeginForm("Detail", "BILWarningLetter", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <section class="panel">
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.AgreementNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AgreementNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.AgreementPeriod)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AgreementPeriod, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.WarningLetterNumber)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.WarningLetterNumber, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.UnitTypeLease)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.UnitTypeLease, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.AuthorizedPerson)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.AuthorizedPerson, new { @class = "form-control mandatory", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3">@Html.LabelFor(x => x.Position)</div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(x => x.Position, new { @class = "form-control mandatory", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-3"><label>Due Date Payment</label></div>
+                        <div class="col-lg-6">
+                            <div class="input-group date">
+                                @Html.TextBoxFor(o => o.ValidDate, "{0:" + localeDateFormat + "}", new { @class = "form-control", @readonly = "readonly" })
+                                <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                            </div>
+                            @Html.ValidationMessageFor(o => o.ValidDate)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            <table class="table table-striped m-b-none" id="warningletterdtl">
+                <thead>
+                    <tr>
+                        <th width="15%">Invoice Number</th>
+                        <th width="15%">Usage Period</th>
+                        <th width="15%">Lease Amount</th>
+                        <th width="10%">PPN</th>
+                        <th width="15%">Lease + PPN</th>
+                        <th width="15%">Penalty Amount</th>
+                        <th width="10%">Due Date</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+    if (Model.WarningLetterDtl != null)
+    {
+        for (int i = 0; i < Model.WarningLetterDtl.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Html.TextBoxFor(x => x.WarningLetterDtl[i].InvoiceNo, new { @class = "form-control mandatory", @readonly = "readonly" })
+                </td>
+                <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].UsagePeriod, new { @class = "form-control thousandSeparator", @readonly = "readonly" })</td>
+                <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].LeaseAmount, new { @class = "form-control", @readonly = "readonly", @style = "text-align: right;" })</td>
+                <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].PPN, new { @class = "form-control thousandSeparator", @readonly = "readonly", @style = "text-align: right;" })</td>
+                <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].LeasePPN, new { @class = "form-control thousandSeparator", @readonly = "readonly", @style = "text-align: right;" })</td>
+                <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].PenaltyAmount, new { @class = "form-control thousandSeparator", @readonly = "readonly", @style = "text-align: right;" })</td>
+                <td>@Html.TextBoxFor(x => x.WarningLetterDtl[i].DueDate, new { @class = "form-control", @readonly = "readonly" })</td>
+                <td style="text-align: center;">
+                    @Html.HiddenFor(x => x.WarningLetterDtl[i].IdTb_BIL_WarningLetterDtl)
+                    @Html.HiddenFor(x => x.WarningLetterDtl[i].StartPeriod)
+                    @Html.HiddenFor(x => x.WarningLetterDtl[i].EndPeriod)
+                    @Html.HiddenFor(x => x.WarningLetterDtl[i].InvoiceNo)
+                    <button class='btn btn-danger deleterow' type='button' style="height: 30px;" onclick=" DeleteRow(this) " disabled="disabled">-</button>
+                </td>
+            </tr>
+        }
+    }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+    <section class="panel">
+        <header class="panel-heading font-bold">Remarks</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="col-lg-12">@Html.TextAreaFor(x => x.Remarks, new { @class = "form-control mandatory", @rows = "3" })</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    if (ViewBag.IsPassed == true)
+    {
+        <section class="panel">
+            <footer class="panel-footer bg-light lter">
+                @Html.HiddenFor(x => x.IdTb_BIL_WarningLetter)
+                @Html.HiddenFor(x => x.IdTb_BIL_PaySchedule)
+
+                @if (ViewBag.ApprovalLevelCode == StatusCode.Approve)
+                {
+                    <input type="hidden" id="submitButtonText" />
+                    @StateButton.WarningLetterStateButton("approve")
+                }
+                else if (ViewBag.ApprovalLevelCode == StatusCode.Check)
+                {
+                    if ((ViewBag.JobTitles == JobTitles.MO || ViewBag.JobTitles == JobTitles.MOOPL) && string.Equals(ViewBag.CreatorSkd, Dsf.Olss.Common.SimpleSessionPersister.Username, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        <input type="hidden" id="submitButtonText" />
+                        @StateButton.WarningLetterStateButton("check")
+                    }
+                    else if (ViewBag.JobTitles != JobTitles.MO && ViewBag.JobTitles != JobTitles.MOOPL)
+                    {
+                        <input type="hidden" id="submitButtonText" />
+                        @StateButton.WarningLetterStateButton("check")
+                    }
+                    else
+                    {
+                        <script>
+                            $(document).ready(function () {
+                                $("#Remarks").attr("readonly", "readonly");
+                            });
+                        </script>
+                    }
+                }
+                else
+                {
+                    <script>
+                        $(document).ready(function () {
+                            $("#Remarks").attr("readonly", "readonly");
+                        });
+                    </script>
+                }
+            </footer>
+        </section>
+    }
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script type="text/javascript">
+        var serverRoot = '@Url.Content("~")';
+        var isPassed = '@isPassed';
+        $(document).ready(function () {
+            $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#confirmationModal');
+
+            $(".thousandSeparator").each(function () {
+                $(this).autoNumeric('init', { lZero: 'deny', aSep: ',', mDec: 2, vMax: '999999999999999999.99' });
+            });
+
+            if (isPassed == '') $("#Remarks").attr("readonly", "readonly");
+        });
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+            var submitvalue = $(this).val();
+            var msg = "";
+            var cm = "";
+            if (submitvalue === 'Revise') {
+                msg = 'Revise';
+                cm = "revise warning letter";
+            } else if (submitvalue === 'Reject') {
+                msg = 'Reject';
+                cm = "reject warning letter";
+            } else if (submitvalue === 'Check') {
+                msg = 'Check';
+                cm = "check warning letter";
+            } else if (submitvalue === 'Approve') {
+                msg = 'Approve';
+                cm = "approve warning letter";
+            }
+
+            $('.msgModal').text(msg);
+            $('.confirmationMessage').text(cm);
+            $('#submitButtonText').val(submitvalue);
+
+            if ($(this).val() == "Revise" || $(this).val() == "Reject") {
+                if (!ValidationRemarks()) {
+                    e.preventDefault();
+                    goToTop();
+                    return false;
+                }
+            }
+            return true;
+        });
+
+        $('#confirmModal').click(function (e) {
+            var submitvalue = $('#submitButtonText').val();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            $(this).prop('disabled', true);
+        });
+
+        function ValidationRemarks() {
+            if ($('.alert-danger').length != 0) {
+                $('.alert-danger').remove();
+            }
+            var htmlAlert = '';
+            var remarks = $('#Remarks').val();
+
+            if (remarks == "" || remarks == null) {
+                htmlAlert +=
+						'<div class="alert alert-danger" role="alert">' +
+							'<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>' +
+							'Please fill Remarks' +
+				'</div>';
+                $('form').before(htmlAlert);
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

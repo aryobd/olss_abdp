@@ -1,0 +1,70 @@
+﻿@using System.Web.UI.WebControls
+@model Dsf.Olss.Models.BILInvoiceViewModel
+
+<div class="modal fade" id="confirmationPPhModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Include Pph</label> </div>
+                        <div class="col-lg-6">
+                            @{
+                                var listItems = new List<ListItem>
+                                    {
+                                        new ListItem { Text = "Yes", Value = "true" },
+                                        new ListItem { Text = "No", Value = "false"}
+                                    };
+                            }
+                            @Html.DropDownListFor(o => o.IsIncludePph, new SelectList(listItems, "Value", "Text", "true"), new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div><br />
+            <div class="modal-footer">
+                <a href='#confirmationModal' data-toggle='modal' id="btnsaveasDraft" data-dismiss="modal" class="btn btn-primary">OK</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure want to create the invoice?
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmModal" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="approvalConfirmationModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <p style="font-size:medium;"><span class="msgModal"></span> Confirmation</p>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="panel-footer bg-light lter modal-body">
+                <p>Are you sure you want to <span class="msgModal"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmBtn" class="btn">Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,47 @@
+﻿@helper Create(bool isDraft = false, bool isSubmit = false, bool isActive = false) {
+    
+    if(isDraft){
+        <label class="label label-default label-lg pull-right">Draft</label>  
+    }
+    else if (isSubmit)
+    {
+        <label class="label label-info label-lg pull-right">Submitted</label>
+    }
+    else if (isActive)
+    {
+        <label class="label label-success label-lg pull-right">Active</label>
+    }
+    else
+    {
+        <label class="label label-default bg-light label-lg pull-right">Inactive</label>
+    }
+
+}
+
+
+@helper MarketingCreate(bool IsDraft = false, bool IsSubmit = false, bool IsValid = false)
+{
+
+    if (IsDraft)
+    {
+        <label class="label label-default label-lg pull-right">Draft</label>
+    }
+    else if (IsSubmit)
+    {
+        <label class="label label-info label-lg pull-right">Submitted</label>
+    }
+    else if (IsValid)
+    {
+        <label class="label label-success label-lg pull-right">Valid</label>
+    }
+    else if (!IsDraft && !IsSubmit && !IsValid)
+    {
+        <label class="label label-success label-lg pull-right">Invalid</label>
+    }
+    else if (IsDraft && IsSubmit)
+    {
+        <label class="label label-danger label-lg pull-right">Invalid Status : Contact your Administrator</label>
+    }
+
+
+}

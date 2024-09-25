@@ -1,0 +1,534 @@
+﻿@using System.Web.UI.WebControls
+@using Dsf.Lib.Constant
+@using Dsf.Olss.Utility
+@using Dsf.Olss.Common
+@model Dsf.Olss.Models.MGTUnitReplacement
+@{
+    ViewBag.Title = "Monitoring OPL Unit and Replacement Unit";
+    // Get loading image url
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/css/style.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/select2/select2.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/select2-bootstrap.css") rel="stylesheet" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label>Search Criteria</label>
+                    <div class="form-group">
+                        <select id="ddlSearchCriteria" class="form-control">
+                            <option value="1">DSF Office</option>
+                            <option value="2">Registration Number</option>
+                            <option value="3">Replacement Unit Police Number</option>
+                            <option value="4">Model Unit</option>
+                            <option value="5">Agreement No</option>
+                            <option value="6">Customer Name</option>
+                            <option value="7">OPL Unit Police No</option>
+                            <option value="8">Active / Not Active</option>
+                            <option value="9">Status</option>
+                            <option value="10">Replacement Unit</option>
+                            <option value="11">Company Name</option>
+                            <option value="12">Site</option>
+                            <option value="13">Replacing</option>
+                            <option value="14">Replacement Type</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <label>Parameter</label>
+                    <div class="form-group">
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>Start Modified Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label>End Modified Date</label>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <label></label>
+                    <div class="form-group">
+                        <input id="btnSearch" name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-body">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#tabreplacementunit" aria-controls="tabreplacementunit" role="tab" data-toggle="tab">Replacement Unit</a></li>
+                <li role="presentation"><a href="#taboplunit" aria-controls="taboplunit" role="tab" data-toggle="tab">OPL Unit</a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" id="tabreplacementunit" class="tab-pane active">
+                    <div class="row padder padder-v">
+                        <input id="btnRegister" class="btn btn-primary" type="button" data-toggle="modal" data-target="#RegisterUnitModal" value="Register Replacement Unit">
+                        <a href="@Url.Action("Approvals", "MGTOplUnitReplace")" class="btn btn-primary">Replacement Approval</a>
+                    </div>
+                    <div class="table-responsive table-replacement-responsive">
+                        <table id="table-list-replacementunit" class="table table-striped m-b-none display nowrap">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">DSF<br />Office</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-identity">Registration<br />Number</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Replacement<br />Unit Police No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-medium">Model<br />Unit</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-identity">Agreement<br />No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-medium">Customer<br />Name</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">OPL<br />Unit Police No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Active/Not Active</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-status">Status<br />Replacement Unit</div>
+                                    </th>
+                                    <th colspan="2" class="text-center">
+                                        Location Replacement Unit - Site
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Replacing</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-status">Replacement<br />Type</div>
+                                    </th>
+                                    <th colspan="3" class="text-center">
+                                        Usage Period
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Create By<br/>(BAST)</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Create Date<br/>(BAST)</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Last Modified By<br/>(BAST)</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Last Modified Date<br />(BAST)</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-medium">Action</div>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <div class="header-grid-short">Company Name</div>
+                                    </th>
+                                    <th>
+                                        <div class="header-grid-short">Site</div>
+                                    </th>
+                                    <th>
+                                        <div class="header-grid-very-short">Start Date</div>
+                                    </th>
+                                    <th>
+                                        <div class="header-grid-very-short">Estimate</div>
+                                    </th>
+                                    <th>
+                                        <div class="header-grid-very-short">End Date</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <hr />
+                </div>
+                <div role="tabpanel" id="taboplunit" class="tab-pane">
+                    <div class="table-responsive table-oplunit-responsive">
+                        <table id="table-list-oplunit" class="table table-striped m-b-none display nowrap">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">DSF Office</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Agreement No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Unit Description</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Police No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Chasis No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Engine No</div>
+                                    </th>
+                                    <th rowspan="2">
+                                        <div class="header-grid-short">Status OPL Unit</div>
+                                    </th>
+                                    <th colspan="2" class="text-center">
+                                        Location OPL Unit
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <div class="header-grid-short">Company Name</div>
+                                    </th>
+                                    <th>
+                                        <div class="header-grid-short">Site</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="panel">
+        <footer class="panel-footer bg-light lter">
+            <div class="row padder">
+                <!-- Button print -->
+                <div id='loadingmessage' style='display:none'>
+                    <img src='@Url.Content(ImgUrl)' />
+                </div>
+                <input id="btnPrintAll" name="statusButton" class="btn btn-info" type="submit" value="Print Report">
+            </div>
+        </footer>
+    </section>
+</div>
+
+@{
+    Html.RenderPartial("ModalPopUpRegisterUnit", Model);
+    Html.RenderPartial("ModalPopUp");
+}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    
+    <script>
+    var serverRoot = '@Url.Content("~")';
+    var oTable1;
+    var oTable2;
+    var tabActive = 0;
+    var iCount = -1;
+    var tempPolNumber;
+    var Usernamevar = '@(SimpleSessionPersister.Username)';
+    var srv_approved = '@((int)OlssOplStatus.Approved)';
+        $(document).ready(function () {
+            datagridReplacementUnit();
+            datagridOPLUnit();
+            $('#loadingmessage').hide();
+        })
+
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            } else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+            iCount = -1;
+            switch ($(this).html()) {
+                case "Replacement Unit":
+                    ComboReplace(false)
+                    tabActive = 0;
+                    $('#table-list-replacementunit').dataTable().fnDraw();
+                    break;
+                case "OPL Unit":
+                    ComboReplace(true)
+                    tabActive = 1;
+                    $('#table-list-oplunit').dataTable().fnDraw();
+                    break;
+            }
+        })
+
+        bootstrap_alert = function () { };
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        };
+
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        };
+
+        function ComboReplace(act) {
+            var ReplacementUnit = {
+                "1": "DSF Office",
+                "2": "Registration Number",
+                "3": "Replacement Unit Police Number",
+                "4": "Model Unit",
+                "5": "Agreement No",
+                "6": "Customer Name",
+                "7": "OPL Unit Police No",
+                "8": "Actice / Not Active",
+                "9": "Status",
+                "10": "Replacement Unit",
+                "11": "Company Name",
+                "12": "Site",
+                "13": "Replacing",
+                "14": "Replacement Type"
+            }
+
+            var OplUnit = {
+                "1": "DSF Office",
+                "2": "Agreement No",
+                "3": "Unit Description",
+                "4": "Police No",
+                "5": "No. Chasis",
+                "6": "No. Engine",
+                "7": "Status OPL Unit",
+                "8": "Company Name",
+                "9":"Site"
+            }
+            var $select = $("#ddlSearchCriteria");
+            var JSONData = act ? OplUnit : ReplacementUnit
+            $select.empty();
+            $.each(JSONData, function (key, value) {
+                $select.append('<option value=' + key + '>' + value + '</option>');
+            })
+            $("#txtSearch").val(null);
+            $("#txtStartDate").val(null);
+            $("#txtEndDate").val(null);
+        }
+
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $('#txtStartDate').val();
+            var endDate = $('#txtEndDate').val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+
+        $('#btnSearch').on('click', function (e) {
+            e.preventDefault();
+            if (checkDate() === false) {
+                switch (tabActive) {
+                    case 0:
+                        $('#table-list-replacementunit').dataTable().fnDraw();
+                        break;
+                    case 1:
+                        $('#table-list-oplunit').dataTable().fnDraw();
+                        break;
+                }
+            }
+        });
+
+        $('#btnRegister').on('click', function (e) {
+            ClearElementValue("Action");
+            IsUpdate($("#Action").val() == "1");
+            return true;
+        });
+
+        $('#Action').on('change', function (e) {
+            ClearElementValue("Action");
+            IsUpdate($("#Action").val() == "1");
+        });
+
+        function IsUpdate(b) {
+            $("#btnBranchName").prop("disabled", b);
+            $("#btnRPCPoliceNo").prop("disabled", b);
+            $("#btnModelName").prop("disabled", b);
+            $("#btnStartSTNK").prop("disabled", b);
+            $("#btnEndSTNK").prop("disabled", b);
+            $("#btnStartKEUR").prop("disabled", b);
+            $("#btnEndKEUR").prop("disabled", b);
+            $("#btnStartInsurance").prop("disabled", b);
+            $("#btnEndInsurance").prop("disabled", b);
+            $("#btnAgreementNumber").prop("disabled", b);
+            $("#btnOPLPoliceNo").prop("disabled", b);
+            $("#RPCPoliceNo").prop("readonly", b);
+            $("#Location").prop("readonly", b);
+            $("#EngineNumber").prop("readonly", b);
+            $("#ChassisNumber").prop("readonly", b);
+            $("#Colour").prop("readonly", b);
+            $("#StartSTNK").prop("readonly", b);
+            $("#EndSTNK").prop("readonly", b);
+            $("#StartKEUR").prop("readonly", b);
+            $("#EndKEUR").prop("readonly", b);
+            $("#CompanyInsurance").prop("readonly", b);
+            $("#InsuranceNumber").prop("readonly", b);
+            $("#StartInsurance").prop("readonly", b);
+            $("#EndInsurance").prop("readonly", b);
+
+            $(".input-group.date.inmod").each(function () { $(this).datepicker("remove"); });
+            if (b) {
+                $('#mydiv').hide();
+                $('#mydivHide').show();
+            }
+            else {
+                $('#mydiv').show();
+                $('#mydivHide').hide();
+                $(".input-group.date.inmod").each(function () {
+                    $(this).datepicker({
+                        format: "mm/dd/yyyy",
+                        orientation: "top auto",
+                        container: this
+                    });
+                });
+            }
+        }
+
+        function ShowHistory(index) {
+            //if (typeof (oTable1) != 'undefined') {
+            //    var dataParent = oTable1.fnGetData(index);                
+            $.post('MGTOplUnitReplace/GetFormHistory/' + index, function (data) {
+                $("#valDSFOffice").html(data.DSFOffice);
+                $("#valReplacementUnitPoliceNo").html(data.ReplacementUnitPolice);
+                $("#valAgreementNumber").html(data.AgreementNumber);
+                $("#valCustomerName").html(data.CustomerName);
+                $("#valOpUnitPoliceNo").html(data.OPLPoliceNo);
+            })
+                HistoryUnitReplacementList(index)
+            //}
+        }
+
+        $('#btnPrintAll').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartDate = $("#txtStartDate").val();
+            var txtEndDate = $("#txtEndDate").val();
+
+            // Ajax start animation progress
+            $('#loadingmessage').show();
+            $('#btnPrintAll').hide();
+            switch (tabActive) {
+                case 0:
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("PrintReportReplacement", "MGTOplUnitReplace")',
+                    data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'text',
+                    global: false,
+                    success: function (response, status, xhr) {
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                                response = filename;
+                            }
+                        }
+                        if (response !== "") {
+                            window.location = "./Base/Download?fileName=" + response + "&rptType=" + 5;
+                        }
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Cannot download file..! Error is occurs');
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    }
+                });
+                break;
+
+            default:
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PrintReportOPL", "MGTOplUnitReplace")',
+                    data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'text',
+                    global: false,
+                    success: function (response, status, xhr) {
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                                response = filename;
+                            }
+                        }
+                        if (response !== "") {
+                            window.location = "./Base/Download?fileName=" + response + "&rptType=" + 6;
+                        }
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Cannot download file..! Error is occurs');
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    }
+                });
+                break;
+        }
+    });
+
+    </script>
+	<script src="@Url.Content("~/Content/js/OPLUnitReplacement.js")"></script> <!-- X0103966 - Error Create BAST -->
+}

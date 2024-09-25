@@ -1,0 +1,343 @@
+﻿@model Dsf.Olss.Models.DISAssetSellingViewModel
+
+<section class="panel">
+    <header class="panel-heading font-bold">
+        <div>Asset List</div>
+    </header>
+    <div class="table-responsive">
+        <table id="assetpayment-list" class="table table-striped table-input m-b-none text-sm">
+            <thead>
+                <tr>
+                    <th width="2%"></th>
+                    <th width="13%">Agreement Number</th>
+                    <th width="8%">Asset Code</th>
+                    <th width="8%">Engine Number</th>
+                    <th width="12%">Chassis Number</th>
+                    <th width="9%">Net Received</th>
+                    <th width="9%">Balance</th>
+                    <th style="text-align:center" width="5%">Sold</th>
+                    @if (Model.AssetPaymentLists[0].MemoType != "AUC")
+                    {
+                        <th width="10%">Payment Amount</th>
+                    }
+                    <th width="10%">Payment Date</th>
+                    <th style="text-align:center" width="5%">Unsold</th>
+                    <th width="9%">Cancel Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.AssetPaymentLists != null)
+                {
+                    decimal totalNetReceive = 0;
+                    decimal totalPaid = 0;
+                    
+                    for (int i = 0; i < Model.AssetPaymentLists.Count; i++)
+                    {
+                        totalNetReceive += Model.AssetPaymentLists[i].TotalNetReceived.Value;
+                        totalPaid += Model.AssetPaymentLists[i].TotalOverdue.Value;
+                        
+                        if (Model.AssetPaymentLists[i].DetailIsCancel || Model.AssetPaymentLists[i].DetailIsCreated)
+                        {
+                            <tr class="rowUnit">
+                                <td class="clickable" data-toggle="collapse" id="@("row"+i)" data-target="@(".row"+i)" style="vertical-align:middle">
+                                    <center><span class='label label-info'><i class="fa fa-plus"></i></span></center>
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].DetailIsCreated, new { @Hidden="hidden" })
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].DetailIsPaid, new { @Hidden = "hidden" })
+                                    @Html.HiddenFor(o => Model.AssetPaymentLists[i].IdTb_DIS_Agreement)
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].AgreementNumber, new { @class = "form-control AgreementNumber", @Id = "AgreementNumber_" + i, @readonly = "readonly" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].AssetCode, new { @class = "form-control AssetCode", @Id = "AssetCode_" + 1, @readonly = "readonly" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].EngineNumber, new { @class = "form-control EngineNumber", @Id = "EngineNumber_" + i, @readonly = "readonly" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].ChassisNumber, new { @class = "form-control EngineNumber", @Id = "EngineNumber_" + i, @readonly = "readonly" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalNetReceived, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "TotalNetReceived_" + i, @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalOverdue, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "TotalOverdue_" + i, @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(o => Model.AssetPaymentLists[i].IsPaid, new { @class = "form-control IsPaid", @Id = "IsPaid_" + i, @disabled = "disabled" })
+                                </td>
+                                @if (Model.AssetPaymentLists[i].MemoType == "AUC")
+                                {
+                                    <td hidden>
+                                        @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalPaid, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "NetReceived_" + i, @disabled = "disabled" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalPaid, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "NetReceived_" + i, @disabled = "disabled" })
+                                    </td>
+                                }
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control text-center datepicker mandatory OfferPriceDate", @Id = "PaymentDate_" + i, data_date_format = "dd M yyyy", @Value = "", @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].PaymentDate)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(o => Model.AssetPaymentLists[i].DetailIsCancel, new { @class = "form-control IsCanceled", @Id = "IsCanceled_" + i, @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].DetailCancelReason, new { @class = "form-control CancelledReason", @Id = "CancelledReason_" + i, @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].CancelledReason)
+                                </td>
+                            </tr>
+
+                            if (Model.AssetPaymentDetailLists.Where(x => x.IdTb_DIS_Agreement.Equals(Model.AssetPaymentLists[i].IdTb_DIS_Agreement)) != null)
+                            {
+                                var modelDetail = Model.AssetPaymentDetailLists.Where(x => x.IdTb_DIS_Agreement.Equals(Model.AssetPaymentLists[i].IdTb_DIS_Agreement));
+                                foreach (var m in modelDetail)
+                                {
+                                    <tr class="@("rowUnit collapse row" + i)">
+                                        <td colspan="9">
+                                            @Html.TextBoxFor(o => m.Payment, "{0:N0}", new { @class = "form-control text-right numeric currency", @disabled = "disabled", style = "background-color:white" })
+                                        </td>
+                                        <td colspan="3">
+                                            @Html.TextBoxFor(o => m.PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control text-left", @disabled = "disabled", style = "background-color:white" })
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        else if (Model.AssetPaymentLists[i].DetailIsHalfPaid)
+                        {
+                            <tr class="rowUnit">
+                                <td class="clickable" data-toggle="collapse" id="@("row"+i)" data-target="@(".row"+i)" style="vertical-align:middle">
+                                    <center><span class='label label-info'><i class="fa fa-plus"></i></span></center>
+                                </td>
+                                <td>
+                                    @Html.HiddenFor(o => Model.AssetPaymentLists[i].IdTb_DIS_Agreement)
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].AgreementNumber, new { @class = "form-control AgreementNumber", @Id = "AgreementNumber_" + i, @readonly = "readonly", style = "background-color:white" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].AssetCode, new { @class = "form-control AssetCode", @Id = "AssetCode_" + 1, @readonly = "readonly", style = "background-color:white" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].EngineNumber, new { @class = "form-control EngineNumber", @Id = "EngineNumber_" + i, @readonly = "readonly", style = "background-color:white" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].ChassisNumber, new { @class = "form-control EngineNumber", @Id = "EngineNumber_" + i, @readonly = "readonly", style = "background-color:white" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalNetReceived, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "TotalNetReceived_" + i, @disabled = "disabled", style = "background-color:white" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalOverdue, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "TotalOverdue_" + i, @disabled = "disabled", style = "background-color:white" })
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(o => Model.AssetPaymentLists[i].IsPaid, new { @class = "form-control IsPaid chb", @Id = "IsPaid_" + i })
+                                </td>
+                                @if (Model.AssetPaymentLists[i].MemoType == "AUC")
+                                {
+                                    <td hidden>
+                                        @Html.TextBoxFor(o => Model.AssetPaymentLists[i].NetReceived, "{0:N0}", new { @class = "form-control text-right numeric currency", @Id = "NetReceived_" + i, @disabled = "disabled", @onchange = "checkpayment(" + i + ")" })
+                                        @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].NetReceived)
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.TextBoxFor(o => Model.AssetPaymentLists[i].NetReceived, "{0:N0}", new { @class = "form-control text-right numeric currency", @Id = "NetReceived_" + i, @disabled = "disabled", @onchange = "checkpayment(" + i + ")" })
+                                        @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].NetReceived)
+                                    </td>
+                                }
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control datepicker text-center mandatory OfferPriceDate", @Id = "PaymentDate_" + i, data_date_format = "dd M yyyy", @disabled = "disabled", @Value = DateTime.Today.ToString("dd MMM yyyy") })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].PaymentDate)
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(o => Model.AssetPaymentLists[i].IsCanceled, new { @class = "form-control IsCanceled chb", @Id = "IsCanceled_" + i, @disabled = "disabled" })
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].CancelledReason, new { @class = "form-control CancelledReason", @Id = "CancelledReason_" + i, @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].CancelledReason)
+                                </td>
+                            </tr>
+                            if (Model.AssetPaymentDetailLists.Where(x => x.IdTb_DIS_Agreement == Model.AssetPaymentLists[i].IdTb_DIS_Agreement) != null)
+                            {
+                                var modelDetail = Model.AssetPaymentDetailLists.Where(x => x.IdTb_DIS_Agreement.Equals(Model.AssetPaymentLists[i].IdTb_DIS_Agreement));
+                                foreach (var m in modelDetail)
+                                {
+                                    <tr class="@("rowUnit collapse row" + i)">
+                                        <td colspan="9">
+                                            @Html.TextBoxFor(o => m.Payment, "{0:N0}", new { @class = "form-control text-right numeric currency", @disabled = "disabled", style = "background-color:white" })
+                                        </td>
+                                        <td colspan="3">
+                                            @Html.TextBoxFor(o => m.PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control text-left", @disabled = "disabled", style = "background-color:white" })
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        else
+                        {
+                        <tr class="rowUnit" id="rUnit">
+                            <td></td>
+                            <td>
+                                @Html.HiddenFor(o => Model.AssetPaymentLists[i].IdTb_DIS_Agreement)
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].AgreementNumber, new { @class = "form-control AgreementNumber", @Id = "AgreementNumber_" + i, @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].AssetCode, new { @class = "form-control AssetCode", @Id = "AssetCode_" + 1, @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].EngineNumber, new { @class = "form-control EngineNumber", @Id = "EngineNumber_" + i, @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].ChassisNumber, new { @class = "form-control EngineNumber", @Id = "EngineNumber_" + i, @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalNetReceived, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "TotalNetReceived_" + i, @disabled = "disabled", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].TotalOverdue, "{0:N0}", new { @class = "form-control OfferPriceAmount text-right numeric currency", @Id = "TotalOverdue_" + i, @disabled = "disabled", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(o => Model.AssetPaymentLists[i].IsPaid, new { @class = "form-control IsPaid chb", @Id = "IsPaid_" + i })
+                            </td>
+                            @if (Model.AssetPaymentLists[i].MemoType == "AUC")
+                            {
+                                <td hidden>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].NetReceived, "{0:N0}", new { @class = "form-control netreceived text-right numeric currency", @Id = "NetReceived_" + i, @disabled = "disabled", @onchange = "checkpayment(" + i + ")" })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].NetReceived)
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].NetReceived, "{0:N0}", new { @class = "form-control netreceived text-right numeric currency", @Id = "NetReceived_" + i, @disabled = "disabled", @onchange = "checkpayment(" + i + ")" })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].NetReceived)
+                                </td>
+                            }
+                            <td>
+                                @Html.TextBoxFor(o => Model.AssetPaymentLists[i].PaymentDate, "{0:dd MMM yyyy}", new { @class = "form-control text-center datepicker mandatory OfferPriceDate", @Id = "PaymentDate_" + i, data_date_format = "dd M yyyy", @disabled = "disabled", @Value = DateTime.Today.ToString("dd MMM yyyy") })
+                                @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].PaymentDate)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(o => Model.AssetPaymentLists[i].IsCanceled, new { @class = "form-control IsCanceled chb", @Id = "IsCanceled_" + i })
+                            </td>
+                            @if (Model.AssetPaymentLists[i].MemoType == "AUC")
+                            {
+                                <td>
+                                    @Html.DropDownListFor(o => Model.AssetPaymentLists[i].CancelledReason, ViewBag.AuctionHistory as List<SelectListItem>, new { @class = "form-control CancelledReason", @Id = "CancelledReason_" + i, @disabled = "disabled" })
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Html.TextBoxFor(o => Model.AssetPaymentLists[i].CancelledReason, new { @class = "form-control CancelledReason", @Id = "CancelledReason_" + i, @disabled = "disabled" })
+                                    @Html.ValidationMessageFor(o => Model.AssetPaymentLists[i].CancelledReason)
+                                </td>
+                            }
+                        </tr>
+                        }
+						if (i == Model.AssetPaymentLists.Count - 1)
+                        {
+                            <tr>
+                                <td colspan="5">
+                                    <label class="form-control no-border text-right">Total</label>
+                                </td>
+                                <td>
+                                    <input class="form-control text-right font-bold" id="totalNetReceived" placeholder=@string.Format("{0:N0}", totalNetReceive) readonly />
+                                </td>
+                                <td>
+                                    <input class="form-control text-right font-bold" id="totalPaid" placeholder=@string.Format("{0:N0}", totalPaid) readonly />
+                                </td>
+                                <td colspan="5"></td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <footer class="panel-footer bg-light lter">
+        <input type="hidden" id="submitButtonText" />
+        @*@if (ViewBag.AllSubmitted != null && !ViewBag.AllSubmitted)
+        {*@
+            <div class="form-group">
+                @StateButton.DisposalStateButton("submit")
+            </div>
+        @*}*@
+    </footer>
+</section>
+@if (ViewBag.MemoType == null || ViewBag.MemoType != "WRO")
+{
+<section class="panel">
+    <header class="panel-heading font-bold">
+        <div>Report Approval</div>
+    </header>
+    <div class="table-responsive">
+        <table id="assetpayment-list" class="table table-striped table-input m-b-none text-sm">
+            <thead>
+                <tr>
+                    <th>Report Number</th>
+                    <th>Memo Number</th>
+                    <th>Created Date</th>
+                    <th>Next Action</th>
+                    <th width="10%" style="text-align:center">Memo Status</th>
+                    <th width="8%" style="text-align:center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.DISAssetSellingDetails != null)
+                {
+                    for (int i = 0; i < Model.DISAssetSellingDetails.Count; i++)
+                    {
+                        
+                        <tr class="rowUnit" id="rUnit">
+                            <td>
+                                @Html.HiddenFor(o => Model.DISAssetSellingDetails[i].IdTb_DIS_AssetSellingDetail)
+                                @Html.TextBoxFor(o => Model.DISAssetSellingDetails[i].ReportNumber, new { @class = "form-control", @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.DISAssetSellingDetails[i].MemoNumber, new { @class = "form-control", @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.DISAssetSellingDetails[i].strCreatedDate, new { @class = "form-control", @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(o => Model.DISAssetSellingDetails[i].NextActionBy, new { @class = "form-control", @readonly = "readonly", style = "background-color:white" })
+                            </td>
+                            <td style="vertical-align:middle"><center>
+                                @if (Model.DISAssetSellingDetails[i].MemoStatus == "Created") {
+                                <span class='label label-default'>Created</span>
+                                }
+                                else if (Model.DISAssetSellingDetails[i].MemoStatus == "Signed"){
+                                <span class='label label-success'>Signed</span>
+                                }
+                                else if (Model.DISAssetSellingDetails[i].MemoStatus == "Closed"){
+                                <span class='label label-success'>Closed</span>
+                                }
+                                else if (Model.DISAssetSellingDetails[i].MemoStatus == "Checked")
+                                {
+                                    <span class='label label-danger'>Checked</span>
+                                }
+                                else if (Model.DISAssetSellingDetails[i].MemoStatus == "Paid")
+                                {
+                                    <span class='label label-info'>Paid</span>
+                                }
+                                </center>
+                            </td>
+                            <td style="vertical-align:middle">
+                                <center><a title='Detail' href='@Url.Action("DetailReportApproval", "DISAssetSelling")/@Model.DISAssetSellingDetails[i].IdTb_DIS_AssetSellingDetail' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a></center>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+}
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/DISAssetSelling.js")"></script>
+}

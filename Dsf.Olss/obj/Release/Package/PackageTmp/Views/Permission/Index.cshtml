@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "Permission Management";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+
+<a href="@Url.Action("Add", "Permission")" class="btn btn-primary"><i class="fa fa-plus"></i> Add</a><br><br>
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+
+<div class="tab-pane" id="datatable">
+    <section class="panel">
+        <header class="panel-heading">
+            Permission List
+            <i class="fa fa-info-sign text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+        </header>
+        <div class="table-responsive">
+            <table id="permission-list" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th width="25%">PermissionName</th>
+                        <th width="25%">Remarks</th>
+                        <th width="10%">Status</th>
+                        <th width="10%">Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script>
+        $(function () {
+            var oTable = null;
+            $('#permission-list').each(function () {
+                 oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[0, "desc"]],
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "Permission")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {
+                            "mData": "PermissionName",
+                        },
+                        { "mData": "Remarks" },
+                        {
+                            "mData": "IsActive",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var IsActive = oObj.aData["IsActive"];
+                                var IsDraft = oObj.aData["IsDraft"];
+                                var IsSubmit = oObj.aData["IsSubmit"];
+
+                                if (IsDraft) {
+                                    return "<span class='label label-info'>draft</span>"                             
+                                }
+                                else if (IsSubmit) {
+                                    return "<span class='label label-info'>submitted</span>"
+                                   
+                                }
+                                else if (IsActive) {
+                                    return "<span class='label label-success'>active</span>"
+                                }
+                                else {
+                                    return "<span class='label label-default'>inactive</span>"
+                                }
+                            }
+                        },
+                        {
+                            "mData": "IdPermission",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "bUseRendered": false,
+                            "fnRender": function (oObj) {
+                                var Id = oObj.aData["IdPermission"];
+                                return "<a title='Detail' href='@Url.Action("Detail", "Permission")/" + Id + "' class='btn btn-info btn-xs'><i class='fa fa-bars'></i></a>&nbsp;<a id='Edit"+ Id +"' title='Edit' href='@Url.Action("Edit", "Permission")/" + Id + "' class='btn btn-primary btn-xs'><i class='fa fa-edit'></i></a>"
+                            }
+                        }
+                    ]
+                 });
+            });
+        });
+
+
+    </script>
+}
+
+

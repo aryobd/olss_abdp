@@ -1,0 +1,653 @@
+﻿@model Dsf.Olss.Models.OPLCBasicFinanceCashflowViewModel
+@{
+    var remark = System.Convert.ToInt32(Model.OPLRemarks);
+    ViewBag.Title = "Calculation of Operating Lease - Step 2";
+}
+<style type="text/css">
+    body {
+        color: black;
+    }
+</style>
+<a href="@Url.Action("Index")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+@if (Model.IsDraft)
+{
+    <label class="label label-default label-lg pull-right">draft</label>
+}
+else if (Model.IsSubmitted)
+{
+    <label class="label label-info label-lg pull-right">submitted</label>
+}
+else if (Model.IsValid == true)
+{
+    <label class="label label-success label-lg pull-right">valid</label>
+}
+else if (Model.CreateDate != null)
+{
+    <label class="label label-default label-lg bg-light pull-right">invalid</label>
+}
+<hr />
+<section class="tab-pane" id="wizard">
+    <div class="panel">
+        @Html.WizardNav(6, 2, remark, x => @Url.RouteUrl("OPLCalculationCashflowDetail", new { Controller = "OPLCalculationCashflow", Action = "Detail", step = x, id = @Model.IdOPLCalculation }))
+    </div>
+</section>
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:5px; padding-top:5px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@Html.DisplayFor(o => o.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.CreateDate)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@Html.DisplayFor(o => o.LastModified)</div>
+        </div>
+    </div>
+</div>
+@Html.HiddenFor(o => o.ConnId)
+
+<section class="panel">
+    <header class="panel-heading font-bold">Cost Condition</header>
+    <div class="panel-body">
+        <header class="panel-heading font-bold bg-info">
+            Product
+        </header>
+        <div class="col-lg-12">
+            <div class="line pull-in"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Product Price Include VAT IN Unit</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductPrice)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Dealer Discount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductDiscount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Product Price Total</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ProductPriceTotal)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT IN Unit</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatInUnit)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Ratio Compensation VAT IN Unit (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.RatioCompVatInUnit)</p>
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>ATPM Discount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ATPMDiscount)</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT OUT Discount KTB</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatOutDiscKtb)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>W/H Tax Discount KTB</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.WhTaxDiscKtb)</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-body">
+        <br />
+        <header class="panel-heading font-bold bg-info">
+            Accessories
+        </header>
+        <div class="col-lg-12">
+            <div class="line pull-in"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Accessories Price (Include VAT IN)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AccesoriesPrice)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Supplier Discount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AccesoriesDiscount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT IN Accessories</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatInAcc)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Accessories Price Total (Include VAT IN)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AccesoriesPriceTotal)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Ratio Compensation Accessories (%)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.RatioCompVatInAccessories)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <br />
+        <header class="panel-heading font-bold bg-info">
+            Carroserrie
+        </header>
+        <div class="col-lg-12">
+            <div class="line pull-in"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Carroserrie Price (Include VAT IN)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.CarroserriePrice)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Supplier Discount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.CarroserrieDiscount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT IN Carroserrie</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatInCarr)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Carroserrie Price Total (Include VAT IN)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.CarroserriePriceTotal)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Ratio Compensation Carroserrie (%)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.RatioCompVatInCarroserrie)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <br />
+        <header class="panel-heading font-bold bg-info">
+            Mobilizations / Demobilizations
+        </header>
+        <div class="col-lg-12">
+            <div class="line pull-in"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Mobilizations Fee (Include VAT IN)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.MobilizationFeeAmount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT IN Mobilizations</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatInMob)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Ratio Compensation Mobilizations (%)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.RatioCompVatInMobilization)</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Demobilizations Fee (Include VAT IN)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.DemobilizationFeeAmount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT IN Demobilizations</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatInDemob)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Ratio Compensation Demobilizations (%)</label>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.RatioCompVatInDemobilization)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <br />
+        <header class="panel-heading font-bold bg-info">
+            Replacement Car
+        </header>
+        <div class="col-lg-12">
+            <div class="line pull-in"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Replacement Unit Cost</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ReplacementCarAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <br />
+        <header class="panel-heading font-bold bg-info">
+            Registration Fee
+        </header>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Registration By</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.RegistrationFeeBy)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>STNK Fee (Full Period)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.StnkFee)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>KEUR Fee (Full Period)</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.KeurFee)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Registration Value Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.RegistrationValueAmount)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <br />
+        <header class="panel-heading font-bold bg-info">
+            Residual Value
+        </header>
+        <div class="col-lg-12">
+            <div class="line pull-in"></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Residual Value Amount</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.ResidualValueAmount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Residual Value (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.ResidualValuePercent)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Standard Residual Value (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.SResidualValuePercent)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Standard Residual Value Amount </label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.SResidualValueAmount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>VAT OUT Sold Unit</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.VatOutSoldUnit)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Input Cost Condition (Section 2)-->
+<section class="panel">
+    <header class="panel-heading font-bold">DSF Finance Condition</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Payment Type</label>
+                    <p class="form-control-static">@Html.DisplayFor(o => o.PaymentType)</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Borrowing Rate Effective (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BorrowingEffectivePercent)</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Spread Effective (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.SpreadEffectivePercent)</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+
+                <div class="form-group">
+                    <label>Prime Rate Effective (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PrimeEffectivePercent)</p>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Borrowing Rate Flat (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.BorrowingFlatPercent)</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Prime Rate Flat (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PrimeFlatPercent)</p>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Spread Flat (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.SpreadFlatPercent)</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Administration Fee</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AdministrationFeeAmount)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2">
+                <div class="form-group">
+                    <label>Term of Payment (Days)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.TermPaymentDays)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="panel">
+    <header class="panel-heading font-bold">Product</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>DP Before BAST (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DPBeforeBASTProduct)</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>DP Period to BAST (Month(s))</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DPPeriodBASTProduct)</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label>Payment Settlement before BAST Include VAT IN</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.UnitSettlementIncVat)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Payment Settlement Period to BAST (Month)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PSPeriodBASTProduct)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Carroserie</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>DP Before BAST (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DPBeforeBASTCarroserie)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>DP Period to BAST (Month(s))</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DPPeriodBASTCarroserie)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Payment Settlement before BAST Include VAT IN</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.CarrSettlementIncVat)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Payment Settlement Period to BAST (Month)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PSPeriodBASTCarroserie)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <header class="panel-heading font-bold">Accesories</header>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>DP Before BAST (%)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DPBeforeBASTAccesories)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>DP Period to BAST (Month(s))</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.DPPeriodBASTAccesories)</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Payment Settlement before BAST Include VAT IN</label>
+                    <div class="input-group">
+                        <span class="input-group-addon bg-info">Rp</span>
+                        <p class="form-control-static text-right">@Html.DisplayFor(o => o.AccSettlementIncVat)</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="form-group">
+                    <label>Payment Settlement Period to BAST (Month)</label>
+                    <p class="form-control-static text-right">@Html.DisplayFor(o => o.PSPeriodBASTAccesories)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer bg-light lter">
+
+        <a href="@Url.RouteUrl("OPLCalculationCashflowDetail", new { Controller = "OPLCalculationCashflow", Action = "Detail", step = "1", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-warning"><i class="fa fa-chevron-left"></i> Previous Step</a>
+        @if (System.Convert.ToInt32(Model.OPLRemarks) > 2)
+        {
+            <a href="@Url.RouteUrl("OPLCalculationCashflowDetail", new { Controller = "OPLCalculationCashflow", Action = "Detail", step = "3", id = @Model.IdOPLCalculation })" type="submit" class="btn btn-primary">Next Step <i class="fa fa-chevron-right"></i></a>
+        }
+        else
+        {
+            <a class="btn btn-primary" onclick="NoNext();">Next Step <i class="fa fa-chevron-right"></i></a>
+        }
+    </div>
+</section>
+
+
+
+
+
+@section Scripts{
+
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        function NoNext() {
+            bootbox.alert("there's no recorded data for next step..");
+        }
+
+        var OPLCalculationCashflowHub = $.connection.OPLCalculationCashflow;
+        var confirm = false;
+        OPLCalculationCashflowHub.client.OnSaveLock = function (id, remarks) {
+            if (id == '@Model.IdOPLCalculation' && remarks == '@Model.OPLRemarks' && !confirm) {
+                confirm = true;
+                bootbox.alert("Data has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        OPLCalculationCashflowHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdOPLCalculation' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, page will be reloaded ..", function () {
+                    location.href = location.href;
+                    confirm = false;
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+    </script>
+}

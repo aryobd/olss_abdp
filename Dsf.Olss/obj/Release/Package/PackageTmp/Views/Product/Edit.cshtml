@@ -1,0 +1,484 @@
+﻿@model Dsf.Olss.Data.Entities.Product
+
+@{
+    ViewBag.Title = "Edit Product";
+}
+@StatusLabel.Create(Model.IsDraft, Model.IsSubmit, Model.IsActive)
+<a href="@Url.Action("Index", "Product")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a>
+<hr>
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div class="panel label-panel">
+    <div class="row" style="padding-bottom:10px;">
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left:15px; float:left;"><i class="fa fa-user text-danger"></i> Created by</div><div style="float:left; padding-left:15px;">@(Model.CreateBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Created Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.CreateDate))</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-user text-danger"></i> Last Modified By</div><div style="float: left; padding-left: 15px;">@(Model.LastModifiedBy)</div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+            <div class="font-bold" style="padding-left: 15px; float: left;"><i class="fa fa-calendar text-danger"></i> Last  Modified Date</div><div style="float: left; padding-left: 15px;">@(String.Format("{0:MM/dd/yyyy}", Model.LastModified))</div>
+        </div>
+    </div>
+</div>
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+}
+@using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { @data_validate = "parsley" }))
+{
+       <!-- Basic Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Product Basic Information</header>
+        <div class="panel-body">
+            @Html.HiddenFor(o => o.ConnId)
+            @Html.HiddenFor(o => o.IdProduct)
+            @Html.HiddenFor(o => o.IsActive)
+            @Html.HiddenFor(o => o.IsSubmit)
+            @Html.HiddenFor(o => o.IsDraft)
+            @Html.HiddenFor(o => o.IsDeleted)
+            @Html.HiddenFor(o => o.CreateBy)
+            @Html.HiddenFor(o => o.CreateDate)
+            @Html.HiddenFor(o => o.ProductCategory.ProductCategoryCode)
+            
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Product Regristation Code</label>
+                        @Html.TextBoxFor(o => o.ProductCode, new { @class = "form-control", @placeholder = "Product Code", @data_required = "true", @readonly = "readonly", @tabindex = "1" })
+                        @Html.ValidationMessageFor(o => o.ProductCode)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Product Type</label>
+                        @Html.DropDownList("IdProductType", (List<SelectListItem>)ViewBag.ProductTypeList, new { @class = "form-control", @data_required = "true", @tabindex = "2" })
+                    </div>
+                </div>
+                <div class="col-lg-4">&nbsp;</div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Product Category</label>
+                        <div class="input-group">
+                            @Html.HiddenFor(o => o.IdProductCategory)
+                            @Html.TextBox("ProductCategory.ProductCategory1", null, new { @class = "form-control", @placeholder = "Category", @data_required = "true", @tabindex = "3" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#categoryModal" type="button" onclick="LoadProductCategory()">...</button>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.IdProductCategory)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Brand Code</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.BrandCode, new { @class = "form-control modal", @placeholder = "Brand Code", @data_maxlength = "10", @data_required = "true", @tabindex = "4" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-white" data-toggle="modal" data-target="#brandModelModal" type="button" onclick="LoadProductBrandModel()">...</button>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.BrandCode)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Brand Name</label>
+                        @Html.TextBoxFor(o => o.BrandName, new { @class = "form-control", @placeholder = "Brand", @data_required = "true", @data_maxlength = "100", @tabindex = "5" })
+                        @Html.ValidationMessageFor(o => o.BrandName)
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Model Code</label>
+                        @Html.TextBoxFor(o => o.ModelCode, new { @class = "form-control", @placeholder = "Model Code", @data_required = "true", @data_maxlength = "100", @tabindex = "6" })
+                        @Html.ValidationMessageFor(o => o.ModelCode)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Model Name</label>
+                        @Html.HiddenFor(o => o.IdProductModel)
+                        @Html.TextBoxFor(o => o.ModelName, new { @class = "form-control", @placeholder = "Model", @data_required = "true", @data_maxlength = "100", @tabindex = "7" })
+                        @Html.ValidationMessageFor(o => o.ModelName)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Model Type</label>
+                        @Html.TextBoxFor(o => o.ModelType, new { @class = "form-control", @placeholder = "Model Type", @data_required = "true", @data_maxlength = "100", @tabindex = "8" })
+                        @Html.ValidationMessageFor(o => o.Grade)
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Model Year (yyyy/mm)</label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(o => o.ModelYear, "{0:yyyy/MM}", new { @class = "form-control datepicker-input", @placeholder = "(yyyy/mm)", data_date_format = "yyyy/mm", @data_required = "true", @tabindex = "9" })
+                            <span class="input-group-addon">
+                                <span class="fa fa-calendar"></span>
+                            </span>
+                        </div>
+                        @Html.ValidationMessageFor(o => o.ModelYear)
+                    </div>
+
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Maximum Loading Capacity (ton)</label>
+                        @Html.TextBoxFor(o => o.MaxLoadingCapacity, new { @class = "form-control allownumericwithdecimal", @placeholder = "Maximum Loading Capacity", @data_maxlength = "50", @tabindex = "10" })
+                        @Html.ValidationMessageFor(o => o.MaxLoadingCapacity)
+                    </div>
+
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Diplacement (cc)</label>
+                        @Html.TextBoxFor(o => o.DisPlacement, new { @class = "form-control allownumericwithdecimal", @placeholder = "Diplacement", @data_maxlength = "100", @tabindex = "11" })
+                        @Html.ValidationMessageFor(o => o.DisPlacement)
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Transmission</label>
+                        @Html.TextBoxFor(o => o.Transmission, new { @class = "form-control", @placeholder = "Transmission", @data_maxlength = "100", @tabindex = "12" })
+                        @Html.ValidationMessageFor(o => o.Transmission)
+                    </div>
+
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Length</label>
+                        @Html.TextBoxFor(o => o.Length, new { @class = "form-control allownumericwithdecimal", @placeholder = "Length", @data_maxlength = "100", @tabindex = "13" })
+                        @Html.ValidationMessageFor(o => o.Length)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Grade</label>
+                        @Html.TextBoxFor(o => o.Grade, new { @class = "form-control", @placeholder = "Grade", @data_maxlength = "100", @tabindex = "14" })
+                        @Html.ValidationMessageFor(o => o.Grade)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Riding Capacity (person)</label>
+                        @Html.TextBoxFor(o => o.RidingCapacity, new { @class = "form-control allownumericonly", @data_maxlength = "32",@placeholder = "Capacity", @tabindex = "15" })
+                        @Html.ValidationMessageFor(o => o.RidingCapacity)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Wheelbase</label>
+                        @Html.TextBoxFor(o => o.WheelBase, new { @class = "form-control", @placeholder = "Wheelbase", @data_maxlength = "100", @tabindex = "16" })
+                        @Html.ValidationMessageFor(o => o.WheelBase)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Fuel Type</label>
+                        @Html.TextBoxFor(o => o.FuelType, new { @class = "form-control", @placeholder = "FuelType", @data_maxlength = "100", @tabindex = "17" })
+                        @Html.ValidationMessageFor(o => o.FuelType)
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Gross Weight of Vehicle (ton)</label>
+                        @Html.TextBoxFor(o => o.GrossVehicleWeight, new { @class = "form-control allownumericwithdecimal", @placeholder = "Gross Weight", @data_maxlength = "100", @tabindex = "18" })
+                        @Html.ValidationMessageFor(o => o.GrossVehicleWeight)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Engine Model</label>
+                        @Html.TextBoxFor(o => o.EngineModel, new { @class = "form-control", @placeholder = "Engine Model", @data_maxlength = "100", @tabindex = "19" })
+                        @Html.ValidationMessageFor(o => o.EngineModel)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Weight of Vehicle (ton)</label>
+                        @Html.TextBoxFor(o => o.VehicleWeight, new { @class = "form-control allownumericwithdecimal", @placeholder = "Weight", @data_maxlength = "100", @tabindex = "20" })
+                        @Html.ValidationMessageFor(o => o.VehicleWeight)
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Height</label>
+                        @Html.TextBoxFor(o => o.Height, new { @class = "form-control allownumericwithdecimal", @placeholder = "Height", @data_maxlength = "100", @tabindex = "21" })
+                        @Html.ValidationMessageFor(o => o.Height)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Width</label>
+                        @Html.TextBoxFor(o => o.Width, new { @class = "form-control allownumericwithdecimal", @placeholder = "Width", @data_maxlength = "100", @tabindex = "22" })
+                        @Html.ValidationMessageFor(o => o.Width)
+                    </div>
+
+                </div>
+                <div class="col-lg-4">&nbsp;</div>
+            </div>
+
+        </div>
+    </section>
+
+          <!-- Maintenance and other Information -->
+    <section class="panel">
+        <header class="panel-heading font-bold">Maintenance and Other Information</header>
+        <div class="panel-body">
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>STNK Renewal Cycle (year)</label>
+                        @Html.TextBoxFor(o => o.SNTKRenewalCycle, new { @class = "form-control allownumericonly", @placeholder = "STNK Renewal Cycle", @data_maxlength = "100", @tabindex = "23" })
+                        @Html.ValidationMessageFor(o => o.SNTKRenewalCycle)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>KIR Renewal Cycle (month)</label>
+                        @Html.TextBoxFor(o => o.KIRRenewalCycle, new { @class = "form-control allownumericonly", @placeholder = "KIR Renewal Cycle", @data_maxlength = "100", @tabindex = "24" })
+                        @Html.ValidationMessageFor(o => o.KIRRenewalCycle)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number of Battery</label>
+                        @Html.TextBoxFor(o => o.NumberOfBattery, new { @class = "form-control allownumericonly",@data_maxlength = "32", @placeholder = "Number of Battery", @tabindex = "25" })
+                        @Html.ValidationMessageFor(o => o.NumberOfBattery)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Battery Size</label>
+                        @Html.TextBoxFor(o => o.BaterySize, new { @class = "form-control", @placeholder = "Battery Size", @data_maxlength = "50", @tabindex = "26" })
+                        @Html.ValidationMessageFor(o => o.BaterySize)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Number of Tire</label>
+                        @Html.TextBoxFor(o => o.NumberOfTire, new { @class = "form-control allownumericonly", @placeholder = "Number of Tire", @data_maxlength = "100", @tabindex = "27" })
+                        @Html.ValidationMessageFor(o => o.NumberOfTire)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Tire Size (Front)</label>
+                        @Html.TextBoxFor(o => o.FrontTireSize, new { @class = "form-control", @placeholder = "Tire Size (Front)", @data_maxlength = "100", @tabindex = "28" })
+                        @Html.ValidationMessageFor(o => o.FrontTireSize)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Tire Size (Rear)</label>
+                        @Html.TextBoxFor(o => o.RearTireSize, new { @class = "form-control", @placeholder = "Tire Size (Rear)", @data_maxlength = "100", @tabindex = "29" })
+                        @Html.ValidationMessageFor(o => o.RearTireSize)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Rate Class of Maintenance</label>
+                        @Html.TextBoxFor(o => o.MaintenanceRateClass, new { @class = "form-control allownumericonly", @placeholder = "Rate Class of Maintenance", @data_maxlength = "100", @tabindex = "30" })
+                        @Html.ValidationMessageFor(o => o.MaintenanceRateClass)
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group">
+                        <label>Rate Class of Insurance</label>
+                        @Html.TextBoxFor(o => o.InsuranceRateClass, new { @class = "form-control allownumericonly", @placeholder = "Rate Class of Insurance", @data_maxlength = "100", @tabindex = "31" })
+                        @Html.ValidationMessageFor(o => o.InsuranceRateClass)
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="panel-footer bg-light lter">
+            @StateButton.Create("edit", Model.IsDraft, Model.IsSubmit, Model.IsActive)
+        </div>
+    </section>
+}
+@{Html.RenderPartial("ModalPopUp");}
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var productHub = $.connection.Product;
+        var confirm = false;
+        productHub.client.OnSaveLock = function (id) {
+            if (id == '@Model.IdProduct' && !confirm) {
+                confirm = true;
+                bootbox.confirm("Data has been changes by other user, do you want to refresh the page?", function (result) {
+                    if (result != false) {
+                        location.reload();
+                    }
+                    confirm = false;
+                });
+            }
+        };
+
+        productHub.client.OnStatusLock = function (id) {
+            if (id == '@Model.IdProduct' && !confirm) {
+                confirm = true;
+                bootbox.alert("Status has been changes by other user, you will be redirected to list page ..", function () {
+                    window.location.href = '@Url.Action("Index", "Product")';
+                });
+            }
+        };
+        $.connection.hub.start().done(function () {
+            var myClientId = $.connection.hub.id;
+            $('#ConnId').val(myClientId);
+        });
+        $('.datepicker-input').datepicker({
+            format: 'yyyy/mm',
+            minViewMode: 1,
+            startView: 0,
+            endDate: '9999/12',
+            startDate: '1753/01'
+        });
+        $(document).ready(function () {
+            $("input[name*='statusButton']").attr('tabindex', 32);
+        @*var productCategoryName = "@Model.ProductCategory.ProductCategory1";
+
+        $("#ProductCategoryNameDisplay").val(productCategoryName);*@
+    });
+        function LoadProductCategory() {
+
+            // datatable
+            var oTable = null;
+            $('#product-category').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("ProductCategoryModalDataTable", "Product")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        {
+                            "mData": "IdProductCategory",
+                            "bVisible": false,
+                        },
+                        { "mData": "ProductCategoryCode" },
+                        { "mData": "ProductCategory1" },
+
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+
+            $("#product-category tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                $("#IdProductCategory").val(data.IdProductCategory);
+                $("#ProductCategory_ProductCategory1").val(data.ProductCategory1);
+                $("#ProductCategoryCode").val(data.ProductCategoryCode);
+
+                $('#categoryModal').modal('hide');
+            });
+        };
+
+        function LoadProductBrandModel() {
+
+            // datatable
+            var oTable = null;
+            $('#product-model').each(function () {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "bRetrieve": true,
+                    "sAjaxSource": "@Url.Action("BrandModelModalDataTable", "Product")",
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                         {
+                             "mData": "ProductModelId",
+                             "bVisible": false,
+                         },
+                { "mData": "ProductBrandCode" },
+                 { "mData": "ProductBrandName" },
+                        { "mData": "ProductModelCode" },
+                         { "mData": "ProductModelType" },
+                           { "mData": "ProductModelName" },
+
+                    ],
+                    "iDisplayLength": 5,
+                    "bLengthChange": false
+                });
+            });
+            $("#product-model tbody").delegate("tr", "click", function () {
+
+                var data = oTable.fnGetData(this);
+
+                $("#BrandCode").val(data.ProductBrandCode);
+                $("#BrandName").val(data.ProductBrandName);
+                $("#ModelCode").val(data.ProductModelCode);
+                $("#ModelName").val(data.ProductModelName);
+                $("#ModelType").val(data.ProductModelType);
+                $("#IdProductModel").val(data.ProductModelId);
+
+
+                $('#brandModelModal').modal('hide');
+
+            });
+        };
+    </script>
+}

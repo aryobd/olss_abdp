@@ -1,0 +1,37 @@
+﻿@helper Display(string success, string error) {
+    if (success != null){
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <b>Success!</b> @success
+        </div>
+    }
+
+    if (error != null){
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <b>Failed!</b> @error
+        </div>
+    }
+}
+
+@helper ErrorLimitDisplay(string success, string error, string limitReached)
+{
+    if (success != null)
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <b>Success!</b> @success
+        </div>
+    }
+
+    if (error != null)
+    {
+        if (limitReached != null)
+        { 
+            <div class="alert alert-danger" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <b>We are sorry! @error</b> 
+            </div>
+        }
+    }
+}

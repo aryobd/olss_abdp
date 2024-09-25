@@ -1,0 +1,195 @@
+﻿@using Dsf.Lib.Constant
+@model Dsf.Olss.Models.BILRALViewModel
+
+@{
+    ViewBag.Title = "Create RAL";
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link href=@Url.Content("~/Content/ui-framework/js/fuelux/fuelux.css") rel="stylesheet" />
+}
+
+
+<section class="scrollable wrapper">
+    @if (Model.RALType == RALType.Normal.ToString())
+    {
+        <a href="@Url.Action("Index","BILSchedule")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+    }
+    else
+    {
+        <a href="@Url.Action("Index","BILOverdue")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br><br>
+    }
+    @Message.Display(ViewBag.Success, ViewBag.Error)
+    <hr>
+    @using (Html.BeginForm("Create", "BILRAL", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(o => o.IdTb_BIL_PaySchedule)
+        @Html.HiddenFor(o => o.RALType)
+
+        <section class="panel">
+            <header class="panel-heading font-bold">Endorser</header>
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-2"><label>Name</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.EndorserName, null, new { @class = "form-control mandatory", @maxlength = "50" })
+                                @Html.ValidationMessageFor(x => x.EndorserName)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <div class="col-lg-2"><label>Position</label></div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(o => o.EndorserPosition, null, new { @class = "form-control mandatory", @maxlength = "50" })
+                                @Html.ValidationMessageFor(x => x.EndorserPosition)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="panel">
+            <header class="panel-heading font-bold">Endorsee</header>
+            <div class="panel-body">
+                <button class="btn btn-primary add_btn" name="add_btn" type="button" onclick="AddItem()"><i class="fa fa-plus"></i> Add Item</button><br /><br />
+                <table class="table table-striped m-b-none">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Identity Number</th>
+                            <th>Address</th>
+                            <th>Phone Number</th>
+                            <th style="width: 50px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="container">
+                        <!-- nanti rows nya muncul di sini -->
+                        @if (Model.RALEndorseeDtl.Count == 0)
+                        {
+                            <tr rownumber="1">
+                                <td><input type='text' class='form-control mandatory EndorseeName' maxlength="50" /></td>
+                                <td><input type='text' class='form-control mandatory EndorseeID' maxlength="30"/></td>
+                                <td><textarea rows="2" cols="50" class='form-control mandatory EndorseeAddress' maxlength="100"></textarea></td>
+                                <td><input type='text' class='form-control mandatory EndorseePhone' maxlength="25"/></td>
+                                <td>
+                                    <button class="btn btn-danger remove_item" name="remove_btn" type="button" style="height: 30px; padding-top: 4px;" disabled><i class="fa fa-minus"></i></button>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Model.RALEndorseeDtl.Count; i++)
+                            {
+                                <tr rownumber="@i">
+                                    <td>@Html.TextBoxFor(x => x.RALEndorseeDtl[i].EndorseeName, new { @class = "form-control mandatory EndorseeName", @maxlength = "50" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseeName)</td>
+                                    <td>@Html.TextBoxFor(x => x.RALEndorseeDtl[i].EndorseeID, new { @class = "form-control mandatory EndorseeID", @maxlength = "30" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseeID)</td>
+                                    <td>@Html.TextAreaFor(x => x.RALEndorseeDtl[i].EndorseeAddress, new { @class = "form-control mandatory EndorseeAddress", @maxlength = "100" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseeAddress)</td>
+                                    <td>@Html.TextBoxFor(x => x.RALEndorseeDtl[i].EndorseePhone, new { @class = "form-control mandatory EndorseePhone", @maxlength = "25" })@Html.ValidationMessageFor(x => x.RALEndorseeDtl[i].EndorseePhone)</td>
+                                    <td style="text-align: center;">
+                                        <button class='btn btn-danger deleterow' type='button' style="height: 30px; padding-top: 4px;" onclick="DeleteItem(@i)"><i class="fa fa-minus"></i></button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="panel">
+            <header class="panel-heading font-bold">Object List</header>
+            <div class="panel-body">
+                <button class="btn btn-primary add_btn_obj" name="add_btn_obj" type="button" data-toggle="modal" data-target="#objectListModal" type="button" onclick="LoadObjectList(@Model.IdTb_BIL_PaySchedule)"><i class="fa fa-plus"></i> Add Object</button><br /><br />
+                <table class="table table-striped table-input m-b-none text-sm">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;" class="text-right">Number</th>
+                            <th>Object Type</th>
+                            <th>Chassis No</th>
+                            <th>Engine No</th>
+                            <th>Police No </th>
+                            <th style="width: 80px;">Year</th>
+                            <th>Colour</th>
+                            <th style="width: 50px;" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="object-list-container"></tbody>
+                </table>
+            </div>
+        </section>
+        <div class="panel-footer bg-light lter">
+            <input type="button" name="statusButton" class="btn btn-info" data-toggle="modal" data-target="#confirmationModal" value="Save as Draft" />
+            <input type="button" name="statusButton" class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal" value="Submit" />
+        </div>
+    }
+</section>
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/BILRAL.js")"></script>
+    <script type="text/javascript">
+        var endorseeDtlCount = @Html.Raw(Json.Encode(Model.RALEndorseeDtl.Count));
+        var payScheduleId = @Html.Raw(Json.Encode(Model.IdTb_BIL_PaySchedule));
+        var selectedInvoiceNo = [];
+        var serverRoot = '@Url.Content("~")';
+
+        // This must be applied to a form (or an object inside a form).
+        jQuery.fn.addHidden = function (name, value) {
+            return this.each(function () {
+                var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                $(this).append($(input));
+            });
+        };
+
+        //Confirmation Modal
+        $('input[name="statusButton"]').on('click', function (e) {
+            var message = "";
+            var submitvalue = $(this).val();
+
+            if(submitvalue == "Save as Draft") {
+                message = "save RAL as draft";
+            }
+            else {
+                message = "submit RAL";
+            }
+
+            $('.confirmationMessage').text(message);
+        });
+
+        $('#confirmModal').click(function (e) {
+            $(this).prop('disabled', true);
+
+            UpdateNames();
+
+            var submitvalue = $('input[name="statusButton"]').val();
+            $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+        });
+
+        $(document).ready(function () {
+            if(endorseeDtlCount === 1) {
+                $('.deleterow').attr('disabled', 'disabled');
+            }
+
+            var objectDtlList = @Html.Raw(Json.Encode(Model.RALObjectDtl));
+            if(objectDtlList.length != 0) {
+                PopulateObjectDtlList(objectDtlList, payScheduleId);
+            }
+        });
+
+    </script>
+}

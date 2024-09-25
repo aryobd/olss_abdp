@@ -1,0 +1,17 @@
+{ "aaData": [
+	{
+		"id": "1",
+		"name": "Administrator",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque repudiandae obcaecati, iusto reprehenderit, impedit enim odit labore velit sed vitae ea earum architecto quaerat praesentium eaque nostrum vel laboriosam quasi?",
+		"action"  : "<a href='user_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	},
+
+	{
+		"id": "2",
+		"name": "User",
+		"description": "Horem ipsum dolor sit amet, consectetur adipisicing elit. Neque repudiandae obcaecati, iusto reprehenderit, impedit enim odit labore velit sed vitae ea earum architecto quaerat praesentium eaque nostrum vel laboriosam quasi?",
+		"action"  : "<a href='user_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+
+	}
+] }

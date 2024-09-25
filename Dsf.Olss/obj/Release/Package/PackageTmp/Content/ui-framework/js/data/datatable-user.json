@@ -1,0 +1,16 @@
+{ "aaData": [
+	{
+		"id": "1",
+		"username": "Administrator",
+		"realname": "Mr.Administrator",
+		"role"    : "administrator",
+		"action"  : "<a href='user_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+	},
+	{
+		"id": "2",
+		"username": "User",
+		"realname": "King of User",
+		"role"    : "user",
+		"action"  : "<a href='user_edit.html' class='btn btn-info btn-sm'><i class='fa fa-edit'></i></a>&nbsp;<a href='#' class='btn btn-danger btn-sm'><i class='fa fa-times'></i></a>"
+	}
+] }

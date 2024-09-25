@@ -1,0 +1,126 @@
+﻿@model Dsf.Olss.Models.DISAgreementViewModel
+@using System.Web.UI.WebControls;
+@using Dsf.Olss.Common;
+
+@{
+    ViewBag.Title = "Disposal Selection";
+    var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+<a href="@Url.Action("Index", "DISAssetSelling")" class="btn btn-white"><i class="fa fa-chevron-left"></i> Back</a><br /><br />
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+@{
+    Html.RenderPartial("ModalPopUp");
+}
+
+<section class="panel">
+    <div class="container">
+        <header class="panel-heading font-normal">Choose memo type and disposal number</header>
+        <div class="row">
+            <br />
+            <div class="Absolute-Center is-Responsive">
+                <div id="logo-container"></div>
+                <div class="col-sm-12 col-md-10 col-md-offset-1">
+                    <form action="" id="selectionForm">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><label for="memotype" class="col-lg-2 control-label">Memo Type</label></span>
+                            <select class="form-control" id="memotype">
+                                <option value="0">Choose Memo Type</option>
+                                <option value="1">Asset Selling</option>
+                                <option value="2">Car Ownership Program (COP)</option>
+                                <option value="3">Auction</option>
+                            </select>
+                        </div>
+                        <div class="form-group input-group">
+                            <span class="input-group-addon"><label for="disposalno" class="col-lg-2 control-label">Disposal Number</label></span>
+                            @Html.TextBoxFor(o => o.DisposalNumber, null, new { @class = "form-control", @data_required = "true", @parsley_error_container = "input-group", @readonly = "true", @tabindex = "1" })
+                            <span id="btnLoadProduct" class="input-group-btn">
+                                <button class="btn btn-default" data-toggle="modal" data-target="#disposalModal" type="button" onclick="LoadDisposalList()" tabindex="2">. . .</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div><br />
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <div class="form-group">
+                <div class="panel-footer"><a href="@Url.Action("AddDirectSelling", "DISAssetSelling")" class="btn btn-info btn-block">Continue</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+@section Scripts{
+    <script src="@Url.Content("~/Content/ui-framework/js/jquery-multiple.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/parsley/parsley.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datepicker/bootstrap-datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="~/Scripts/jquery.signalR-2.1.2.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="@Url.Content("~/Content/js/DISAssetSelling.js")"></script>
+
+    <script>
+            // This must be applied to a form (or an object inside a form).
+            jQuery.fn.addHidden = function (name, value) {
+                return this.each(function () {
+                    var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+                    $(this).append($(input));
+                });
+            };
+
+            //Confirmation Modal
+            $('input[name="statusButton"]').on('click', function (e) {
+                var submitvalue = $(this).val();
+                var msg = '';
+                if (submitvalue === 'Save as Draft') {
+                    msg = 'Save';
+                } else if (submitvalue === 'Submit') {
+                    msg = 'Submit';
+                }
+
+                $('#msgModal').text(msg);
+                $('#submitButtonText').val(submitvalue);
+
+                $(".btn .btn-info").prop('disabled', true);
+                $(".btn .btn-primary").prop('disabled', true);
+                $(".btn .btn-danger").prop('disabled', true);
+
+                if (!ShowNotification()) {
+                    $(".btn .btn-info").prop('disabled', false);
+                    $(".btn .btn-primary").prop('disabled', false);
+                    $(".btn .btn-danger").prop('disabled', false);
+
+                    e.preventDefault();
+                    goToTop();
+                    return false;
+                }
+                return true;
+            });
+            $('#confirmModal').click(function (e) {
+                $(this).prop('disabled', true);
+                var submitvalue = $('#submitButtonText').val();
+                $('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+            });
+
+            $('.datepicker').datepicker({
+                format: '@localeDateFormat.ToLower()'
+            });
+            // Global variable for DISAssetSelling.js
+            var serverRoot = '@Url.Content("~")';
+
+            $(document).ready(function () {
+
+                //change type submit to button to provide modal popup
+                $('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#myModal');
+            });
+
+    </script>
+}

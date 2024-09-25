@@ -1,0 +1,700 @@
+﻿@using Dsf.Lib.Constant
+@using Dsf.Olss.Common
+@model Dsf.Olss.Models.BILCreationViewModel
+
+@{
+    ViewBag.Title = "Billing & Payment Invoice Approval Path";
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+}
+
+@section Styles{
+    <link href=@Url.Content("~/Content/ui-framework/js/select2/select2.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/css/select2-bootstrap.css") rel="stylesheet" />
+    <link href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") rel="stylesheet" />
+}
+
+<section class="scrollable wrapper">
+    <a href=@Url.Action("Index", "BILSchedule") class="btn btn-white">
+        <i class="fa fa-chevron-left"></i> Back
+    </a> <br /><br /><br />
+
+    <!-- Audit Trail -->
+    <div class="panel label-panel">
+        <table class="table">
+            <td class="font-bold"><i class="fa fa-user text-danger"></i> Created by</td>
+            <td>@Html.DisplayFor(o => o.CreatedBy)</td>
+            <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Created Date</td>
+            <td>
+                @{
+                    if (!string.IsNullOrEmpty(Model.CreatedBy))
+                    {
+                        @String.Format("{0:MM/dd/yyyy}", Model.CreatedDate)
+                    }
+                }
+            </td>
+            <td class="font-bold"><i class="fa fa-user text-danger"></i> Last Modified By</td>
+            <td>@Html.DisplayFor(o => o.LastModifiedBy)</td>
+            <td class="font-bold"><i class="fa fa-calendar text-danger"></i> Last Modified Date</td>
+            <td>@String.Format("{0:MM/dd/yyyy}", Model.LastModifiedDate)</td>
+        </table>
+    </div>
+
+    <!-- Contract Information -->
+    <section class="panel">
+        <header class="panel-heading">Contract Information</header>
+        <div class="panel-body">
+            <div class="row">
+                <!-- Agreement Number -->
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Agreement Number</label></div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.AgreementNumber, null, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Previous Agreement Number</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.PreviousAgreementNumber, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Agreement Date -->
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Agreement Date (mm/dd/yyyy)</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group" disabled="disabled">
+                                @Html.TextBoxFor(o => o.AgreementDate, String.Format("{{0:MM/dd/yyyy}}", Model.AgreementDate), new { @class = "form-control", @disabled = "disabled" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Billing and Payment History -->
+    <section class="panel">
+        <header class="panel-heading">Billing and Payment History</header>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Sales PIC Name</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.SalesPICName, null, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Sales PIC Position</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.SalesPICPosition, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Sales PIC Phone</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.SalesPICPhone, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Sales PIC Email</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.SalesPICEmail, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Customer Name</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.CustomerName, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Product Brand Name</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ProductBrandName, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Product Model Name</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.ProductModelName, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Model Year</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.ModelYear, String.Format("{{0:yyyy}}", Model.ModelYear), new { @class = "form-control", @disabled = "disabled" })
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Lease Category</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.LeaseCategory, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Maintenance Type</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.MaintenanceType, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Insurance</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Insurance, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Purchase Required</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.PurchaseRequired, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Contract Start Date -->
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Contract Start Date</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.ContractStartDate, String.Format("{{0:MM/dd/yyyy}}", Model.ContractStartDate), new { @class = "form-control", @disabled = "disabled"})
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contract Start Date -->
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Contract Expired Date</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                @Html.TextBoxFor(o => o.ContractExpiredDate, String.Format("{{0:MM/dd/yyyy}}", Model.ContractExpiredDate), new { @class = "form-control", @disabled = "disabled"})
+                                <span class="input-group-addon">
+                                    <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Lease Period (Months)</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.LeasePeriod, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Usage</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.Usage, null, new { @class = "form-control", @disabled ="disabled"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Expectation Collection Amount</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.ExpectationCollectionAmount, null, new { @class = "form-control text-right", @disabled = "disabled"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"><label>Collection Amount</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.CollectionAmount, null, new { @class = "form-control text-right", @disabled = "disabled"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Overdue Amount</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.OverdueAmount, null, new { @class = "form-control text-right", @disabled = "disabled"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Billing Total</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.BillingTotal, null, new { @class = "form-control text-right", @disabled = "disabled"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Include Pph</label> </div>
+                        <div class="col-lg-6">
+                            @Html.TextBoxFor(o => o.IncludePph, null, new { @class = "form-control", @disabled = "disabled"})
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <div class="col-lg-6"> <label>Billed Breakdown Amount</label> </div>
+                        <div class="col-lg-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp</span>
+                                @Html.TextBoxFor(o => o.BilledBreakdownAmount, null, new { @class = "form-control text-right ", @disabled = "disabled"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="panel">
+
+        <table class="table table-striped m-b-none">
+            <tr>
+                <th width="20%">Search Criteria</th>
+                <th width="20%">Parameter</th>
+                <th width="20%">Start Invoice Created Date</th>
+                <th width="20%">End Invoice Created Date</th>
+            </tr>
+            <tr>
+                <td>
+                    <select id="dropdownSelected" class="form-control">
+                        <option value="1">DSF Office</option>
+                        <option value="2">Invoice No</option>
+                        <option value="3">Receipt No</option>
+                        <option value="4">Maintenance Invoice No</option>
+                        <option value="5">Maintenance Invoice Receipt No</option>
+                        <option value="6">Last Modified By</option>
+                        <option value="10">Created By</option>
+                        <option value="7">Last Approval</option>
+                        <option value="8">Next Approval</option>
+                        <option value="9">Invoice Status</option>
+                    </select>
+                </td>
+                <td>
+                    <div>
+                        <input id="txtSearch" type="text" class="form-control">
+                    </div><!-- /input-group -->
+                </td>
+                <td>
+                    <div class="input-group date">
+                        <input id="txtStartInvoiceCreatedDate" class="form-control datepicker-input" type="text">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group date">
+                        <input id="txtEndInvoiceCreatedDate" class="form-control datepicker-input" type="text">
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </td>
+
+                <td>
+                    <input name="statusButton" class="btn btn-primary right-side" type="submit" value="Search">
+                </td>
+            </tr>
+            <tbody></tbody>
+        </table>
+
+
+        <section class="scrollable wrapper">
+            <section class="panel">
+                <div class="DocumentList">
+                    <div class="table-responsive">
+                        <table id="table-list" class="table table-striped m-b-none">
+                            <thead>
+                                <tr>
+                                    <th rowspan="1" style="text-align:center">DSF Office</th>
+                                    <th rowspan="1" style="text-align:center">Invoice No</th>
+                                    <th rowspan="1" style="text-align:center">Receipt No</th>
+                                    <th rowspan="1" style="text-align:center">Maintenance Invoice No</th>
+                                    <th rowspan="1" style="text-align:center">Maintenance Invoice Receipt No</th>
+                                    <th rowspan="1" style="text-align:center">Last Modified Date</th>
+                                    <th rowspan="1" style="text-align:center">Last Modified By</th>
+                                    <th rowspan="1" style="text-align:center">Created By</th>
+                                    <th rowspan="1" style="text-align:center">Last Approval</th>
+                                    <th rowspan="1" style="text-align:center">Next Approval</th>
+                                    <th rowspan="1" style="text-align:center">Invoice Status</th>
+                                    <th rowspan="1" style="text-align:center"><div style="width:80px">Action</div></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            @*<section class="panel">
+                <footer class="panel-footer bg-light lter">
+                    <input name="statusButton" class="btn btn-info" type="submit" value="Print Report">
+                </footer>
+            </section>*@
+            <section class="panel">
+                <footer class="panel-footer bg-light lter">
+                    <div id='loadingmessage' style='display:none'>
+                        <img src='@Url.Content(ImgUrl)' />
+                    </div>
+                    <input id="btnPrintAll" name="statusButton" class="btn btn-info" type="submit" value="Print Report">
+                </footer>
+            </section>
+        </section>
+    </section>
+</section>
+@{
+	Html.RenderPartial("ModalPopUp");
+}
+@section Scripts{
+    <!-- Others -->
+    @*<script src="js/jquery.dataTables.rowGrouping.js"></script>*@
+    <script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+    <script src="@Url.Content("~/Content/js/Olss.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+    <script>
+        var serverRoot = '@Url.Content("~")';
+        //style.js
+        $(document).ready(function () {
+            function centerModal() {
+                $(this).css('display', 'block');
+                var $dialog = $(this).find(".modal-dialog");
+                var offset = ($(window).height() - $dialog.height()) / 2;
+
+                // Center modal vertically in window
+                $dialog.css("margin-top", offset);
+            }
+
+            $('.modal').on('show.bs.modal', centerModal);
+            $(window).on("resize", function () {
+                $('.modal:visible').each(centerModal);
+            });
+
+            $('#myModal').on('show.bs.modal', function () {
+                $('.modal .modal-body').css('overflow-y', 'auto');
+                $('.modal .modal-body').css('max-height', $(window).height() * 0.7);
+            });
+        });
+    </script>
+    <script src="@Url.Content("~/Content/js/BillCreation.js")"></script>
+    <script>
+        var idPaySchedule = '@Html.Raw(Json.Encode(Model.IdTb_BIL_PaySchedule))';
+        $(document).ready(function() {
+
+
+            // datatable
+            var oTable;
+            $('#table-list').each(function() {
+                oTable = $(this).dataTable({
+                    "bServerSide": true,
+                    "bProcessing": true,
+                    "aaSorting": [[10, "desc"]],
+                    "sAjaxSource": "@Url.Action("AjaxHandler", "BILCreation")",
+                    "fnServerParams": function (aoData) {
+                        aoData.push(
+                            { "name": "idPaySchedule", "value": idPaySchedule },
+                            { "name": "ddlSearchCriteria", "value": $("#dropdownSelected").val() },
+                            { "name": "txtSearch", "value": $("#txtSearch").val() },
+                            { "name": "txtStartInvoiceCreatedDate", "value": $("#txtStartInvoiceCreatedDate").val() },
+                            { "name": "txtEndInvoiceCreatedDate", "value": $("#txtEndInvoiceCreatedDate").val() }
+                        );
+                    },
+                    "sDom": "<'row'<'col-sm-6'l><'col-sm-6'>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                    "sPaginationType": "full_numbers",
+                    "aoColumns": [
+                        { "mData": "BranchShortName" },
+                        { "mData": "InvoiceNoInstalment" },
+                        { "mData": "ReceiptNoInstalment" },
+                        { "mData": "InvoiceNoMaintenance" },
+                        { "mData": "ReceiptNoMaintenance" },
+                        { "mData": "LastModifiedDate" },
+                        { "mData": "LastModifiedBy" },
+                        { "mData": "CreatedBy" },
+                        { "mData": "LastApprovalBy" },
+                        { "mData": "NextApprovalBy" },
+                        {
+                            "mData": "Status",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var status = oObj.aData["InvoiceStatus"];
+
+                                if (status === '@StatusCode.Draft') {
+                                    return "<span class='label label-default'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Submitted') {
+                                    return "<span class='label label-info'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Check') {
+                                    return "<span class='label label-success'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Approve') {
+                                    return "<span class='label label-primary'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Revise') {
+                                    return "<span class='label label-revise'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Reject') {
+                                    return "<span class='label label-danger'>" + status + "</span>";
+                                }
+
+                                if (status === '@StatusCode.Delivered') {
+                                    return "<span class='label label-warning'>" + status + "</span>";
+                                }
+
+                                return status;
+                            }
+                        },
+                        {
+                            "mData": "IdTb_BIL_InvoiceReceipt",
+                            "bSearchable": false,
+                            "bSortable": false,
+                            "fnRender": function (oObj) {
+                                var id = oObj.aData["IdTb_BIL_InvoiceReceipt"];
+                                var invNo = oObj.aData["InvoiceNoInstalment"];
+                                var deliveryDate = oObj.aData["DeliveryDate"];
+                                var deliveryBy = oObj.aData["DeliveryBy"];
+                                var receiptNumber = oObj.aData["ReceiptNumber"];
+                                var rowVersion = oObj.aData["RowVersion"];
+                                var status = oObj.aData["InvoiceStatus"];
+                                var htmlButtonAction = "";
+
+                                if (status === '@StatusCode.Approve') {
+                                    htmlButtonAction = '<a title="Edit Invoice" href="#deliveryInvoice" class="btn btn-primary btn-xs" data-toggle="modal" onclick="setDataDeliveryInvoice(\'' + id + '\',\'' + invNo + '\', \'' + deliveryDate + '\', \'' + deliveryBy + '\', \'' + receiptNumber + '\', \'' + rowVersion + '\');"><i class="fa fa-edit"></i></a>&nbsp;';
+                                }
+                                else {
+                                    htmlButtonAction = '<a title="Edit Invoice" href="#" class="btn btn-primary btn-xs" disabled><i class="fa fa-edit"></i></a>&nbsp;';
+                                }
+
+                                htmlButtonAction += '<a title="Print Report" href="@Url.Action("ReportInstallmentInvoice", "BILCreation")/' + id + '" class="btn btn-white btn-xs" ><i class="fa fa-print"></i></a>&nbsp;' +
+                                        '<a title="Detail Invoice" href="@Url.Action("DetailInvoice", "BILCreation")/' + id + '" class="btn btn-info btn-xs"><i class="fa fa-bars"></i></a>';
+
+                                return htmlButtonAction;
+                            }
+                        },
+                        { "mData": "SortableCreatedDate", "bVisible": false },
+                        { "mData": "SortableLastModifiedDate", "bVisible": false }
+                    ],
+                    "fnServerData": function (sSource, aoData, fnCallback) {
+                        $.ajax({
+                            "dataType": 'json',
+                            "type": "POST",
+                            "url": sSource,
+                            "data": aoData,
+                            "success": fnCallback,
+                            "timeout": 0, // optional if you want to handle timeouts (which you should)
+                            "error": handleAjaxError, // this sets up jQuery to give me errors
+                            "global": false
+                        });
+                    }
+                });
+            });
+
+            var htmlTemp = '<div class="dataTables_wrapper row">';
+            var fakePagination = $('#table-list_wrapper > div:eq(1)').html();
+            var datatableInfo = $('#table-list_wrapper > div:eq(1) > div:eq(0) > #table-list_info');
+            $('#table-list_wrapper > div:eq(1)').prop('style', 'display: none;');
+            htmlTemp += fakePagination + '</div>';
+            $('.table-responsive').append(htmlTemp);
+            $('.table-responsive > div:eq(1) > div:eq(1) > #table-list_paginate').remove();
+            $('.table-responsive > div[class="dataTables_wrapper row"] > div:eq(1)').append($('.dataTables_paginate'));
+            $('.table-responsive > div:eq(1) > div:eq(0) > #table-list_info').replaceWith(datatableInfo);
+            $('#table-list_wrapper').css('padding-left', '13px');
+
+            // Set thousand separator for disabled input text
+            var thousandSeparatorField = $('span:contains("Rp")').next();
+            ThousandSeparatorSetUp(thousandSeparatorField);
+
+        });
+
+        bootstrap_alert = function () { }
+        bootstrap_alert.success = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+        bootstrap_alert.error = function (header, message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button><b>' + header + '!</b> ' + message + '</div>');
+        }
+
+        //handling Error
+        function handleAjaxError(textStatus) {
+            if (textStatus === 'timeout') {
+                bootstrap_alert.error("Timeout", "The server took too long to send the data.");
+            } else {
+                bootstrap_alert.error("Connection problem", "An error occurred on the server. Please try again in a few minute or contact your administrator.");
+            }
+        }
+
+        // Searching
+        $('input[value="Search"]').on('click', function (e) {
+            e.preventDefault();
+
+            if (checkDate() === false) {
+                $('#table-list').dataTable().fnDraw(); // Manually redraw the table after filtering
+            }
+        });
+
+        // Checking range date
+        function checkDate() {
+
+            var resultCheck = false;
+            var startDate = $("#txtStartInvoiceCreatedDate").val();
+            var endDate = $("#txtEndInvoiceCreatedDate").val();
+            startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+            endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+            if (startDate > endDate) {
+                resultCheck = true;
+                alert('Start Date should be less than End Date..!');
+            }
+            return resultCheck;
+        }
+
+        // Convert string to Date
+        function strToDate(date, format, delimiter) {
+            var formatLowerCase = format.toLowerCase();
+            var formatItems = formatLowerCase.split(delimiter);
+            var dateItems = date.split(delimiter);
+            var monthIndex = formatItems.indexOf("mm");
+            var dayIndex = formatItems.indexOf("dd");
+            var yearIndex = formatItems.indexOf("yyyy");
+            var month = parseInt(dateItems[monthIndex]);
+            month -= 1;
+            var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+            return formatedDate;
+        }
+        //Print
+        $('#btnPrintAll').on('click', function (e) {
+            e.preventDefault();
+            var ddlSearchCriteria = $("#dropdownSelected").val();
+            var txtSearch = $("#txtSearch").val();
+            var txtStartInvoiceCreatedDate = $("#txtStartInvoiceCreatedDate").val();
+            var txtEndInvoiceCreatedDate = $("#txtEndInvoiceCreatedDate").val();
+            var getidPaySchedule = idPaySchedule;
+            // Ajax start animation progress
+            $('#loadingmessage').show();
+            $('#btnPrintAll').hide();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintReport", "BILCreation")',
+                data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartInvoiceCreatedDate': txtStartInvoiceCreatedDate, 'txtEndInvoiceCreatedDate': txtEndInvoiceCreatedDate, 'idPaySchedule': getidPaySchedule }),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'text',
+                "global": false,
+                success: function (response, status, xhr) {
+                    // check for a filename
+                    var filename = "";
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                        var matches = filenameRegex.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                            response = filename;
+                        }
+                    }
+                    if (response !== "") {
+                        window.location = "../../Base/Download?fileName=" + response + "&rptType=" + 17;
+                    }
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert('Cannot download file..! Error is occurs');
+                    // Ajax stop animation progress
+                    $('#loadingmessage').hide();
+                    $('#btnPrintAll').show();
+                }
+            });
+        });
+    </script>
+}

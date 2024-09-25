@@ -1,0 +1,1273 @@
+﻿@model Dsf.Olss.Models.MGTBASTReplacementViewModel
+@using Dsf.Olss.Utility;
+@using Dsf.Lib.Constant
+@{
+	ViewBag.Title = "Create BAST Replacement";
+
+	var localeDateFormat = System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern;
+
+	var bastType = Model.BASTType;
+}
+
+<section class="scrollable wrapper">
+	<a title="" class="btn btn-white" href="@Url.Action("Index", "MGTOplUnitReplace")" data-original-title=""><i class="fa fa-chevron-left"></i> Back</a>
+	@Message.Display(ViewBag.Success, ViewBag.Error)
+	<hr>
+	@using (Html.BeginForm("Create", "MGTOplUnitReplace", FormMethod.Post))
+	{
+		<section class="panel">
+			<section class="panel-body">
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>BAST No</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.HiddenFor(b => b.IdTb_MGT_RegRPC)
+								@Html.HiddenFor(b => b.BASTType)
+								<input readonly class="form-control mandatory" type="text">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Replacement Type</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.DropDownListFor(o => o.ReplacementType, ViewBag.DropdownRpcType as List<SelectListItem>, new { @class = "form-control", @id = "dropdownReplacementType", @onchange = "showDiv('" + bastType + "','Create');" })
+							</div>
+						</div>
+					</div>
+				</div>
+				@{
+					if (Model.BASTType.Equals((int) BASTType.ReplacementUnit))
+					{
+						<div id="SpecialCase">
+							<div class="row">
+								<div class="form-group">
+									<div class="col-lg-3">
+										<div class="col-lg-12">
+											<label>Note:</label>
+										</div>
+									</div>
+									<div class="col-lg-9">
+										@Html.TextAreaFor(b => b.Note, new { @class = "form-control", @rows = "5", @maxlength = "500" })
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				}
+			</section>
+		</section>
+
+		@*----3----*@
+
+		<section class="panel">
+			<section class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<label class="font-bold">Base Information</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Agreement No</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.AgreementNumber, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Company Name</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.CompanyName, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Address</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.Address, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Telp Number</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.TelpNumber, null, new { @class = "form-control numeric"})
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>PIC Customer</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.PIC, null, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(b => b.PIC)
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</section>
+
+		@*----4----*@
+
+		<section class="panel">
+			<section class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<label class="font-bold">@{ var labelTitleSection = bastType.Equals((int)BASTType.ReplacementUnit) ? "Replacement Unit" : "Operating Lease Unit";} @labelTitleSection </label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Police Number</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.PoliceNumber, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Chassis No</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.ChassisNumber, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Merk/ Vehicle Type</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.VehicleType, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Machine No</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.EngineNumber, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Years</label>
+							</div>
+							<div class="col-lg-6">
+								@*@Html.TextBoxFor(b => b.Year, String.Format("{{0:yyyy}}"), new { @class = "form-control", @readonly = "true" })*@
+                                @Html.TextBoxFor(o => o.YearView, null, new { @class = "form-control", @readonly = "readonly" })
+                                @Html.HiddenFor(o => o.Year)
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>STNK Date</label>
+							</div>
+							<div class="col-lg-6">
+									@Html.TextBoxFor(b => b.StartSTNK, String.Format("{{0:" + localeDateFormat + "}}", Model.StartSTNK), new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>Colour</label>
+							</div>
+							<div class="col-lg-6">
+								@Html.TextBoxFor(b => b.Colour, null, new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="form-group">
+							<div class="col-lg-6">
+								<label>KEUR Date</label>
+							</div>
+							<div class="col-lg-6">
+									@Html.TextBoxFor(b => b.StartKEUR, String.Format("{{0:" + localeDateFormat + "}}", Model.StartKEUR), new { @class = "form-control", @readonly = "true" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<section class="panel form-group">
+					<section class="panel-heading">
+						<div class="row">
+							<div class="col-lg-12">
+								<label class="font-bold">@{ var labelTitleArea = bastType.Equals((int)BASTType.ReplacementUnit) ? "Usage Period" : "Repairment Period";} @labelTitleArea </label>
+							</div>
+						</div>
+					</section>
+					<section class="panel-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="col-lg-6">
+									<label>Start Date</label>
+								</div>
+								<div class="col-lg-6">
+									<div class="input-group date">
+										@Html.TextBoxFor(o => o.StartDate, String.Format("{{0:" + localeDateFormat + "}}", Model.StartDate), new { @class = "form-control datepicker-input" })
+										<span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="col-lg-6">
+									<label>End Date Estimation</label>
+								</div>
+								<div class="col-lg-6">
+									<div class="input-group date">
+										@Html.TextBoxFor(o => o.EndDateEstimation, String.Format("{{0:" + localeDateFormat + "}}", Model.EndDateEstimation), new { @class = "form-control datepicker-input" })
+										<span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+				</section>
+			</section>
+		</section>
+
+		@*----5----*@
+
+		<section class="panel">
+			<section class="panel-body">
+				<ul class="nav nav-tabs pull-left bg-light">
+					<li class="active"><a data-toggle="tab" href="#BAST_OUT">BAST OUT</a></li>
+					<li><a style="pointer-events: none;" data-toggle="tab" href="">BAST IN</a></li>
+				</ul><br><br><br>
+				<div class="tab-content">
+					<div id="BAST_OUT" class="tab-pane fade in active">
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>Date</label></div>
+									<div class="col-lg-6">
+										<div class="input-group date">
+											@Html.TextBoxFor(o => o.BASTDate, String.Format("{{0:" + localeDateFormat + "}}", Model.BASTDate), new { @class = "form-control datepicker-input" })
+											<span class="input-group-addon">
+												<span class="fa fa-calendar"></span>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>KM</label></div>
+									<div class="col-lg-6">
+										@Html.TextBoxFor(b => b.KM, null, new { @class = "form-control thousandSeparator"})
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>FUEL</label></div>
+									<div class="col-lg-6">
+										@Html.DropDownListFor(o => o.Fuel, ViewBag.DropdownFuel as List<SelectListItem>, new { @class = "form-control", @id = "dropdownSelected" })
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>Driver Name</label></div>
+									<div class="col-lg-6">
+										@Html.TextBoxFor(b => b.Driver, null, new { @class = "form-control", @maxlength = "15" })
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>Observer Name</label></div>
+									<div class="col-lg-6">
+										@Html.TextBoxFor(b => b.Observer, null, new { @class = "form-control", @maxlength = "15" })
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>Branch / Poll</label></div>
+									<div class="col-lg-6">
+										@Html.TextBoxFor(b => b.Branch, null, new { @class = "form-control", @maxlength = "10" })
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6">
+										<label>@{ var label = bastType.Equals((int)BASTType.ReplacementUnit) ? "Usage Location" : "Damage Location";} @label</label>
+									</div>
+									<div class="col-lg-6">
+										@(bastType.Equals((int)BASTType.ReplacementUnit) ? Html.TextBoxFor(b => b.UsageLoc, null, new { @class = "form-control", @maxlength = "30" }) : Html.TextBoxFor(b => b.DamageLoc, null, new { @class = "form-control", @maxlength = "30" }))
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div class="col-lg-6"><label>Remark</label></div>
+									<div class="col-lg-6">
+										@Html.TextBoxFor(b => b.Remark, null, new { @class = "form-control", @maxlength = "100" })
+									</div>
+								</div>
+							</div>
+						</div>
+						<br>
+
+						<section class="panel">
+							<header class="panel-heading font-bold">
+								Unit Component
+								<i class="fa text-muted" data-toggle="tooltip" data-placement="bottom" data-title="ajax to load the data."></i>
+							</header>
+							<table class="table table-striped m-b-none" id="TableTermsAndConditions">
+								<thead>
+									<tr>
+										<th width="1%" rowspan="2">No</th>
+										<th width="50%" rowspan="2">Component</th>
+										<th width="50%" colspan="4" style="text-align:center">Condition</th>
+										<th width="1%" rowspan="2">Action</th>
+									</tr>
+									<tr>
+										<th style="text-align:center">Good</th>
+										<th style="text-align:center">Damage</th>
+										<th style="text-align:center">Missing</th>
+										<th style="text-align:center">Not Exist</th>
+									</tr>
+								</thead>
+								<tbody id="container_BAST_OUT">
+									<!-- nanti rows nya muncul di sini -->
+									@{
+										if (Model.MGTBASTReplacementDetailList == null)
+										{
+											<tr rownumber="1">
+										<td>
+											<p class="form-control-static">1</p>
+										</td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[0].Description" maxlength="50" value="Starter/Ignition System"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[0].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[0].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[0].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[0].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(1)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+											<tr rownumber="2">
+										<td><p class="form-control-static">2</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[1].Description" maxlength="50" value="Air Conditioner Merk"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[1].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[1].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[1].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[1].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(2)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+											<tr rownumber="3">
+										<td><p class="form-control-static">3</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[2].Description" maxlength="50" value="STNK"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[2].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[2].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[2].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[2].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(3)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+											<tr rownumber="4">
+										<td><p class="form-control-static">4</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[3].Description" maxlength="50" value="Radio Tape/Merk"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[3].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[3].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[3].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[3].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(4)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+											<tr rownumber="5">
+										<td><p class="form-control-static">5</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[4].Description" maxlength="50" value="CD Player / Merk"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[4].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[4].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[4].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[4].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(5)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+											<tr rownumber="6">
+										<td><p class="form-control-static">6</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[5].Description" maxlength="50" value="Catridge/Remote R/Tape"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[5].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[5].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[5].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[5].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(6)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="7">
+										<td><p class="form-control-static">7</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[6].Description" maxlength="50" value="Antena"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[6].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[6].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[6].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[6].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(7)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="8">
+										<td><p class="form-control-static">8</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[7].Description" maxlength="50" value="Lighter / Pematik"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[7].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[7].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[7].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[7].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(8)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="9">
+										<td><p class="form-control-static">9</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[8].Description" maxlength="50" value="Asbak"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[8].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[8].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[8].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[8].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(9)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="10">
+										<td><p class="form-control-static">10</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[9].Description" maxlength="50" value="Seat Cover / Sarung Jok"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[9].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[9].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[9].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[9].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(10)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="11">
+										<td><p class="form-control-static">11</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[10].Description" maxlength="50" value="Saftey Belt"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[10].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[10].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[10].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[10].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(11)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="12">
+										<td><p class="form-control-static">12</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[11].Description" maxlength="50" value="Head Rest"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[11].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[11].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[11].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[11].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(12)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="13">
+										<td><p class="form-control-static">13</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[12].Description" maxlength="50" value="Lampu Plafon"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[12].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[12].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[12].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[12].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(13)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="14">
+										<td><p class="form-control-static">14</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[13].Description" maxlength="50" value="Karpet Lembaran"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[13].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[13].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[13].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[13].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(14)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="15">
+										<td><p class="form-control-static">15</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[14].Description" maxlength="50" value="Kotak P3K"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[14].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[14].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[14].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[14].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(15)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="16">
+										<td><p class="form-control-static">16</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[15].Description" maxlength="50" value="Segitiga Pengaman"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[15].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[15].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[15].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[15].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(16)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="17">
+										<td><p class="form-control-static">17</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[16].Description" maxlength="50" value="Perkakas Standar"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[16].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[16].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[16].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[16].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(17)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="18">
+										<td><p class="form-control-static">18</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[17].Description" maxlength="50" value="Dongkrak / Tuas"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[17].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[17].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[17].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[17].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(18)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="19">
+										<td><p class="form-control-static">19</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[18].Description" maxlength="50" value="Dop Roda 4 Buah"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[18].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[18].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[18].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[18].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(19)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="20">
+										<td><p class="form-control-static">20</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[19].Description" maxlength="50" value="Velg Racing"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[19].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[19].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[19].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[19].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(20)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="21">
+										<td><p class="form-control-static">21</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[20].Description" maxlength="50" value="Kaca Spion Dalam"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[20].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[20].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[20].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[20].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(21)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="22">
+										<td><p class="form-control-static">22</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[21].Description" maxlength="50" value="Kaca Spion Luar"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[21].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[21].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[21].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[21].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(22)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="23">
+										<td><p class="form-control-static">23</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[22].Description" maxlength="50" value="Ban 4 Buah"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[22].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[22].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[22].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[22].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(23)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="24">
+										<td><p class="form-control-static">24</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[23].Description" maxlength="50" value="Ban Cadngan 1 Buah"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[23].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[23].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[23].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[23].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(24)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="25">
+										<td><p class="form-control-static">25</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[24].Description" maxlength="50" value="Kipas / Wiper"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[24].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[24].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[24].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[24].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(25)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="26">
+										<td><p class="form-control-static">26</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[25].Description" maxlength="50" value="Buku Manual"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[25].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[25].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[25].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[25].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(26)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="27">
+										<td><p class="form-control-static">27</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[26].Description" maxlength="50" value="Buku Service"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[26].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[26].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[26].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[26].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(27)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="28">
+										<td><p class="form-control-static">28</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[27].Description" maxlength="50" value="Tutp Bensin"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[27].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[27].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[27].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[27].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(28)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="29">
+										<td><p class="form-control-static">29</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[28].Description" maxlength="50" value="Lampu- Lampu Sein"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[28].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[28].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[28].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[28].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(29)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="30">
+										<td><p class="form-control-static">30</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[29].Description" maxlength="50" value="Lampu Besar"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[29].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[29].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[29].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[29].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(30)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="31">
+										<td><p class="form-control-static">31</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[30].Description" maxlength="50" value="Lampu Kecil"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[30].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[30].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[30].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[30].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(31)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="32">
+										<td><p class="form-control-static">32</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[31].Description" maxlength="50" value="Lampu Rem"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[31].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[31].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[31].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[31].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(32)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="33">
+										<td><p class="form-control-static">33</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[32].Description" maxlength="50" value="Lampu Mundur"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[32].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[32].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[32].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[32].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(33)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+									<tr rownumber="34">
+										<td><p class="form-control-static">34</p></td>
+										<td>
+											<div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[33].Description" maxlength="50" value="Kaca Film"></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[33].BASTOUTValue" value="1" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[33].BASTOUTValue" value="2" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[33].BASTOUTValue" value="3" type="radio"></label></div>
+										</td>
+										<td>
+											<div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[33].BASTOUTValue" value="4" type="radio"></label></div>
+										</td>
+										<td>
+											<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(34)"><i class="fa fa-minus"></i></a>
+										</td>
+									</tr>
+										   <tr rownumber="35">
+											   <td><p class="form-control-static">35</p></td>
+											   <td>
+												   <div><input type="text" class="form-control" name="MGTBASTReplacementDetailList[34].Description" maxlength="50"></div>
+											   </td>
+											   <td>
+												   <div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[34].BASTOUTValue" value="1" type="radio"></label></div>
+											   </td>
+											   <td>
+												   <div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[34].BASTOUTValue" value="2" type="radio"></label></div>
+											   </td>
+											   <td>
+												   <div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[34].BASTOUTValue" value="3" type="radio"></label></div>
+											   </td>
+											   <td>
+												   <div class="radioPositionCenter"><label><input name="MGTBASTReplacementDetailList[34].BASTOUTValue" value="4" type="radio"></label></div>
+											   </td>
+											   <td>
+												   <a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(35)"><i class="fa fa-minus"></i></a>
+											   </td>
+										   </tr>
+										}
+										else
+										{
+											for (var index = 0; index < Model.MGTBASTReplacementDetailList.Count(); index++)
+											{
+												<tr rownumber="@(index + 1)">
+													<td><p class="form-control-static">@(index + 1)</p></td>
+													<td>
+														<div>@Html.TextBoxFor(o => o.MGTBASTReplacementDetailList[index].Description, null, new { @class = "form-control", @maxlength = "50" })</div>
+													</td>
+													<td>
+														<div class="radioPositionCenter"><label>@Html.CheckedRadioButtonFor(o => o.MGTBASTReplacementDetailList[index].BASTOUTValue, 1)</label></div>
+													</td>
+													<td>
+														<div class="radioPositionCenter"><label>@Html.CheckedRadioButtonFor(o => o.MGTBASTReplacementDetailList[index].BASTOUTValue, 2)</label></div>
+													</td>
+													<td>
+														<div class="radioPositionCenter"><label>@Html.CheckedRadioButtonFor(o => o.MGTBASTReplacementDetailList[index].BASTOUTValue, 3)</label></div>
+													</td>
+													<td>
+														<div class="radioPositionCenter"><label>@Html.CheckedRadioButtonFor(o => o.MGTBASTReplacementDetailList[index].BASTOUTValue, 4)</label></div>
+													</td>
+													<td>
+														<a title="Delete" class="btn btn-danger btn-xs" style="margin-top: 6px;" href="javascript:void(0);" onclick="DeleteRow(@(index+1))"><i class="fa fa-minus"></i></a>
+													</td>
+												</tr>
+											}
+										}
+}
+								</tbody>
+							</table>
+						</section>
+					</div>
+
+				</div>
+			</section>
+
+			<div class="panel-footer bg-light lter">
+				<button class="btn btn-primary" id="add_item_btn" type="button" onclick="AddRow()"><i class="fa fa-plus"></i> Add Item</button>
+			</div>
+		</section>
+
+		@*----6----*@
+
+		<section class="panel">
+			<header class="panel-heading font-bold">Remark ( Note : Body / paint of car )</header>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="form-group">
+							<div class="col-lg-12">@Html.TextAreaFor(o => o.Remark2, new { @class = "form-control", @rows = "3", @maxlength = "100" })</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="panel">
+			<div class="panel-footer bg-light lter">
+				<input type="hidden" id="submitButtonText" />
+				<input name="statusButton" class="btn btn-info" type="submit" value="Save as Draft">
+				<input name="statusButton" class="btn btn-info" type="submit" value="Print Memo">
+				<input name="statusButton" class="btn btn-primary" type="submit" value="Submit">
+			</div>
+		</section>
+	}
+</section>
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+	
+	<script src="@Url.Content("~/Content/ui-framework/js/autoNumeric-1.9.18.js")"></script>
+	<script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+	<script src="@Url.Content("~/Content/ui-framework/js/select2/select2.min.js")"></script>
+	<script src="@Url.Content("~/Content/js/BASTReplacement.js")"></script>
+	<script src="@Url.Content("~/Content/js/Olss.js")"></script>
+
+	<script type="text/javascript">
+		// This must be applied to a form (or an object inside a form).
+		jQuery.fn.addHidden = function(name, value) {
+			return this.each(function() {
+				var input = $("<input>").attr("type", "hidden").attr("name", name).val(value);
+				$(this).append($(input));
+			});
+		};
+
+		//Confirmation Modal
+		$('input[name="statusButton"]').on('click', function(e) {
+			var submitvalue = $(this).val();
+			var msg = '';
+			if (submitvalue === 'Save as Draft') {
+				msg = 'Save As Draft BAST Replacement Out';
+			} else if (submitvalue === 'Submit') {
+				msg = 'Submit BAST Replacement Out';
+			} else if (submitvalue === 'Print Memo') {
+				msg = 'Print Memo';
+				$('.additionalMsgModal').text('. Once you print memo your BAST Replacement will be save');
+			}
+
+			$('.msgModal').text(msg);
+			$('#submitButtonText').val(submitvalue);
+
+			if (checkDate()) {
+				e.preventDefault();
+				goToTop();
+				return false;
+			}
+
+			return true;
+		});
+
+		$('#confirmModalBast').click(function (e) {
+			$(this).prop('disabled', true);
+		    UpdateIndexRow('');
+
+			var submitvalue = $('#submitButtonText').val();
+			$('form:first').addHidden('statusButton', submitvalue).trigger('submit');
+		});
+
+		$('.datepicker-input').datepicker({
+			format: 'm/d/yyyy'
+		});
+
+		var replacementUnitType = '@((int)BASTType.ReplacementUnit)';
+		var firmed = '@((int)OlssOplStatus.Firmed)';
+		
+		$(document).ready(function() {
+			//change type submit to button to provide modal popup
+			$('input[name="statusButton"]').attr('type', 'button').attr('data-toggle', 'modal').attr('data-target', '#myModal');
+
+			showDiv('@bastType', 'create');
+		});
+	</script>
+}

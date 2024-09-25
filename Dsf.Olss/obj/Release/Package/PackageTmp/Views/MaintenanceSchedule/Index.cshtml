@@ -1,0 +1,597 @@
+﻿@model Dsf.Olss.Models.MaintenanceScheduleViewModel
+@using System.Web.UI.WebControls
+@using Dsf.Olss.Common
+@using Dsf.Lib.Constant
+@{
+    ViewBag.Title = "List of Maintenance Agreement";
+    string ImgUrl = System.Web.Configuration.WebConfigurationManager.AppSettings["loadingImgUrl"];
+    ViewBag.Success = TempData["Success"];
+    ViewBag.Error = TempData["Error"];
+	var jsID = Guid.NewGuid().ToString();									 
+}
+
+@section Styles{
+    <link rel="stylesheet" href=@Url.Content("~/Content/ui-framework/js/datatables/datatables.css") type="text/css" />
+    <link rel="stylesheet" href=@Url.Content("~/Content/css/style.css") type="text/css" />
+}
+
+@Message.Display(ViewBag.Success, ViewBag.Error)
+<div id="alert_placeholder"></div>
+<div id="printsuccess"></div>
+
+@using (Html.BeginForm("Index", "MaintenanceSchedule", FormMethod.Post))
+{
+    <div class="tab-pane" id="datatable">
+        <section class="panel">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label>Search Criteria</label>
+                        <div class="form-group">
+                            <select id="ddlSearchCriteria" class="form-control"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label>Parameter</label>
+                        <div class="form-group">
+                            <input id="txtSearch" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label id="lblStartDate">Start Maintenance Date</label>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input id="txtStartDate" class="form-control datepicker-input" type="text">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label id="lblEndDate">End Maintenance Date</label>
+                        <div class="form-group">
+                            <div class="input-group date">
+                                <input id="txtEndDate" class="form-control datepicker-input" type="text">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+                        <label></label>
+                        <div class="form-group">
+                            <input id="btnSearch" class="btn btn-primary right-side" type="submit" value="Search">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="panel">
+
+
+            <div class="col-log-2">
+                <header class="panel-heading font-bold">
+                    <ul class="nav nav-tabs pull-left bg-light">
+                        <li class="active"><a href="#listMaintenanceAgreement" data-toggle="tab">List of Maintenance Agreement</a></li>
+                        <li><a href="#listMaintenanceAgreement14Days" data-toggle="tab">14 days</a></li>
+                        <li><a href="#listMaintenanceAgreement1Days" data-toggle="tab">1 days</a></li>
+                        <li><a href="#listMaintenanceAgreementOnDueDate" data-toggle="tab">On Due Date</a></li>
+                        <li><a href="#monitorUnderMaintanance" data-toggle="tab">Under Maintenance</a></li>
+                    </ul>
+                    <span class="hidden-sm" style="visibility:hidden">Left tab</span>
+                </header>
+                <div class="panel-body" style="padding:0px !important;">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="listMaintenanceAgreement">
+                            <section class="panel" style="border: none; margin: 0px;">
+                                <div class="DocumentList">
+                                    <div class="table-responsive MaintenanceAgreement-list_responsive">
+                                        <table id="MaintenanceAgreement-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">DSF Office</th>
+                                                    <th rowspan="2">Unit Type</th>
+                                                    <th rowspan="2">Agreement Number</th>
+                                                    <th rowspan="2">Police Number</th>
+                                                    <th rowspan="2">Maintenance Type</th>
+                                                    <th rowspan="2">Maintenance Category</th>
+                                                    <th rowspan="2">End Contract</th>
+                                                    <th rowspan="2">Last Service</th>
+                                                    <th colspan="3" style="text-align:center">Schedule Maintenance</th>
+                                                    <th rowspan="2">Maintenance Budget</th>
+                                                    <th rowspan="2">Overdue</th>
+                                                    <th colspan="3" style="text-align:center">Confirmation to Customer</th>
+                                                    <th colspan="5" style="text-align:center">Confirmation to Workshop</th>
+                                                    <th colspan="2" style="text-align:center">Work Order</th>
+                                                    <th rowspan="2">Historical</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>KM</th>
+                                                    <th>Actual KM</th>
+                                                    <th>Schedule Date</th>
+                                                    <th>Confirm</th>
+                                                    <th>Date</th>
+                                                    <th>Schedule</th>
+                                                    <th>List Workshop</th>
+                                                    <th>Confirm</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Action</th>
+                                                    <th style="text-align:center">Action</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="listMaintenanceAgreement14Days">
+                            <section class="panel" style="border: none; margin: 0px;">
+                                <div class="DocumentList">
+                                    <div class="table-responsive MaintenanceAgreement14Days-list_responsive">
+                                        <table id="MaintenanceAgreement14Days-list" class="table table-striped m-b-none display nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">DSF Office</th>
+                                                    <th rowspan="2">Unit Type</th>
+                                                    <th rowspan="2">Agreement Number</th>
+                                                    <th rowspan="2">Police Number</th>
+                                                    <th rowspan="2">Maintenance Type</th>
+                                                    <th rowspan="2">Maintenance Category</th>
+                                                    <th rowspan="2">End Contract</th>
+                                                    <th rowspan="2">Last Service</th>
+                                                    <th colspan="3" style="text-align:center">Schedule Maintenance</th>
+                                                    <th rowspan="2">Maintenance Budget</th>
+                                                    <th rowspan="2">Overdue</th>
+                                                    <th colspan="3" style="text-align:center">Confirmation to Customer</th>
+                                                    <th colspan="5" style="text-align:center">Confirmation to Workshop</th>
+                                                    <th colspan="2" style="text-align:center">Work Order</th>
+                                                    <th rowspan="2" style="text-align:center">Historical</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>KM</th>
+                                                    <th>Actual KM</th>
+                                                    <th>Schedule Date</th>
+                                                    <th>Confirm</th>
+                                                    <th>Date</th>
+                                                    <th>Schedule</th>
+                                                    <th>List Workshop</th>
+                                                    <th>Confirm</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Update</th>
+                                                    <th style="text-align:center">Action</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="listMaintenanceAgreement1Days">
+                            <section class="panel" style="border: none; margin: 0px;">
+                                <div class="DocumentList">
+                                    <div class="table-responsive MaintenanceAgreement1Days-list_responsive">
+                                        <table id="MaintenanceAgreement1Days-list" class="table table-striped m-b-none">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">DSF Office</th>
+                                                    <th rowspan="2">Unit Type</th>
+                                                    <th rowspan="2">Agreement Number</th>
+                                                    <th rowspan="2">Police Number</th>
+                                                    <th rowspan="2">Maintenance Type</th>
+                                                    <th rowspan="2">Maintenance Category</th>
+                                                    <th rowspan="2">End Contract</th>
+                                                    <th rowspan="2">Last Service</th>
+                                                    <th colspan="3" style="text-align:center">Schedule Maintenance</th>
+                                                    <th rowspan="2">Maintenance Budget</th>
+                                                    <th rowspan="2">Overdue</th>
+                                                    <th colspan="3" style="text-align:center">Confirmation to Customer</th>
+                                                    <th colspan="5" style="text-align:center">Confirmation to Workshop</th>
+                                                    <th colspan="2" style="text-align:center">Work Order</th>
+                                                    <th rowspan="2" style="text-align:center">Historical</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>KM</th>
+                                                    <th>Actual KM</th>
+                                                    <th>Schedule Date</th>
+                                                    <th>Confirm</th>
+                                                    <th>Date</th>
+                                                    <th>Schedule</th>
+                                                    <th>List Workshop</th>
+                                                    <th>Confirm</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Update</th>
+                                                    <th style="text-align:center">Action</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="listMaintenanceAgreementOnDueDate">
+                            <section class="panel" style="border: none; margin: 0px;">
+                                <div class="DocumentList">
+                                    <div class="table-responsive MaintenanceAgreementOnDueDate-list_responsive">
+                                        <table id="MaintenanceAgreementOnDueDate-list" class="table table-striped m-b-none">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">DSF Office</th>
+                                                    <th rowspan="2">Unit Type</th>
+                                                    <th rowspan="2">Agreement Number</th>
+                                                    <th rowspan="2">Police Number</th>
+                                                    <th rowspan="2">Maintenance Type</th>
+                                                    <th rowspan="2">Maintenance Category</th>
+                                                    <th rowspan="2">End Contract</th>
+                                                    <th rowspan="2">Last Service</th>
+                                                    <th colspan="3" style="text-align:center">Schedule Maintenance</th>
+                                                    <th rowspan="2">Maintenance Budget</th>
+                                                    <th rowspan="2">Overdue</th>
+                                                    <th colspan="3" style="text-align:center">Confirmation to Customer</th>
+                                                    <th colspan="5" style="text-align:center">Confirmation to Workshop</th>
+                                                    <th colspan="2" style="text-align:center">Work Order</th>
+                                                    <th rowspan="2" style="text-align:center">Historical</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>KM</th>
+                                                    <th>Actual KM</th>
+                                                    <th>Schedule Date</th>
+                                                    <th>Confirm</th>
+                                                    <th>Date</th>
+                                                    <th>Update</th>
+                                                    <th>List Workshop</th>
+                                                    <th>Confirm</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Update</th>
+                                                    <th style="text-align:center">Action</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="tab-pane fade" id="monitorUnderMaintanance">
+                            <section class="panel" style="border: none; margin: 0px;">
+                                <div class="DocumentList">
+                                    <div class="table-responsive monitorUnderMaintanance-list_responsive">
+                                        <table id="monitorUnderMaintanance-list" class="table table-striped m-b-none">
+                                            <thead>
+                                                <tr>
+                                                    <th>DSF Office</th>
+                                                    <th>Work Order Number</th>
+                                                    <th>Police Number</th>
+                                                    <th>Service Date</th>
+                                                    <th>Unit Type</th>
+                                                    <th>Maintenance Category</th>
+                                                    <th>Need Replacement</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Status</th>
+                                                    <th>Confirmation to Customer</th>
+                                                    <th>Confirmation to Replacement Car</th>
+                                                    <th>
+                                                        <div class="header-grid-medium">Remarks</div>
+                                                    </th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="panel" id="panelBtn">
+            <footer class="panel-footer bg-light lter">
+                <div id='loadingmessage' style='display: none'>
+                    <img src='@Url.Content(ImgUrl)' />
+                </div>
+                <input type="hidden" id="submitButtonText" />
+                <input id="btnPrintAll" name="statusButton" class="btn btn-info buttonprint" type="submit" value="Print Report">
+            </footer>
+        </section>
+    </div>
+}
+
+@{Html.RenderPartial("ModalPopUp");}
+
+@section Scripts{
+    <!-- Bootstrap -->
+    <script src="@Url.Content("~/Content/ui-framework/js/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/ui-framework/js/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/js/MaintenanceSchedule.js?" + jsID)"></script>
+    <script>
+    var serverRoot = '@Url.Content("~")';
+    var iCount = -1;
+    var iActiveTabIndex = 0;
+    var TabId;
+
+    //Server variable
+    var srv_draft = '@((int)OlssOplStatus.Draft)';
+    var srv_check = '@((int)OlssOplStatus.Checked)';
+    var srv_revised = '@((int)OlssOplStatus.Revised)';
+    var srv_closed = '@((int)OlssOplStatus.Closed)';
+    var srv_approved = '@((int)OlssOplStatus.Approved)';
+    var srv_rejected = '@((int)OlssOplStatus.Rejected)';
+    var srv_submitted = '@((int)OlssOplStatus.Submitted)';
+    var srv_completed = '@((int)OlssOplStatus.Completed)';
+    var username = '@SimpleSessionPersister.Username';
+
+    function LoadProgressHistory(index) {
+        var ObjectName = (iActiveTabIndex == 0) ? "olistMaintenanceAgreement" : (iActiveTabIndex == 1) ? "olistMaintenanceAgreement14Days" : (iActiveTabIndex == 2) ? "olistMaintenanceAgreement1Days" : (iActiveTabIndex == 3) ? "olistMaintenanceAgreementOnDueDate" : "omonitorUnderMaintanance";
+        TabId = (iActiveTabIndex == 0) ? "listMaintenanceAgreement" : (iActiveTabIndex == 1) ? "listMaintenanceAgreement14Days" : (iActiveTabIndex == 2) ? "listMaintenanceAgreement1Days" : (iActiveTabIndex == 3) ? "listMaintenanceAgreementOnDueDate" : "monitorUnderMaintanance";
+
+    }
+
+    // handling SearchCriteria
+    function PopulateAndClearSerchCriteria() {
+        switch (iActiveTabIndex) {
+            case 0:
+            case 1:
+            case 2:
+            case 3: var $select = $("#ddlSearchCriteria");
+                var jSONOptionOutstanding = {
+                    "1": "DSF Office",
+                    "2": "Unit Type",
+                    "3": "Agreement Number",
+                    "4": "Police Number",
+                    "5": "Maintenance Type",
+                    "6": "Maintenance Category",
+                    "7": "End Contract",
+                    "8": "Last Service",
+                    "9": "Schedule Maintenance KM",
+                    "10": "Maintenance Budget"
+                };
+                break;
+            case 4: var $select = $("#ddlSearchCriteria");
+                var jSONOptionOutstanding = {
+                    "1": "DSF Office",
+                    "2": "Work Order Number",
+                    "3": "Police Number",
+                    "4": "Unit Type",
+                    "5": "Maintenance Category",
+                    "6": "Need Replacement",
+                    "7": "Status",
+                };
+                break;
+        }
+
+        $select.empty();
+        $.each(jSONOptionOutstanding, function (key, value) {
+            $select.append('<option value=' + key + '>' + value + '</option>');
+        });
+        $("#txtSearch").val(null);
+        $("#txtStartDate").val(null);
+        $("#txtEndDate").val(null);
+
+    }
+
+    $(document).ready(function () {
+        iActiveTabIndex = 0;
+        PopulateAndClearSerchCriteria();
+        TabChangedEvent();
+    });
+
+    //handling Change Tab
+    $(document).on('click.bs.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+        $("#panelBtn").show();
+        switch ($(this).html()) {
+            case "List of Maintenance Agreement":
+                iActiveTabIndex = 0;
+                break;
+            case "14 days":
+                iActiveTabIndex = 1;
+                break;
+            case "1 days":
+                iActiveTabIndex = 2;
+                break;
+            case "On Due Date":
+                iActiveTabIndex = 3;
+                break;
+            case "Under Maintenance":
+                iActiveTabIndex = 4;
+                break;
+        }
+        PopulateAndClearSerchCriteria();
+        TabChangedEvent();
+    });
+
+    //handling TabChanged Event
+    function TabChangedEvent() {
+        var ObjectName = (iActiveTabIndex == 0) ? "oMaintenanceAgreement" : (iActiveTabIndex == 1) ? "oMaintenanceAgreement14Days" : (iActiveTabIndex == 2) ? "oMaintenanceAgreement1Days" : (iActiveTabIndex == 3) ? "oMaintenanceAgreementOnDueDate" : "omonitorUnderMaintanance";
+        TabId = (iActiveTabIndex == 0) ? "MaintenanceAgreement" : (iActiveTabIndex == 1) ? "MaintenanceAgreement14Days" : (iActiveTabIndex == 2) ? "MaintenanceAgreement1Days" : (iActiveTabIndex == 3) ? "MaintenanceAgreementOnDueDate" : "monitorUnderMaintanance";
+        switch (iActiveTabIndex) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                if (typeof (window[ObjectName]) != "undefined")
+                    $("#" + TabId + "-list").dataTable().fnDraw();
+                else
+                    MaintenanceShedule(ObjectName, TabId);
+                break;
+            case 4:
+                if (typeof (window[ObjectName]) != "undefined")
+                    $("#" + TabId + "-list").dataTable().fnDraw();
+                else
+                    UnderMaintenanceShedule(ObjectName, TabId);
+                break;
+        }
+    }
+
+    //PrintReport
+    $('.buttonprint').on('click', function (e) {
+        e.preventDefault();
+        var ddlSearchCriteria = $("#ddlSearchCriteria").val();
+        var txtSearch = $("#txtSearch").val();
+        var txtStartDate = $("#txtStartDate").val();
+        var txtEndDate = $("#txtEndDate").val();
+
+        // Ajax start animation progress
+        $('#loadingmessage').show();
+        $('#btnPrintAll').hide();
+        $('#btnSave').hide();
+
+        switch (iActiveTabIndex) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PrintReport", "MaintenanceSchedule")',
+                    data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate, 'iActiveTabIndex': iActiveTabIndex }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'text',
+                    global: false,
+                    success: function (response, status, xhr) {
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                                response = filename;
+                            }
+                        }
+                        if (response !== "") {
+                            window.location = "./Base/Download?fileName=" + response + "&rptType=" + 11;
+                        }
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Cannot download file..! Error is occurs');
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    }
+                });
+                break;
+
+            case 4:
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PrintReportUnderMaintenance", "MaintenanceSchedule")',
+                    data: JSON.stringify({ 'ddlSearchCriteria': ddlSearchCriteria, 'txtSearch': txtSearch, 'txtStartDate': txtStartDate, 'txtEndDate': txtEndDate, 'iActiveTabIndex': iActiveTabIndex }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'text',
+                    global: false,
+                    success: function (response, status, xhr) {
+                        // check for a filename
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                                response = filename;
+                            }
+                        }
+                        if (response !== "") {
+                            window.location = "./Base/Download?fileName=" + response + "&rptType=" + 13;
+                        }
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        alert('Cannot download file..! Error is occurs');
+                        // Ajax stop animation progress
+                        $('#loadingmessage').hide();
+                        $('#btnPrintAll').show();
+                    }
+                });
+                break;
+
+            default:
+                break;
+        }
+    });
+
+    // Searching
+    $('#btnSearch').on('click', function (e) {
+        e.preventDefault();
+
+        if (checkDate() === false) {
+            switch (iActiveTabIndex) {
+                case 0:
+                    $('#MaintenanceAgreement-list').dataTable().fnDraw();
+                    break;
+                case 1:
+                    $('#MaintenanceAgreement14Days-list').dataTable().fnDraw();
+                    break;
+                case 2:
+                    $('#MaintenanceAgreement1Days-list').dataTable().fnDraw();
+                    break;
+                case 3:
+                    $('#MaintenanceAgreementOnDueDate-list').dataTable().fnDraw();
+                    break;
+                case 4:
+                    $('#monitorUnderMaintanance-list').dataTable().fnDraw();
+                    break;
+            }
+        }
+    });
+
+
+    // Checking range date
+    function checkDate() {
+
+        var resultCheck = false;
+        var startDate = $('#txtStartDate').val();
+        var endDate = $('#txtEndDate').val();
+        startDate = strToDate(startDate, 'mm/dd/yyyy', '/');
+        endDate = strToDate(endDate, 'mm/dd/yyyy', '/');
+
+        if (startDate > endDate) {
+            resultCheck = true;
+            alert('Start Date should be less than End Date..!');
+        }
+        return resultCheck;
+    }
+
+    // Convert string to Date
+    function strToDate(date, format, delimiter) {
+        var formatLowerCase = format.toLowerCase();
+        var formatItems = formatLowerCase.split(delimiter);
+        var dateItems = date.split(delimiter);
+        var monthIndex = formatItems.indexOf("mm");
+        var dayIndex = formatItems.indexOf("dd");
+        var yearIndex = formatItems.indexOf("yyyy");
+        var month = parseInt(dateItems[monthIndex]);
+        month -= 1;
+        var formatedDate = new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
+
+        return formatedDate;
+    }
+
+    </script>
+}
+

@@ -1,0 +1,5 @@
+﻿@username=''
+@txtStartDate=''
+@txtEndDate=''
+@custName =''
+@agrNumber=''

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/bundles/bootstyle")     <!-- include bootstrap.css file with bootstyle bundles -->
+    @Styles.Render("~/bundles/animate")       <!-- animate.css -->
+    @Styles.Render("~/bundles/font")          <!-- font.css -->
+    @Styles.Render("~/bundles/plugins")       <!-- plugin.css -->
+    @Styles.Render("~/bundles/apps")          <!-- app.css -->
+
+    <link href="@Url.Content("~/Content/ui-framework/css/font-awesome.min.css")" rel="stylesheet" type="text/css" />
+
+    @RenderSection("Styles", false)
+
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Content/ui-framework/js/ie/respond.min.js")" cache="false"></script>
+      <script src="@Url.Content("~/Content/ui-framework/js/ie/html5.js")" cache="false"></script>
+      <script src="@Url.Content("~/Content/ui-framework/js/ie/fix.js")" cache="false"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+    @RenderBody()
+
+
+    @Scripts.Render("~/bundles/jquery",
+                    "~/bundles/bootstrap",
+                    "~/bundles/app",
+                    "~/bundles/app.plugin",
+                    "~/bundles/fuelux")
+
+    @RenderSection("Scripts", false)
+</body>
+</html>
