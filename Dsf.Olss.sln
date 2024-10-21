@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35229.62
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsf.Lib", "Dsf.Lib\Dsf.Lib.csproj", "{DBF5B62B-4761-423F-8DAD-BC383D18D21D}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsf.Olss.Service", "Dsf.Olss.Service\Dsf.Olss.Service.csproj", "{00BE7773-8751-4F58-B299-3202708AF7B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsf.Olss.Data", "Dsf.Olss.Data\Dsf.Olss.Data.csproj", "{07E371A3-2EEC-49B7-A82F-1A98E6EE23CF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dsf.Olss.Tests", "Dsf.Olss.Tests\Dsf.Olss.Tests.csproj", "{F0CD668D-8E91-4DE2-9CB6-749DDE86A46C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +33,11 @@ Global
 		{07E371A3-2EEC-49B7-A82F-1A98E6EE23CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07E371A3-2EEC-49B7-A82F-1A98E6EE23CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07E371A3-2EEC-49B7-A82F-1A98E6EE23CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0CD668D-8E91-4DE2-9CB6-749DDE86A46C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0CD668D-8E91-4DE2-9CB6-749DDE86A46C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0CD668D-8E91-4DE2-9CB6-749DDE86A46C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0CD668D-8E91-4DE2-9CB6-749DDE86A46C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {90325D4B-DEC4-4D0E-AB1D-D249F57E4F51}
 	EndGlobalSection
 EndGlobal
