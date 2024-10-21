@@ -31,10 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dsf.Lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dsf.Lib\bin\Dsf.Lib.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -83,6 +79,10 @@
     <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dsf.Lib\Dsf.Lib.csproj">
+      <Project>{dbf5b62b-4761-423f-8dad-bc383d18d21d}</Project>
+      <Name>Dsf.Lib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Dsf.Olss.Data\Dsf.Olss.Data.csproj">
       <Project>{07e371a3-2eec-49b7-a82f-1a98e6ee23cf}</Project>
       <Name>Dsf.Olss.Data</Name>

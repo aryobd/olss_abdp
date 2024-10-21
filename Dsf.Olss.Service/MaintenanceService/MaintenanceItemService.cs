@@ -34,20 +34,20 @@ namespace Dsf.Olss.Service.MaintenanceService
         );
         bool IsExistItemName(string name);
         bool IsExistItemNameExceptMe(int id, string name);
-        IEnumerable<OptionItemValue> GetReplacementCycleUnit();
     }
 
     public class MaintenanceItemService : IMaintenanceItemService
     {
 
         private readonly IMaintenanceItemRepository _repository;
-        private readonly IGenericRepository<OptionItem> _optionItemRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public MaintenanceItemService(IMaintenanceItemRepository repository, IGenericRepository<OptionItem> optionItemRepository, IUnitOfWork unitOfWork)
+        public MaintenanceItemService(
+            IMaintenanceItemRepository repository,
+            IUnitOfWork unitOfWork
+        )
         {
             _repository = repository;
-            _optionItemRepository = optionItemRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -325,13 +325,6 @@ namespace Dsf.Olss.Service.MaintenanceService
 
                 return true;
             }
-        }
-
-        public IEnumerable<OptionItemValue> GetReplacementCycleUnit()
-        {
-            var optionIntem = _optionItemRepository.AsQueryable().FirstOrDefault(o => o.OptionItemName.Equals("Replacement Cycle Unit"));
-
-            return optionIntem != null ? optionIntem.OptionItemValues.AsEnumerable() : null;
         }
     }
 }

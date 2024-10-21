@@ -56,7 +56,6 @@
     <Compile Include="Entities\MaintenanceCategory.cs" />
     <Compile Include="Entities\MaintenanceItem.cs" />
     <Compile Include="Entities\OlssEntities.cs" />
-    <Compile Include="Entities\OptionItem.cs" />
     <Compile Include="Entities\Permission.cs" />
     <Compile Include="Entities\Role.cs" />
     <Compile Include="Entities\Tb_OPL_Branch.cs" />
