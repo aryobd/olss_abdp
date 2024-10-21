@@ -106,7 +106,7 @@ namespace Dsf.Olss.Controllers
 
             if (ModelState.IsValid)
             {
-                data.Menus = role.Menus;
+                //data.Menus = role.Menus;
                 data.Remarks = role.Remarks;
                 data.RoleName = role.RoleName;
 

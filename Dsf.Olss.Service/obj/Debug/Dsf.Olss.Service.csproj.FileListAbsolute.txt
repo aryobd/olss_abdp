@@ -32,3 +32,20 @@ D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Olss.Service\bin\Debug\EntityF
 D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.csprojResolveAssemblyReference.cache
 D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.dll
 D:\Firmansyah\Source Code\AzureDevOps\OLS\OLS\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.pdb
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Dsf.Olss.Service.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Dsf.Olss.Service.pdb
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Dsf.Lib.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Dsf.Olss.Data.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\EntityFramework.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\EntityFramework.SqlServer.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Oracle.ManagedDataAccess.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Oracle.ManagedDataAccess.EntityFramework.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Dsf.Olss.Data.pdb
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\Dsf.Lib.pdb
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\EntityFramework.xml
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\bin\Debug\EntityFramework.SqlServer.xml
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.csproj.AssemblyReference.cache
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.csproj.CoreCompileInputs.cache
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.csproj.CopyComplete
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.dll
+D:\ABDP\MVC5\olss_abdp\Dsf.Olss.Service\obj\Debug\Dsf.Olss.Service.pdb

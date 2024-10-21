@@ -276,14 +276,11 @@ namespace Dsf.Olss.Controllers
 
                 #region Set Sorting & Ordering
                 var sortColumnIndex = Convert.ToInt32(Request["iSortCol_0"]);
-
                 Expression<Func<MaintenanceCategoryListInfo, string>> ordering = (
-                    c => sortColumnIndex == 0 ?
-                         c.MaintenanceCategoryName :
+                    c => sortColumnIndex == 0 ? c.MaintenanceCategoryName :
                          sortColumnIndex == 1 ? c.Remarks :
-                                                sortColumnIndex == 2 ?
-                                                c.CreatedBy :
-                                                SqlFunctions.StringConvert((double)SqlFunctions.DateDiff("DAY", DateTime.MinValue, c.CreatedDate))
+                         sortColumnIndex == 2 ? c.CreatedBy :
+                         SqlFunctions.StringConvert((double)SqlFunctions.DateDiff("day", DateTime.MinValue, c.CreatedDate))
                 );
 
                 var sortDirection = Request["sSortDir_0"]; // asc or desc

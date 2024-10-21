@@ -12,7 +12,6 @@ namespace Dsf.Olss.Data.Entities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Role()
         {
-            Menus = new HashSet<Menu>();
             Users = new HashSet<User>();
             Permissions = new HashSet<Permission>();
         }
@@ -42,9 +41,6 @@ namespace Dsf.Olss.Data.Entities
 
         [StringLength(50)]
         public string CreatedBy { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Menu> Menus { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
